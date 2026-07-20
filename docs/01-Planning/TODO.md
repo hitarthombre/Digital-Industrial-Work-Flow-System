@@ -1,35 +1,391 @@
-# TODO — Digital Industrial Workflow System (DIWS)
+# TODO.md
 
-## Planning
-- Finalize MVP scope
-- Decide company hierarchy and roles
-- Finalize database structure
-- Finalize routes and navigation
-- Define document storage rules
+# Digital Industrial Workflow System (DIWS)
 
-## Development
-- Build auth and RBAC
-- Build company onboarding
-- Build factory and warehouse modules
-- Build product and inventory modules
-- Build procurement module
-- Build production workflow
-- Build sales and dispatch
-- Build dashboard and reports
-- Build document management
-- Build AI + RAG assistant
+Version: 1.0
 
-## Testing
-- Test tenant isolation
-- Test role permissions
-- Test file upload/download
-- Test production workflow
-- Test AI answers against documents
+---
 
-## Deployment
-- Configure env variables
-- Set up hosting
-- Set up database
-- Set up object storage
-- Set up Redis/queue
-- Add monitoring and logging
+## 1. Project Setup
+
+- [ ] Finalize project scope
+- [ ] Finalize MVP features
+- [ ] Prepare folder structure
+- [ ] Set up Git repository
+- [ ] Set up frontend project
+- [ ] Set up backend project
+- [ ] Configure environment variables
+- [ ] Create base documentation files
+
+---
+
+## 2. Documentation
+
+- [ ] PRD.md
+- [ ] Roadmap.md
+- [ ] Architecture.md
+- [ ] Database.md
+- [ ] API.md
+- [ ] Design.md
+- [ ] UI.md
+- [ ] Navigation.md
+- [ ] Routes.md
+- [ ] Modules.md
+- [ ] TODO.md
+
+---
+
+## 3. Frontend Setup
+
+- [ ] Create React app
+- [ ] Add TypeScript
+- [ ] Add Tailwind CSS
+- [ ] Add UI component library
+- [ ] Set up routing
+- [ ] Create layout structure
+- [ ] Create reusable components
+- [ ] Set up state management
+- [ ] Set up form handling
+- [ ] Set up API integration
+- [ ] Add table components
+- [ ] Add chart components
+
+---
+
+## 4. Backend Setup
+
+- [ ] Create Node + Express server
+- [ ] Add TypeScript
+- [ ] Set up project structure
+- [ ] Configure database connection
+- [ ] Configure authentication
+- [ ] Configure middleware
+- [ ] Configure logging
+- [ ] Configure validation
+- [ ] Configure error handling
+- [ ] Set up file upload support
+- [ ] Set up background jobs
+- [ ] Set up notifications
+
+---
+
+## 5. Authentication & Security
+
+- [ ] User registration
+- [ ] Login system
+- [ ] Forgot password
+- [ ] Password reset
+- [ ] Email verification
+- [ ] JWT authentication
+- [ ] Role-based access control
+- [ ] Permission checks
+- [ ] Company-based access isolation
+- [ ] Session handling
+- [ ] Logout flow
+
+---
+
+## 6. Company Management
+
+- [ ] Company registration
+- [ ] Company profile
+- [ ] Company settings
+- [ ] Company branding
+- [ ] Company workspace creation
+- [ ] Company switcher
+- [ ] Multi-company support
+
+---
+
+## 7. User Management
+
+- [ ] Invite users
+- [ ] Add users manually
+- [ ] Edit user profile
+- [ ] Assign roles
+- [ ] Assign departments
+- [ ] Activate/deactivate users
+- [ ] User list
+- [ ] User activity history
+
+---
+
+## 8. Factory Management
+
+- [ ] Create factory
+- [ ] Edit factory
+- [ ] Delete factory
+- [ ] Factory list
+- [ ] Factory details
+- [ ] Factory location
+- [ ] Factory settings
+
+---
+
+## 9. Warehouse Management
+
+- [ ] Create warehouse
+- [ ] Edit warehouse
+- [ ] Delete warehouse
+- [ ] Warehouse list
+- [ ] Warehouse details
+- [ ] Warehouse location
+- [ ] Warehouse transfer flow
+
+---
+
+## 10. Product Management
+
+- [ ] Create product
+- [ ] Edit product
+- [ ] Delete product
+- [ ] Product list
+- [ ] Product categories
+- [ ] Product variants
+- [ ] Custom attributes
+- [ ] Product unit of measurement
+- [ ] Product image upload
+- [ ] Product document attachment
+
+---
+
+## 11. Supplier Management
+
+- [ ] Create supplier
+- [ ] Edit supplier
+- [ ] Delete supplier
+- [ ] Supplier list
+- [ ] Supplier details
+- [ ] Supplier documents
+- [ ] Purchase history
+
+---
+
+## 12. Customer Management
+
+- [ ] Create customer
+- [ ] Edit customer
+- [ ] Delete customer
+- [ ] Customer list
+- [ ] Customer details
+- [ ] Customer order history
+- [ ] Customer documents
+
+---
+
+## 13. Inventory Management
+
+- [ ] Add stock in
+- [ ] Stock out
+- [ ] Stock transfer
+- [ ] Stock adjustment
+- [ ] Stock history
+- [ ] Raw material stock
+- [ ] Finished goods stock
+- [ ] Low stock alerts
+- [ ] Inventory reports
+- [ ] Stock movement logs
+
+---
+
+## 14. Procurement Module
+
+- [ ] Purchase request creation
+- [ ] Purchase request approval
+- [ ] Purchase order creation
+- [ ] Purchase order tracking
+- [ ] Goods receipt note
+- [ ] Purchase returns
+- [ ] Supplier purchase history
+- [ ] Procurement reports
+
+---
+
+## 15. Production Module
+
+- [ ] Production planning
+- [ ] Work order creation
+- [ ] Job card management
+- [ ] Production stage tracking
+- [ ] Material consumption
+- [ ] Production completion
+- [ ] Scrap tracking
+- [ ] Production reports
+
+---
+
+## 16. Sales Module
+
+- [ ] Quotation creation
+- [ ] Sales order creation
+- [ ] Sales order approval
+- [ ] Sales invoice creation
+- [ ] Sales payment tracking
+- [ ] Sales history
+- [ ] Sales reports
+
+---
+
+## 17. Dispatch Module
+
+- [ ] Dispatch order creation
+- [ ] Transport details entry
+- [ ] Delivery tracking
+- [ ] Shipment status update
+- [ ] Dispatch document upload
+- [ ] Dispatch reports
+
+---
+
+## 18. Document Management
+
+- [ ] Upload documents
+- [ ] Categorize documents
+- [ ] Search documents
+- [ ] Preview files
+- [ ] Download files
+- [ ] Link files to records
+- [ ] Store SOPs
+- [ ] Store manuals
+- [ ] Store certificates
+- [ ] Store product documents
+
+---
+
+## 19. Dashboard
+
+- [ ] Build main dashboard
+- [ ] Add KPI cards
+- [ ] Add recent activity panel
+- [ ] Add inventory summary
+- [ ] Add production summary
+- [ ] Add procurement summary
+- [ ] Add sales summary
+- [ ] Add alerts section
+- [ ] Add quick action buttons
+
+---
+
+## 20. Reports
+
+- [ ] Inventory report
+- [ ] Purchase report
+- [ ] Production report
+- [ ] Sales report
+- [ ] Dispatch report
+- [ ] Supplier report
+- [ ] Customer report
+- [ ] Export PDF
+- [ ] Export Excel
+
+---
+
+## 21. Notifications
+
+- [ ] In-app notifications
+- [ ] Email notifications
+- [ ] Low stock alerts
+- [ ] Order status alerts
+- [ ] Task reminders
+- [ ] Notification history
+
+---
+
+## 22. Search & Filters
+
+- [ ] Global search
+- [ ] Module-wise search
+- [ ] Date filters
+- [ ] Status filters
+- [ ] Factory filters
+- [ ] Warehouse filters
+- [ ] Sort options
+- [ ] Saved filters
+
+---
+
+## 23. Activity & Audit
+
+- [ ] Activity timeline
+- [ ] Audit log system
+- [ ] Track create/update/delete events
+- [ ] Track login/logout events
+- [ ] Track permission changes
+- [ ] Track stock changes
+
+---
+
+## 24. Validation & Error Handling
+
+- [ ] Form validation
+- [ ] API validation
+- [ ] File validation
+- [ ] Permission error handling
+- [ ] Not found page
+- [ ] Server error page
+- [ ] Loading states
+- [ ] Empty states
+
+---
+
+## 25. Testing
+
+- [ ] Test authentication
+- [ ] Test RBAC
+- [ ] Test company isolation
+- [ ] Test inventory flow
+- [ ] Test procurement flow
+- [ ] Test production flow
+- [ ] Test sales flow
+- [ ] Test dispatch flow
+- [ ] Test document upload
+- [ ] Test reports
+- [ ] Test notifications
+
+---
+
+## 26. Deployment
+
+- [ ] Deploy frontend
+- [ ] Deploy backend
+- [ ] Connect database
+- [ ] Configure storage
+- [ ] Configure Redis
+- [ ] Set environment variables
+- [ ] Configure domain
+- [ ] Configure SSL
+- [ ] Production testing
+
+---
+
+## 27. Future Enhancements
+
+- [ ] AI assistant
+- [ ] RAG knowledge base
+- [ ] Machine management
+- [ ] Maintenance module
+- [ ] Quality module
+- [ ] QR code support
+- [ ] Barcode support
+- [ ] Workflow builder
+- [ ] OCR
+- [ ] Mobile app
+- [ ] IoT integration
+- [ ] PLC integration
+- [ ] Predictive analytics
+- [ ] Supplier portal
+- [ ] Customer portal
+
+---
+
+## 28. Final Review
+
+- [ ] Check all requirements
+- [ ] Review all documents
+- [ ] Verify module completeness
+- [ ] Verify route structure
+- [ ] Verify database design
+- [ ] Verify API design
+- [ ] Prepare presentation
+- [ ] Prepare demo
+- [ ] Final project submission
