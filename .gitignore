@@ -1,0 +1,43 @@
+# Dependency directories
+node_modules/
+client/node_modules/
+server/node_modules/
+
+# Build outputs
+dist/
+client/dist/
+server/dist/
+*.tsbuildinfo
+vite.config.ts.timestamp-*
+
+# Logs
+logs/
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+lerna-debug.log*
+
+# Local environment files
+.env
+.env.local
+.env.development.local
+.env.test.local
+.env.production.local
+client/.env
+server/.env
+
+# Editor files
+.vscode/*
+!.vscode/extensions.json
+.idea/
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+
+# OS metadata
+.DS_Store
+Thumbs.db
