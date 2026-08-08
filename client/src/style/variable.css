@@ -1,0 +1,39 @@
+:root {
+  /* Forest */
+  --forest-dark: #10271D;
+  --forest: #173A2A;
+  --forest-light: #24543D;
+
+  /* Copper */
+  --copper: #B87333;
+  --copper-light: #D39A62;
+
+  /* Background */
+  --ivory: #F7F4ED;
+  --cream: #EFEAE0;
+
+  /* Text */
+  --text-primary: #17201B;
+  --text-secondary: #66736A;
+  --text-light: #F7F4ED;
+  --white: #FFFFFF;
+
+  /* Border */
+  --border: #D8D3C8;
+
+  /* Shadows */
+  --shadow-sm: 0 2px 8px rgba(16, 39, 29, 0.06);
+  --shadow-md: 0 8px 24px rgba(16, 39, 29, 0.10);
+  --shadow-lg: 0 16px 40px rgba(16, 39, 29, 0.14);
+
+  /* Radius */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 18px;
+  --radius-xl: 24px;
+
+  /* Transitions */
+  --transition-fast: 150ms ease;
+  --transition-normal: 250ms ease;
+  --transition-slow: 400ms ease;
+}

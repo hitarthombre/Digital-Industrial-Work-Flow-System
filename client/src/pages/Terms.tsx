@@ -1,35 +1,139 @@
-export default function Terms() {
+function Terms() {
   return (
-    <div className="py-16 text-left space-y-6 max-w-3xl mx-auto">
-      <h2 className="text-3xl md:text-5xl font-extrabold text-white text-center mb-8">Terms & Conditions</h2>
-      
-      <section className="space-y-3">
-        <h4 className="text-lg font-bold text-white">1. Service Definition</h4>
-        <p className="text-sm text-slate-400 leading-relaxed">
-          The Digital Industrial Workflow System (DIWS) provides subscription-based software-as-a-service (SaaS) features for manufacturing businesses, including warehouse, procurement, production management, and reporting modules.
+    <main className="terms-page">
+
+      {/* HERO */}
+      <section className="terms-hero">
+        <p className="terms-eyebrow">LEGAL & INFORMATION</p>
+
+        <h1>
+          Terms &
+          <span> Conditions.</span>
+        </h1>
+
+        <p className="terms-intro">
+          Please read these terms carefully before using the
+          Digital Industrial Workflow System.
         </p>
       </section>
 
-      <section className="space-y-3">
-        <h4 className="text-lg font-bold text-white">2. Multi-Tenant Separation and Data Security</h4>
-        <p className="text-sm text-slate-400 leading-relaxed">
-          We guarantee logical database isolation for each company tenant using strict system-level filtering. Under no circumstances will company data be shared, leaked, or accessible by other tenants.
-        </p>
+
+      {/* CONTENT */}
+      <section className="terms-content">
+
+        <div className="terms-section">
+          <span className="terms-number">01</span>
+
+          <div>
+            <h2>Acceptance of Terms</h2>
+
+            <p>
+              By accessing or using the Digital Industrial Workflow
+              System, you agree to be bound by these Terms and
+              Conditions. If you do not agree with these terms,
+              please do not use the platform.
+            </p>
+          </div>
+        </div>
+
+
+        <div className="terms-section">
+          <span className="terms-number">02</span>
+
+          <div>
+            <h2>Use of the Platform</h2>
+
+            <p>
+              The platform is designed to help industrial teams
+              organize, manage, monitor and optimize their
+              workflows. You agree to use the platform only for
+              lawful business and operational purposes.
+            </p>
+          </div>
+        </div>
+
+
+        <div className="terms-section">
+          <span className="terms-number">03</span>
+
+          <div>
+            <h2>User Responsibilities</h2>
+
+            <p>
+              Users are responsible for maintaining the accuracy
+              of information entered into the platform and for
+              keeping their account credentials secure.
+            </p>
+          </div>
+        </div>
+
+
+        <div className="terms-section">
+          <span className="terms-number">04</span>
+
+          <div>
+            <h2>Data & Information</h2>
+
+            <p>
+              Information entered into the system should be
+              handled responsibly. Users should ensure that
+              confidential or sensitive business information is
+              managed according to their organization's policies.
+            </p>
+          </div>
+        </div>
+
+
+        <div className="terms-section">
+          <span className="terms-number">05</span>
+
+          <div>
+            <h2>Service Availability</h2>
+
+            <p>
+              We aim to keep the platform available and reliable.
+              However, temporary interruptions may occur because
+              of maintenance, technical issues or circumstances
+              outside our control.
+            </p>
+          </div>
+        </div>
+
+
+        <div className="terms-section">
+          <span className="terms-number">06</span>
+
+          <div>
+            <h2>Changes to These Terms</h2>
+
+            <p>
+              These Terms and Conditions may be updated from time
+              to time. Continued use of the platform after changes
+              are published means that you accept the updated
+              terms.
+            </p>
+          </div>
+        </div>
+
+
+        <div className="terms-section">
+          <span className="terms-number">07</span>
+
+          <div>
+            <h2>Contact</h2>
+
+            <p>
+              If you have questions regarding these Terms and
+              Conditions, please contact the platform
+              administration team.
+            </p>
+          </div>
+        </div>
+
       </section>
 
-      <section className="space-y-3">
-        <h4 className="text-lg font-bold text-white">3. User Credentials and Responsibilities</h4>
-        <p className="text-sm text-slate-400 leading-relaxed">
-          Organizations are responsible for maintaining the confidentiality of user account logins, managing sub-user role permissions properly, and auditing actions using the provided platform activity logs.
-        </p>
-      </section>
-
-      <section className="space-y-3">
-        <h4 className="text-lg font-bold text-white">4. Fair Usage and Availability</h4>
-        <p className="text-sm text-slate-400 leading-relaxed">
-          System services are hosted on reliable cloud infrastructures with target 99.9% uptime. Fair usage policies apply to API queries and cloud document storage volumes.
-        </p>
-      </section>
-    </div>
-  )
+    </main>
+  );
 }
+
+export default Terms;
