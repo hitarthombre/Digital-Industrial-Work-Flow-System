@@ -1,0 +1,198 @@
+/* custom-ui.css */
+/* Vanilla CSS implementation for the modern industrial admin style */
+
+:root {
+  --primary-accent: #6366f1; /* Indigo 500 */
+  --primary-hover: #4f46e5; /* Indigo 600 */
+  --bg-color: #020617; /* Slate 950 */
+  --card-bg: #0f172a; /* Slate 900 */
+  --border-color: #1e293b; /* Slate 800 */
+  --text-main: #f1f5f9; /* Slate 100 */
+  --text-muted: #94a3b8; /* Slate 400 */
+  --error-color: #ef4444; /* Red 500 */
+  
+  --shadow-soft: 0 4px 6px -1px rgba(0, 0, 0, 0.3), 0 2px 4px -1px rgba(0, 0, 0, 0.2);
+  --shadow-glow: 0 0 15px rgba(99, 102, 241, 0.2);
+  
+  --radius-md: 0.5rem;
+  --radius-lg: 0.75rem;
+  --radius-xl: 1rem;
+}
+
+/* Card Component */
+.diws-card {
+  background-color: var(--card-bg);
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-xl);
+  box-shadow: var(--shadow-soft);
+  padding: 1.5rem;
+  color: var(--text-main);
+  transition: box-shadow 0.3s ease, transform 0.3s ease;
+}
+
+.diws-card:hover {
+  box-shadow: var(--shadow-glow);
+}
+
+/* Button Component */
+.diws-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.625rem 1.25rem;
+  border-radius: var(--radius-md);
+  font-weight: 500;
+  font-size: 0.875rem;
+  transition: all 0.2s ease;
+  cursor: pointer;
+  border: none;
+  font-family: inherit;
+}
+
+.diws-btn-primary {
+  background-color: var(--primary-accent);
+  color: #ffffff;
+  box-shadow: 0 2px 4px rgba(99, 102, 241, 0.4);
+}
+
+.diws-btn-primary:hover {
+  background-color: var(--primary-hover);
+  box-shadow: 0 4px 6px rgba(99, 102, 241, 0.5);
+}
+
+.diws-btn-secondary {
+  background-color: transparent;
+  color: var(--text-main);
+  border: 1px solid var(--border-color);
+}
+
+.diws-btn-secondary:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.diws-btn-full {
+  width: 100%;
+}
+
+/* Input Component */
+.diws-form-group {
+  display: flex;
+  flex-direction: column;
+  margin-bottom: 1.25rem;
+}
+
+.diws-label {
+  font-size: 0.875rem;
+  font-weight: 500;
+  color: var(--text-muted);
+  margin-bottom: 0.5rem;
+}
+
+.diws-input {
+  background-color: #020617; /* darker than card */
+  border: 1px solid var(--border-color);
+  border-radius: var(--radius-md);
+  padding: 0.625rem 0.75rem;
+  color: var(--text-main);
+  font-size: 0.875rem;
+  transition: border-color 0.2s, box-shadow 0.2s;
+  font-family: inherit;
+}
+
+.diws-input:focus {
+  outline: none;
+  border-color: var(--primary-accent);
+  box-shadow: 0 0 0 2px rgba(99, 102, 241, 0.2);
+}
+
+/* Form Layout */
+.diws-form-layout {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: calc(100vh - 12rem);
+  padding: 2rem 1rem;
+}
+
+.diws-form-container {
+  width: 100%;
+  max-width: 420px;
+}
+
+.diws-form-header {
+  text-align: center;
+  margin-bottom: 2rem;
+}
+
+.diws-form-title {
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: var(--text-main);
+  margin-bottom: 0.5rem;
+}
+
+.diws-form-subtitle {
+  font-size: 0.875rem;
+  color: var(--text-muted);
+}
+
+/* Utility Layouts */
+.diws-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 2rem 1.5rem;
+}
+
+.diws-page-title {
+  font-size: 2rem;
+  font-weight: 800;
+  margin-bottom: 1rem;
+  color: var(--text-main);
+}
+
+.diws-page-subtitle {
+  font-size: 1.125rem;
+  color: var(--text-muted);
+  margin-bottom: 3rem;
+}
+
+.diws-grid {
+  display: grid;
+  gap: 1.5rem;
+}
+
+@media (min-width: 768px) {
+  .diws-grid-2 { grid-template-columns: repeat(2, 1fr); }
+  .diws-grid-3 { grid-template-columns: repeat(3, 1fr); }
+}
+
+.diws-text-content {
+  color: var(--text-muted);
+  line-height: 1.7;
+}
+
+.diws-text-content h2, .diws-text-content h3 {
+  color: var(--text-main);
+  margin-top: 2rem;
+  margin-bottom: 1rem;
+  font-weight: 600;
+}
+
+.diws-text-content p {
+  margin-bottom: 1rem;
+}
+
+/* Flex utilities for custom layouts */
+.diws-flex { display: flex; }
+.diws-flex-col { flex-direction: column; }
+.diws-items-center { align-items: center; }
+.diws-justify-between { justify-content: space-between; }
+.diws-justify-center { justify-content: center; }
+.diws-gap-2 { gap: 0.5rem; }
+.diws-gap-4 { gap: 1rem; }
+.diws-mt-4 { margin-top: 1rem; }
+.diws-mt-6 { margin-top: 1.5rem; }
+.diws-text-center { text-align: center; }
+.diws-text-sm { font-size: 0.875rem; }
+.diws-link { color: var(--primary-accent); text-decoration: none; transition: color 0.2s; }
+.diws-link:hover { color: var(--primary-hover); text-decoration: underline; }
