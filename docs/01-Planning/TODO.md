@@ -54,18 +54,18 @@ Version: 1.0
 
 ## 4. Backend Setup
 
-- [ ] Create Node + Express server
-- [ ] Add TypeScript
-- [ ] Set up project structure
-- [ ] Configure database connection
-- [ ] Configure authentication
-- [ ] Configure middleware
-- [ ] Configure logging
-- [ ] Configure validation
-- [ ] Configure error handling
-- [ ] Set up file upload support
-- [ ] Set up background jobs
-- [ ] Set up notifications
+- [x] Create Node + Express server
+- [x] Add TypeScript
+- [x] Set up project structure
+- [x] Configure database connection
+- [x] Configure authentication
+- [x] Configure middleware
+- [x] Configure logging
+- [x] Configure validation
+- [x] Configure error handling
+- [x] Set up file upload support
+- [x] Set up background jobs
+- [x] Set up notifications
 
 ---
 

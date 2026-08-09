@@ -5,6 +5,9 @@ import morgan from 'morgan';
 import winston from 'winston';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db';
+import authRouter from "./routes/auth.routes";
+import fileRouter from "./routes/file.routes";
+import errorHandler from "./middleware/errorHandler";
 
 // Load environment variables
 dotenv.config();
@@ -38,6 +41,10 @@ app.use(cors());
 app.use(express.json());
 app.use(morgan('dev'));
 
+// Routes
+app.use("/api/auth", authRouter);
+app.use("/api/files", fileRouter);
+
 // Baseline health check API
 app.get('/api/health', (req: Request, res: Response) => {
   res.status(200).json({
@@ -59,6 +66,9 @@ function mongooseConnectionState(): string {
   const stateCode = require('mongoose').connection.readyState;
   return states[stateCode] || 'unknown';
 }
+
+// Global Error Handler (must be defined last)
+app.use(errorHandler as any);
 
 // Start Server
 app.listen(PORT, () => {
