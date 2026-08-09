@@ -1,0 +1,21 @@
+meta {
+  name: Send Email Verification
+  type: http
+  seq: 8
+}
+
+post {
+  url: {{baseUrl}}/auth/send-verification
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+script:post-response {
+  if (res.status === 200 && res.body.data && res.body.data.verificationToken) {
+    bru.setEnvVar("verificationToken", res.body.data.verificationToken);
+  }
+}

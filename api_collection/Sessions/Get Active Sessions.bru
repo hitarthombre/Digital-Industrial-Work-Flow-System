@@ -1,0 +1,15 @@
+meta {
+  name: Get Active User Sessions
+  type: http
+  seq: 1
+}
+
+get {
+  url: {{baseUrl}}/sessions
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

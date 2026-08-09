@@ -20,7 +20,7 @@ export interface ICompany extends Document {
 const CompanySchema = new Schema<ICompany>(
   {
     name: { type: String, required: true, trim: true },
-    code: { type: String, required: true, unique: true, uppercase: true, trim: true },
+    code: { type: String, required: true, unique: true, uppercase: true, trim: true, index: true },
     industry: { type: String, trim: true },
     logo: { type: String, trim: true },
     email: { type: String, lowercase: true, trim: true },
@@ -33,6 +33,7 @@ const CompanySchema = new Schema<ICompany>(
       type: String,
       enum: ["active", "inactive", "suspended"],
       default: "active",
+      index: true,
     },
     subscriptionPlan: {
       type: String,
@@ -45,4 +46,7 @@ const CompanySchema = new Schema<ICompany>(
   }
 );
 
+CompanySchema.index({ name: "text", code: "text" });
+
 export const Company = model<ICompany>("Company", CompanySchema);
+export default Company;

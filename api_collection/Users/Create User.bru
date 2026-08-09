@@ -1,0 +1,25 @@
+meta {
+  name: Create New User
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/users
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "firstName": "Sarah",
+    "lastName": "Conner",
+    "email": "sarah@apex.com",
+    "role": "Factory Manager",
+    "phone": "+1987654321"
+  }
+}

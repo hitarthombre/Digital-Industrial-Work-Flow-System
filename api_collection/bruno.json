@@ -1,0 +1,9 @@
+{
+  "version": "1",
+  "name": "DIWS Authentication & Security API",
+  "type": "collection",
+  "ignore": [
+    "node_modules",
+    ".git"
+  ]
+}

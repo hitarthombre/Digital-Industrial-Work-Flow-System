@@ -8,10 +8,11 @@ export interface IUser extends Document {
   email: string;
   phone?: string;
   passwordHash: string;
-  role: "admin" | "manager" | "operator";
+  role: string;
   roleId?: Schema.Types.ObjectId;
   departmentId?: Schema.Types.ObjectId;
   status: "active" | "inactive";
+  isEmailVerified: boolean;
   lastLoginAt?: Date;
   createdAt: Date;
   updatedAt: Date;
@@ -20,23 +21,27 @@ export interface IUser extends Document {
 
 const UserSchema = new Schema<IUser>(
   {
-    companyId: { type: Schema.Types.ObjectId, ref: "Company", required: true },
+    companyId: { type: Schema.Types.ObjectId, ref: "Company", required: true, index: true },
     firstName: { type: String, required: true, trim: true },
     lastName: { type: String, required: true, trim: true },
-    email: { type: String, required: true, unique: true, lowercase: true, trim: true },
+    email: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
     phone: { type: String, trim: true },
     passwordHash: { type: String, required: true },
     role: {
       type: String,
-      enum: ["admin", "manager", "operator"],
-      default: "operator",
+      default: "Employee",
     },
-    roleId: { type: Schema.Types.ObjectId, ref: "Role" },
+    roleId: { type: Schema.Types.ObjectId, ref: "Role", index: true },
     departmentId: { type: Schema.Types.ObjectId, ref: "Department" },
     status: {
       type: String,
       enum: ["active", "inactive"],
       default: "active",
+      index: true,
+    },
+    isEmailVerified: {
+      type: Boolean,
+      default: false,
     },
     lastLoginAt: { type: Date },
   },
@@ -44,6 +49,9 @@ const UserSchema = new Schema<IUser>(
     timestamps: true,
   }
 );
+
+UserSchema.index({ companyId: 1, email: 1 });
+UserSchema.index({ companyId: 1, status: 1 });
 
 // Method to verify passwords
 UserSchema.methods.comparePassword = async function (password: string): Promise<boolean> {

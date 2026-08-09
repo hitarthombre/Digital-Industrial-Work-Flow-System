@@ -1,0 +1,34 @@
+meta {
+  name: Create Custom Role
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/roles
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Quality Inspector",
+    "description": "Inspects factory products and material quality",
+    "permissions": [
+      "inventory:read",
+      "production:read",
+      "documents:read",
+      "reports:read"
+    ]
+  }
+}
+
+script:post-response {
+  if (res.status === 201) {
+    bru.setEnvVar("roleId", res.body.data._id);
+  }
+}

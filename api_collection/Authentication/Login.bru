@@ -1,0 +1,28 @@
+meta {
+  name: Login User
+  type: http
+  seq: 2
+}
+
+post {
+  url: {{baseUrl}}/auth/login
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "email": "admin@apex.com",
+    "password": "Password123!"
+  }
+}
+
+script:post-response {
+  if (res.status === 200) {
+    bru.setEnvVar("accessToken", res.body.data.accessToken);
+    bru.setEnvVar("refreshToken", res.body.data.refreshToken);
+    bru.setEnvVar("userId", res.body.data.user.id);
+    bru.setEnvVar("companyId", res.body.data.user.companyId);
+    bru.setEnvVar("sessionId", res.body.data.sessionId);
+  }
+}

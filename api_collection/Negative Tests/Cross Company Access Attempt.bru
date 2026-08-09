@@ -1,0 +1,15 @@
+meta {
+  name: Negative - Cross Company Access Attempt
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/users?companyId=64b1f2e9a2b8c9d0e1f2a3b4
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

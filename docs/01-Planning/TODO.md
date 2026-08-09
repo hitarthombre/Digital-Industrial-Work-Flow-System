@@ -71,29 +71,44 @@ Version: 1.0
 
 ## 5. Authentication & Security
 
-- [ ] User registration
-- [ ] Login system
-- [ ] Forgot password
-- [ ] Password reset
-- [ ] Email verification
-- [ ] JWT authentication
-- [ ] Role-based access control
-- [ ] Permission checks
-- [ ] Company-based access isolation
-- [ ] Session handling
-- [ ] Logout flow
+- [x] User registration
+- [x] Login system
+- [x] Forgot password
+- [x] Password reset
+- [x] Email verification
+- [x] JWT authentication
+- [x] Role-based access control
+- [x] Permission checks
+- [x] Company-based access isolation
+- [x] Session handling
+- [x] Logout flow
+
+---
+
+## 5.1 Workspace Layout & Protected Guard
+
+- [ ] Protected Route Guard (`ProtectedRoute.tsx`)
+- [ ] App Shell Layout (`DashboardLayout.tsx`)
+- [ ] Sidebar Navigation Menu (`Sidebar.tsx`)
+- [ ] Workspace Header & User Profile Dropdown (`Header.tsx`)
 
 ---
 
 ## 6. Company Management
 
-- [ ] Company registration
-- [ ] Company profile
-- [ ] Company settings
-- [ ] Company branding
-- [ ] Company workspace creation
-- [ ] Company switcher
-- [ ] Multi-company support
+### Backend (API & Business Logic)
+- [ ] Company Profile Controller & Service (`GET /api/companies/:id`, `PUT /api/companies/:id`)
+- [ ] Company Settings Endpoints (`PUT /api/companies/:id/settings`)
+- [ ] Company Branding & Logo Upload Endpoint (`POST /api/companies/:id/logo`)
+- [ ] Subscription Details & Plan Management Endpoints (`GET/PUT /api/companies/:id/subscription`)
+- [ ] Multi-tenant company workspace isolation verification
+
+### Frontend (UI Pages & Forms)
+- [ ] Company Profile Page (`/app/company`)
+- [ ] Company Settings Page (`/app/company/settings`)
+- [ ] Company Branding & Logo Upload Page (`/app/company/branding`)
+- [ ] Company Subscription & Plan Page (`/app/company/subscription`)
+- [ ] Company Switcher Component (`Header.tsx` / `Sidebar.tsx`)
 
 ---
 

@@ -6,8 +6,14 @@ import winston from 'winston';
 import dotenv from 'dotenv';
 import { connectDB } from './config/db';
 import authRouter from "./routes/auth.routes";
+import userRouter from "./routes/user.routes";
+import roleRouter from "./routes/role.routes";
+import permissionRouter from "./routes/permission.routes";
+import sessionRouter from "./routes/session.routes";
+import auditRouter from "./routes/audit.routes";
 import fileRouter from "./routes/file.routes";
 import errorHandler from "./middleware/errorHandler";
+import { roleService } from "./services/role.service";
 
 // Load environment variables
 dotenv.config();
@@ -32,8 +38,10 @@ const logger = winston.createLogger({
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect to Database
-connectDB();
+// Connect to Database & Seed System Roles/Permissions
+connectDB().then(async () => {
+  await roleService.initDefaultRolesAndPermissions();
+});
 
 // Middleware
 app.use(helmet());
@@ -43,6 +51,11 @@ app.use(morgan('dev'));
 
 // Routes
 app.use("/api/auth", authRouter);
+app.use("/api/users", userRouter);
+app.use("/api/roles", roleRouter);
+app.use("/api/permissions", permissionRouter);
+app.use("/api/sessions", sessionRouter);
+app.use("/api/audit", auditRouter);
 app.use("/api/files", fileRouter);
 
 // Baseline health check API
