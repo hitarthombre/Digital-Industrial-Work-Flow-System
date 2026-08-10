@@ -1,8 +1,10 @@
-import { BrowserRouter, Routes, Route } from "react-router-dom";
+import { BrowserRouter, Routes, Route, Navigate, Outlet } from "react-router-dom";
 import { AuthProvider } from "./context/AuthContext";
 
 import Navbar from "./Components-Layout/Navbar";
 import Footer from "./Components-Layout/Footer";
+import DashboardLayout from "./Components-Layout/DashboardLayout";
+import ProtectedRoute from "./components/ProtectedRoute";
 
 import Home from "./pages/Home";
 import About from "./pages/About";
@@ -19,14 +21,31 @@ import VerifyEmail from "./pages/VerifyEmail";
 import Logout from "./pages/Logout";
 import NotFound from "./pages/NotFound";
 
+import CompanyProfile from "./pages/company/CompanyProfile";
+import CompanySettings from "./pages/company/CompanySettings";
+import CompanyBranding from "./pages/company/CompanyBranding";
+import CompanySubscription from "./pages/company/CompanySubscription";
+
+// Public Layout Shell Wrapper
+function PublicLayout() {
+  return (
+    <>
+      <Navbar />
+      <main>
+        <Outlet />
+      </main>
+      <Footer />
+    </>
+  );
+}
+
 export default function App() {
   return (
     <AuthProvider>
       <BrowserRouter>
-        <Navbar />
-
-        <main>
-          <Routes>
+        <Routes>
+          {/* Public Landing & Auth Routes */}
+          <Route element={<PublicLayout />}>
             <Route path="/" element={<Home />} />
             <Route path="/about" element={<About />} />
             <Route path="/features" element={<Features />} />
@@ -40,11 +59,28 @@ export default function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/logout" element={<Logout />} />
-            <Route path="*" element={<NotFound />} />
-          </Routes>
-        </main>
+          </Route>
 
-        <Footer />
+          {/* Protected Company App Workspace Routes */}
+          <Route
+            path="/app"
+            element={
+              <ProtectedRoute>
+                <DashboardLayout />
+              </ProtectedRoute>
+            }
+          >
+            <Route index element={<Navigate to="/app/company" replace />} />
+            <Route path="dashboard" element={<Navigate to="/app/company" replace />} />
+            <Route path="company" element={<CompanyProfile />} />
+            <Route path="company/settings" element={<CompanySettings />} />
+            <Route path="company/branding" element={<CompanyBranding />} />
+            <Route path="company/subscription" element={<CompanySubscription />} />
+          </Route>
+
+          {/* 404 Fallback */}
+          <Route path="*" element={<NotFound />} />
+        </Routes>
       </BrowserRouter>
     </AuthProvider>
   );
