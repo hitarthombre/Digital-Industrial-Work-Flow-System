@@ -7,6 +7,6 @@ const router = Router();
 
 router.use(authenticate as any);
 
-router.get("/", requirePermission("roles:read") as any, (req: any, res, next) => roleController.getPermissions(req, res, next));
+router.get("/", requirePermission("roles:read") as any, (req: any, res: any, next: any) => roleController.getPermissions(req, res, next));
 
 export default router;
