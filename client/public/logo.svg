@@ -1,0 +1,23 @@
+<svg width="100" height="100" viewBox="0 0 100 100" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <defs>
+    <linearGradient id="diwsForestGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#24543D" />
+      <stop offset="100%" stop-color="#0D2218" />
+    </linearGradient>
+    <linearGradient id="diwsCopperGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#E2A66C" />
+      <stop offset="50%" stop-color="#B87333" />
+      <stop offset="100%" stop-color="#8C4E18" />
+    </linearGradient>
+    <filter id="diwsCopperGlow" x="-20%" y="-20%" width="140%" height="140%">
+      <feGaussianBlur stdDeviation="3" result="blur" />
+      <feComposite in="SourceGraphic" in2="blur" operator="over" />
+    </filter>
+  </defs>
+  <polygon points="50,5 88,27 88,73 50,95 12,73 12,27" fill="url(#diwsForestGrad)" stroke="url(#diwsCopperGrad)" stroke-width="4" stroke-linejoin="round" />
+  <path d="M30 65 L48 40 L62 54 L76 32" stroke="url(#diwsCopperGrad)" stroke-width="6" stroke-linecap="round" stroke-linejoin="round" filter="url(#diwsCopperGlow)" />
+  <circle cx="30" cy="65" r="5" fill="#F7F4ED" stroke="#B87333" stroke-width="3" />
+  <circle cx="48" cy="40" r="5" fill="#F7F4ED" stroke="#B87333" stroke-width="3" />
+  <circle cx="62" cy="54" r="5" fill="#F7F4ED" stroke="#B87333" stroke-width="3" />
+  <circle cx="76" cy="32" r="6" fill="#D39A62" stroke="#F7F4ED" stroke-width="2" />
+</svg>

@@ -1,3 +1,5 @@
+import { Logo } from "../components/Logo";
+
 function Footer() {
   return (
     <footer className="footer">
@@ -8,9 +10,9 @@ function Footer() {
           
           {/* BRAND */}
           <div className="footer-brand">
-            <h3>DIWS</h3>
-            <p>
-              Digital Industrial Work Flow System
+            <Logo variant="full" size="md" darkBg />
+            <p style={{ marginTop: '0.75rem' }}>
+              Digital Industrial Work Flow System — Optimizing operations, task coordination, and industrial visibility.
             </p>
           </div>
 
@@ -20,6 +22,7 @@ function Footer() {
             <a href="/features">Features</a>
             <a href="/pricing">Pricing</a>
             <a href="/terms">Terms</a>
+            <a href="/privacy">Privacy</a>
           </div>
 
         </div>
