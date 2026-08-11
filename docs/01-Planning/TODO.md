@@ -87,10 +87,10 @@ Version: 1.0
 
 ## 5.1 Workspace Layout & Protected Guard
 
-- [ ] Protected Route Guard (`ProtectedRoute.tsx`)
-- [ ] App Shell Layout (`DashboardLayout.tsx`)
-- [ ] Sidebar Navigation Menu (`Sidebar.tsx`)
-- [ ] Workspace Header & User Profile Dropdown (`Header.tsx`)
+- [x] Protected Route Guard (`ProtectedRoute.tsx`)
+- [x] App Shell Layout (`DashboardLayout.tsx`)
+- [x] Sidebar Navigation Menu (`Sidebar.tsx`)
+- [x] Workspace Header & User Profile Dropdown (`Header.tsx`)
 
 ---
 
@@ -105,12 +105,11 @@ Version: 1.0
 - [ ] Multi-tenant company workspace isolation verification
 
 ### Frontend (UI Pages & Forms)
-
-- [ ] Company Profile Page (`/app/company`)
-- [ ] Company Settings Page (`/app/company/settings`)
-- [ ] Company Branding & Logo Upload Page (`/app/company/branding`)
-- [ ] Company Subscription & Plan Page (`/app/company/subscription`)
-- [ ] Company Switcher Component (`Header.tsx` / `Sidebar.tsx`)
+- [x] Company Profile Page (`/app/company`)
+- [x] Company Settings Page (`/app/company/settings`)
+- [x] Company Branding & Logo Upload Page (`/app/company/branding`)
+- [x] Company Subscription & Plan Page (`/app/company/subscription`)
+- [x] Company Switcher Component (`Header.tsx` / `Sidebar.tsx`)
 
 ---
 
