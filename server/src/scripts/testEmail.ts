@@ -13,16 +13,52 @@ const smtpPort = parseInt(process.env.SMTP_PORT || '465', 10);
 const smtpUser = process.env.SMTP_USER;
 const smtpPass = process.env.SMTP_PASS;
 
-console.log('=== DIWS Local SMTP Diagnostic Test ===');
-console.log(`SMTP Host: ${smtpHost}`);
-console.log(`SMTP Port: ${smtpPort}`);
+const resendApiKey = process.env.RESEND_API_KEY;
+const targetEmail = process.argv[2] || 'moretrupti546@gmail.com';
+
+console.log('=== DIWS Email Dispatch Diagnostic Test ===');
+console.log(`Target Email: ${targetEmail}`);
+console.log(`Resend API Key: ${resendApiKey ? '****** (configured)' : 'MISSING'}`);
+console.log(`SMTP Host: ${smtpHost}:${smtpPort}`);
 console.log(`SMTP User: ${smtpUser}`);
-console.log(`SMTP Pass: ${smtpPass ? '****** (configured)' : 'MISSING'}`);
 
 async function runTest() {
-  if (!smtpUser || !smtpPass) {
-    console.error('ERROR: SMTP credentials missing in .env');
-    process.exit(1);
+  // Step 1: Test Resend HTTPS API (Port 443)
+  if (resendApiKey) {
+    console.log('\n--- Step 1: Testing Resend HTTPS API (Port 443) ---');
+    try {
+      const resendFrom = process.env.RESEND_FROM || "diws <onboarding@resend.dev>";
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: resendFrom,
+          to: [targetEmail],
+          subject: "DIWS Notification Test via Resend API",
+          text: `Hello! This is a test email sent from DIWS backend using Resend HTTPS API to ${targetEmail}.`,
+          html: `<div style="font-family: sans-serif; padding: 20px; border: 1px solid #4f46e5; border-radius: 8px;">
+            <h2 style="color: #4f46e5;">DIWS Resend Email Test ✅</h2>
+            <p>Your Resend API Key is working successfully!</p>
+            <p><b>Target Email:</b> ${targetEmail}</p>
+            <p><b>Timestamp:</b> ${new Date().toISOString()}</p>
+          </div>`,
+        }),
+      });
+
+      if (response.ok) {
+        const resData: any = await response.json();
+        console.log(`✅ Email sent successfully via Resend HTTPS API! Email ID: ${resData.id}`);
+        return;
+      } else {
+        const errText = await response.text();
+        console.error(`❌ Resend API Error: ${errText}`);
+      }
+    } catch (resendErr: any) {
+      console.error(`❌ Resend API Exception: ${resendErr.message}`);
+    }
   }
 
   // 1. Test DNS IPv4 resolution

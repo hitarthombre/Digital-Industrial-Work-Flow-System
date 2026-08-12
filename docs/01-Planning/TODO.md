@@ -115,26 +115,51 @@ Version: 1.0
 
 ## 7. User Management
 
-- [ ] Invite users
-- [ ] Add users manually
-- [ ] Edit user profile
-- [ ] Assign roles
-- [ ] Assign departments
-- [ ] Activate/deactivate users
-- [ ] User list
-- [ ] User activity history
+### Backend (API & Business Logic)
+
+- [x] User management service & controller (`GET /api/users`, `POST /api/users`, `PUT /api/users/:id`, `DELETE /api/users/:id`)
+- [x] Create / add user manually endpoint (`POST /api/users`)
+- [x] Edit user profile & contact info endpoint (`PUT /api/users/:id`)
+- [x] Role & department assignment logic (`PUT /api/users/:id`)
+- [x] Activate/deactivate user status endpoint (`PATCH /api/users/:id/status`)
+- [x] User list, pagination & search filtering (`GET /api/users`)
+- [ ] User invitation & email token flow (`POST /api/users/invite`)
+- [ ] User activity history endpoint (`GET /api/users/:id/activity`)
+
+### Frontend (UI Pages & Forms)
+
+- [ ] User List Page (`/app/users`)
+- [ ] Add User / Invite User Form & Modal (`/app/users/new`)
+- [ ] User Details View (`/app/users/:id`)
+- [ ] Edit User Profile Page (`/app/users/:id/edit`)
+- [ ] Role & Department Selector Controls
+- [ ] User Status Toggle & Deactivation Dialog
+- [ ] User Activity History Timeline Component
 
 ---
 
 ## 8. Factory Management
 
-- [ ] Create factory
-- [ ] Edit factory
-- [ ] Delete factory
-- [ ] Factory list
-- [ ] Factory details
-- [ ] Factory location
-- [ ] Factory settings
+### Backend (API & Business Logic)
+
+- [ ] Factory model, service & controller (`GET /api/factories`, `POST /api/factories`, `PUT /api/factories/:id`, `DELETE /api/factories/:id`)
+- [ ] Create factory endpoint (`POST /api/factories`)
+- [ ] Edit factory details endpoint (`PUT /api/factories/:id`)
+- [ ] Factory deletion / deactivation endpoint (`DELETE /api/factories/:id`)
+- [ ] Factory list & search query endpoint (`GET /api/factories`)
+- [ ] Factory details retrieval endpoint (`GET /api/factories/:id`)
+- [ ] Factory location & geo-coordinates mapping
+- [ ] Factory manager assignment logic
+- [ ] Factory status management (`PATCH /api/factories/:id/status`)
+
+### Frontend (UI Pages & Forms)
+
+- [ ] Factory List Page (`/app/factories`)
+- [ ] Create Factory Page & Form (`/app/factories/new`)
+- [ ] Factory Details View (`/app/factories/:id`)
+- [ ] Edit Factory Page (`/app/factories/:id/edit`)
+- [ ] Factory Location & Address Form Component
+- [ ] Factory Manager & Status Assignment Controls
 
 ---
 
