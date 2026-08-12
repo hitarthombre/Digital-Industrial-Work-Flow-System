@@ -4,6 +4,7 @@ import helmet from 'helmet';
 import morgan from 'morgan';
 import winston from 'winston';
 import dotenv from 'dotenv';
+import dns from 'dns';
 import { connectDB } from './config/db';
 import authRouter from "./routes/auth.routes";
 import userRouter from "./routes/user.routes";
@@ -14,6 +15,9 @@ import auditRouter from "./routes/audit.routes";
 import fileRouter from "./routes/file.routes";
 import errorHandler from "./middleware/errorHandler";
 import { roleService } from "./services/role.service";
+
+// Set IPv4 first for DNS lookup globally
+dns.setDefaultResultOrder('ipv4first');
 
 // Load environment variables
 dotenv.config();

@@ -6,7 +6,8 @@
   "scripts": {
     "build": "rimraf dist && tsc",
     "start": "node dist/app.js",
-    "dev": "ts-node-dev --respawn --transpile-only src/app.ts"
+    "dev": "ts-node-dev --respawn --transpile-only src/app.ts",
+    "db:clear": "npx ts-node src/scripts/clearCompanyAndUsers.ts"
   },
   "dependencies": {
     "@types/bcryptjs": "^2.4.6",

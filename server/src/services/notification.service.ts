@@ -25,11 +25,15 @@ class NotificationService {
         host: smtpHost,
         port: smtpPort,
         secure: smtpPort === 465,
+        family: 4, // Force IPv4 to avoid IPv6 ENETUNREACH errors
+        connectionTimeout: 10000,
+        greetingTimeout: 10000,
+        socketTimeout: 15000,
         auth: {
           user: smtpUser,
           pass: smtpPass,
         },
-      });
+      } as nodemailer.TransportOptions);
 
       await transporter.sendMail({
         from: `"DIWS Notifications" <${smtpUser}>`,
