@@ -106,3 +106,5 @@ The client dev server will be accessible at `http://localhost:5173`.
 │   └── package.json
 └── docs/                   # Planning, Architecture, & Design docs
 ```
+
+Enjoy !!!
