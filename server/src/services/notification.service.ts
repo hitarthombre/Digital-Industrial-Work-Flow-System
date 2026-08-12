@@ -11,7 +11,7 @@ class NotificationService {
       console.log(`[Notification Worker] Subject: ${data.subject}`);
       
       const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
-      const smtpPort = parseInt(process.env.SMTP_PORT || "587", 10);
+      const smtpPort = parseInt(process.env.SMTP_PORT || "465", 10);
       const smtpUser = process.env.SMTP_USER;
       const smtpPass = process.env.SMTP_PASS;
 

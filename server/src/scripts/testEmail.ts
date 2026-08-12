@@ -9,7 +9,7 @@ dns.setDefaultResultOrder('ipv4first');
 dotenv.config({ path: path.resolve(__dirname, '../../.env') });
 
 const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
-const smtpPort = parseInt(process.env.SMTP_PORT || '587', 10);
+const smtpPort = parseInt(process.env.SMTP_PORT || '465', 10);
 const smtpUser = process.env.SMTP_USER;
 const smtpPass = process.env.SMTP_PASS;
 
