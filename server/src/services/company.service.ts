@@ -487,6 +487,86 @@ export class CompanyService {
 
     return true;
   }
+
+  /**
+   * Retrieve company subscription plan and resource usage quotas.
+   */
+  async getCompanySubscription(companyId: string, userCompanyId: string, isPlatformAdmin: boolean) {
+    const targetCompanyId = (companyId === "my-company" || !companyId) ? userCompanyId : companyId;
+
+    if (!isPlatformAdmin && targetCompanyId !== userCompanyId) {
+      throw new Error("Forbidden: Cross-tenant data access is strictly prohibited");
+    }
+
+    const company = await Company.findOne({ _id: targetCompanyId, isDeleted: false });
+    if (!company) {
+      throw new Error("Company not found or deleted");
+    }
+
+    const PLAN_LIMITS: Record<string, { users: number; factories: number; warehouses: number; storageGB: number }> = {
+      free: { users: 5, factories: 1, warehouses: 2, storageGB: 2 },
+      starter: { users: 15, factories: 3, warehouses: 5, storageGB: 10 },
+      growth: { users: 50, factories: 10, warehouses: 25, storageGB: 50 },
+      enterprise: { users: 500, factories: 100, warehouses: 250, storageGB: 500 },
+    };
+
+    const currentPlan = (company.subscriptionPlan || "free").toLowerCase();
+    const limits = PLAN_LIMITS[currentPlan] || PLAN_LIMITS.free;
+
+    return {
+      subscriptionPlan: company.subscriptionPlan || "free",
+      status: company.status || "active",
+      limits,
+      usage: {
+        users: 1,
+        factories: 0,
+        warehouses: 0,
+        storageGB: 0,
+      },
+    };
+  }
+
+  /**
+   * Update company subscription plan tier.
+   */
+  async updateCompanySubscription(
+    companyId: string,
+    userCompanyId: string,
+    isPlatformAdmin: boolean,
+    subscriptionPlan: "free" | "starter" | "growth" | "enterprise",
+    userId: string,
+    ipAddress?: string,
+    userAgent?: string
+  ) {
+    const targetCompanyId = (companyId === "my-company" || !companyId) ? userCompanyId : companyId;
+
+    if (!isPlatformAdmin && targetCompanyId !== userCompanyId) {
+      throw new Error("Forbidden: Cross-tenant data access is strictly prohibited");
+    }
+
+    const company = await Company.findOne({ _id: targetCompanyId, isDeleted: false });
+    if (!company) {
+      throw new Error("Company not found or deleted");
+    }
+
+    const beforePlan = company.subscriptionPlan;
+    company.subscriptionPlan = subscriptionPlan;
+    await company.save();
+
+    await auditService.log({
+      companyId: company._id.toString(),
+      userId,
+      action: "company:subscription_update",
+      module: "company",
+      referenceId: company._id.toString(),
+      before: { subscriptionPlan: beforePlan },
+      after: { subscriptionPlan: company.subscriptionPlan },
+      ipAddress,
+      userAgent,
+    });
+
+    return this.getCompanySubscription(targetCompanyId, userCompanyId, isPlatformAdmin);
+  }
 }
 
 export const companyService = new CompanyService();

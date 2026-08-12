@@ -341,6 +341,51 @@ export class CompanyController {
       next(error);
     }
   }
+
+  async getCompanySubscription(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const companyId = req.params.id;
+      const data = await companyService.getCompanySubscription(
+        companyId,
+        req.companyId!,
+        this.isPlatformAdmin(req)
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Company subscription details retrieved successfully",
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async updateCompanySubscription(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const companyId = req.params.id;
+      const ipAddress = req.ip || req.socket.remoteAddress;
+      const userAgent = req.headers["user-agent"];
+
+      const data = await companyService.updateCompanySubscription(
+        companyId,
+        req.companyId!,
+        this.isPlatformAdmin(req),
+        req.body.subscriptionPlan,
+        req.user!._id.toString(),
+        ipAddress,
+        userAgent
+      );
+
+      res.status(200).json({
+        success: true,
+        message: `Subscription plan updated to ${req.body.subscriptionPlan}`,
+        data,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
 }
 
 export const companyController = new CompanyController();

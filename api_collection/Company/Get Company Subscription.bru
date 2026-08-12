@@ -1,0 +1,15 @@
+meta {
+  name: Get Company Subscription
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/companies/{{companyId}}/subscription
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

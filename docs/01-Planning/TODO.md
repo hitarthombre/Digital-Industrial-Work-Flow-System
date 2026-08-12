@@ -98,11 +98,11 @@ Version: 1.0
 
 ### Backend (API & Business Logic)
 
-- [ ] Company Profile Controller & Service (`GET /api/companies/:id`, `PUT /api/companies/:id`)
-- [ ] Company Settings Endpoints (`PUT /api/companies/:id/settings`)
-- [ ] Company Branding & Logo Upload Endpoint (`POST /api/companies/:id/logo`)
-- [ ] Subscription Details & Plan Management Endpoints (`GET/PUT /api/companies/:id/subscription`)
-- [ ] Multi-tenant company workspace isolation verification
+- [x] Company Profile Controller & Service (`GET /api/companies/:id`, `PUT /api/companies/:id`)
+- [x] Company Settings Endpoints (`PUT /api/companies/:id/settings`)
+- [x] Company Branding & Logo Upload Endpoint (`POST /api/companies/:id/logo`)
+- [x] Subscription Details & Plan Management Endpoints (`GET/PUT /api/companies/:id/subscription`)
+- [x] Multi-tenant company workspace isolation verification
 
 ### Frontend (UI Pages & Forms)
 - [x] Company Profile Page (`/app/company`)

@@ -100,4 +100,20 @@ router.patch(
   (req: any, res: any, next: any) => companyController.updateCompanyStatus(req, res, next)
 );
 
+// Get company subscription plan details & quotas
+router.get(
+  "/:id/subscription",
+  enforceTenantIsolation as any,
+  requirePermission("company:read") as any,
+  (req: any, res: any, next: any) => companyController.getCompanySubscription(req, res, next)
+);
+
+// Update company subscription plan tier
+router.put(
+  "/:id/subscription",
+  enforceTenantIsolation as any,
+  requirePermission("company:update") as any,
+  (req: any, res: any, next: any) => companyController.updateCompanySubscription(req, res, next)
+);
+
 export default router;

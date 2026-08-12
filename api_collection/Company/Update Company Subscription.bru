@@ -1,0 +1,21 @@
+meta {
+  name: Update Company Subscription
+  type: http
+  seq: 11
+}
+
+put {
+  url: {{baseUrl}}/companies/{{companyId}}/subscription
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "subscriptionPlan": "growth"
+  }
+}
