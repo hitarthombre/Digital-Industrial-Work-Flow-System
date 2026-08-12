@@ -22,14 +22,23 @@ class NotificationService {
         return;
       }
 
+      // Explicitly resolve hostname to IPv4 address to bypass unroutable IPv6 on cloud containers
+      let targetHost = smtpHost;
+      try {
+        const ipv4Addresses = await dns.promises.resolve4(smtpHost);
+        if (ipv4Addresses && ipv4Addresses.length > 0) {
+          targetHost = ipv4Addresses[0];
+          console.log(`[Notification Worker] Resolved ${smtpHost} -> IPv4: ${targetHost}`);
+        }
+      } catch (dnsErr: any) {
+        console.warn(`[Notification Worker] DNS resolve4 warning: ${dnsErr.message}`);
+      }
+
       const transporter = nodemailer.createTransport({
-        host: smtpHost,
+        host: targetHost,
         port: smtpPort,
         secure: smtpPort === 465,
-        family: 4, // Force IPv4 to avoid IPv6 ENETUNREACH errors
-        lookup: (hostname: string, options: any, callback: any) => {
-          dns.lookup(hostname, { family: 4 }, callback);
-        },
+        family: 4,
         connectionTimeout: 10000,
         greetingTimeout: 10000,
         socketTimeout: 15000,
@@ -38,6 +47,7 @@ class NotificationService {
           pass: smtpPass,
         },
         tls: {
+          servername: smtpHost,
           rejectUnauthorized: false,
         },
       } as nodemailer.TransportOptions);

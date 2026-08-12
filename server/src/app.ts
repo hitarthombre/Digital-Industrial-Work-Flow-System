@@ -92,15 +92,13 @@ app.get(['/api/health/test-email', '/api/auth/test-email'], async (req: Request,
 
   try {
     const resolvedIps = await dns.promises.resolve4(smtpHost).catch(() => []);
+    const targetHost = resolvedIps && resolvedIps.length > 0 ? resolvedIps[0] : smtpHost;
 
     const transporter = nodemailer.createTransport({
-      host: smtpHost,
+      host: targetHost,
       port: smtpPort,
       secure: smtpPort === 465,
       family: 4,
-      lookup: (hostname: string, options: any, callback: any) => {
-        dns.lookup(hostname, { family: 4 }, callback);
-      },
       connectionTimeout: 10000,
       greetingTimeout: 10000,
       socketTimeout: 15000,
@@ -109,6 +107,7 @@ app.get(['/api/health/test-email', '/api/auth/test-email'], async (req: Request,
         pass: smtpPass,
       },
       tls: {
+        servername: smtpHost,
         rejectUnauthorized: false,
       },
     } as nodemailer.TransportOptions);
