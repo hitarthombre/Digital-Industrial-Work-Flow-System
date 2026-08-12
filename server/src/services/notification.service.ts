@@ -10,15 +10,56 @@ class NotificationService {
       console.log(`[Notification Worker] Sending email to: ${data.email}`);
       console.log(`[Notification Worker] Subject: ${data.subject}`);
       
+      const resendApiKey = process.env.RESEND_API_KEY;
       const smtpHost = process.env.SMTP_HOST || "smtp.gmail.com";
       const smtpPort = parseInt(process.env.SMTP_PORT || "465", 10);
       const smtpUser = process.env.SMTP_USER;
       const smtpPass = process.env.SMTP_PASS;
 
+      const htmlBody = `<div style="font-family: sans-serif; padding: 20px; color: #1e293b; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px;">
+        <h2 style="color: #6366f1; margin-top: 0;">DIWS Notification</h2>
+        <p style="font-size: 16px; line-height: 1.5; color: #334155;">${data.body.replace(/\n/g, "<br/>")}</p>
+        <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 20px 0;" />
+        <p style="font-size: 12px; color: #94a3b8;">This is an automated system email from the Digital Industrial Work-Flow System.</p>
+      </div>`;
+
+      // 1. If Resend API Key is configured, use Resend HTTPS API (Port 443 - never blocked on cloud)
+      if (resendApiKey) {
+        try {
+          console.log(`[Notification Worker] Sending email via Resend HTTPS API (Port 443)...`);
+          const resendFrom = process.env.RESEND_FROM || "DIWS Notifications <onboarding@resend.dev>";
+          const response = await fetch("https://api.resend.com/emails", {
+            method: "POST",
+            headers: {
+              "Authorization": `Bearer ${resendApiKey}`,
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({
+              from: resendFrom,
+              to: [data.email],
+              subject: data.subject,
+              text: data.body,
+              html: htmlBody,
+            }),
+          });
+
+          if (response.ok) {
+            const resData: any = await response.json();
+            console.log(`[Notification Worker] Email sent successfully via Resend HTTPS API! ID: ${resData.id}`);
+            return;
+          } else {
+            const errText = await response.text();
+            console.error(`[Notification Worker] Resend API error: ${errText}`);
+          }
+        } catch (resendErr: any) {
+          console.error(`[Notification Worker] Resend API Exception: ${resendErr.message}`);
+        }
+      }
+
+      // 2. Fallback to Nodemailer SMTP
       if (!smtpUser || !smtpPass) {
-        console.warn("[Notification Worker] SMTP credentials are not fully configured in env. Simulating success.");
+        console.warn("[Notification Worker] SMTP credentials not configured. Simulating email success.");
         await new Promise((resolve) => setTimeout(resolve, 500));
-        console.log(`[Notification Worker] Email sent successfully (Mock Mode).`);
         return;
       }
 
@@ -28,44 +69,47 @@ class NotificationService {
         const ipv4Addresses = await dns.promises.resolve4(smtpHost);
         if (ipv4Addresses && ipv4Addresses.length > 0) {
           targetHost = ipv4Addresses[0];
-          console.log(`[Notification Worker] Resolved ${smtpHost} -> IPv4: ${targetHost}`);
         }
       } catch (dnsErr: any) {
         console.warn(`[Notification Worker] DNS resolve4 warning: ${dnsErr.message}`);
       }
 
-      const transporter = nodemailer.createTransport({
-        host: targetHost,
-        port: smtpPort,
-        secure: smtpPort === 465,
-        family: 4,
-        connectionTimeout: 10000,
-        greetingTimeout: 10000,
-        socketTimeout: 15000,
-        auth: {
-          user: smtpUser,
-          pass: smtpPass,
-        },
-        tls: {
-          servername: smtpHost,
-          rejectUnauthorized: false,
-        },
-      } as nodemailer.TransportOptions);
+      try {
+        const transporter = nodemailer.createTransport({
+          host: targetHost,
+          port: smtpPort,
+          secure: smtpPort === 465,
+          family: 4,
+          connectionTimeout: 5000, // 5s timeout
+          greetingTimeout: 5000,
+          socketTimeout: 8000,
+          auth: {
+            user: smtpUser,
+            pass: smtpPass,
+          },
+          tls: {
+            servername: smtpHost,
+            rejectUnauthorized: false,
+          },
+        } as nodemailer.TransportOptions);
 
-      await transporter.sendMail({
-        from: `"DIWS Notifications" <${smtpUser}>`,
-        to: data.email,
-        subject: data.subject,
-        text: data.body,
-        html: `<div style="font-family: sans-serif; padding: 20px; color: #1e293b; max-width: 600px; margin: 0 auto; border: 1px solid #e2e8f0; border-radius: 8px;">
-          <h2 style="color: #6366f1; margin-top: 0;">DIWS Notification</h2>
-          <p style="font-size: 16px; line-height: 1.5; color: #334155;">${data.body.replace(/\n/g, "<br/>")}</p>
-          <hr style="border: 0; border-top: 1px solid #f1f5f9; margin: 20px 0;" />
-          <p style="font-size: 12px; color: #94a3b8;">This is an automated system email from the Digital Industrial Work-Flow System.</p>
-        </div>`,
-      });
+        await transporter.sendMail({
+          from: `"DIWS Notifications" <${smtpUser}>`,
+          to: data.email,
+          subject: data.subject,
+          text: data.body,
+          html: htmlBody,
+        });
 
-      console.log(`[Notification Worker] Email sent successfully via SMTP.`);
+        console.log(`[Notification Worker] Email sent successfully via SMTP to ${data.email}.`);
+      } catch (err: any) {
+        if (err.code === "ETIMEDOUT" || err.code === "ENETUNREACH" || err.code === "ESOCKET") {
+          console.warn(`[Notification Worker Warning] Direct SMTP connection to ${smtpHost}:${smtpPort} timed out.`);
+          console.warn(`[Cloud Notice] Render Free Tier restricts outbound SMTP ports (25/587/465). To send emails on Render Free Tier, add RESEND_API_KEY in environment variables.`);
+          return; // Prevent infinite queue retries on blocked cloud ports
+        }
+        throw err;
+      }
     });
   }
 

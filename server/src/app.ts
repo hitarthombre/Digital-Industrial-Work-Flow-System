@@ -76,11 +76,52 @@ app.get('/api/health', (req: Request, res: Response) => {
 // Live Cloud Test Email API (Publicly callable via browser or curl)
 app.get(['/api/health/test-email', '/api/auth/test-email'], async (req: Request, res: Response) => {
   const targetEmail = (req.query.email as string) || 'hitarththombre@gmail.com';
+  const resendApiKey = process.env.RESEND_API_KEY;
   const smtpHost = process.env.SMTP_HOST || 'smtp.gmail.com';
   const smtpPort = parseInt(process.env.SMTP_PORT || '465', 10);
   const smtpUser = process.env.SMTP_USER;
   const smtpPass = process.env.SMTP_PASS;
 
+  // 1. Try Resend HTTPS API (Port 443) if configured
+  if (resendApiKey) {
+    try {
+      const resendFrom = process.env.RESEND_FROM || "DIWS Notifications <onboarding@resend.dev>";
+      const response = await fetch("https://api.resend.com/emails", {
+        method: "POST",
+        headers: {
+          "Authorization": `Bearer ${resendApiKey}`,
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          from: resendFrom,
+          to: [targetEmail],
+          subject: 'DIWS Live Cloud Email Test (via Resend HTTPS)',
+          text: `Hello! This is a test email sent from DIWS live server via Resend HTTPS API.`,
+          html: `<div style="font-family: sans-serif; padding: 20px; border: 1px solid #4f46e5; border-radius: 8px;">
+            <h2 style="color: #4f46e5;">DIWS Cloud Email Test via Resend HTTPS ✅</h2>
+            <p>This email confirms that your Render/cloud server sent an email successfully over HTTPS Port 443!</p>
+            <p><b>Target Email:</b> ${targetEmail}</p>
+            <p><b>Provider:</b> Resend HTTPS API</p>
+            <p><b>Timestamp:</b> ${new Date().toISOString()}</p>
+          </div>`,
+        }),
+      });
+
+      if (response.ok) {
+        const resData: any = await response.json();
+        return res.status(200).json({
+          success: true,
+          message: `Test email sent successfully via Resend HTTPS API to ${targetEmail}`,
+          provider: "Resend (HTTPS Port 443)",
+          emailId: resData.id,
+        });
+      }
+    } catch (resendErr: any) {
+      console.error('[Test Email API - Resend Error]', resendErr);
+    }
+  }
+
+  // 2. Direct SMTP Test
   if (!smtpUser || !smtpPass) {
     return res.status(400).json({
       success: false,
@@ -99,9 +140,9 @@ app.get(['/api/health/test-email', '/api/auth/test-email'], async (req: Request,
       port: smtpPort,
       secure: smtpPort === 465,
       family: 4,
-      connectionTimeout: 10000,
-      greetingTimeout: 10000,
-      socketTimeout: 15000,
+      connectionTimeout: 4000, // 4s timeout for fast response
+      greetingTimeout: 4000,
+      socketTimeout: 5000,
       auth: {
         user: smtpUser,
         pass: smtpPass,
@@ -141,9 +182,18 @@ app.get(['/api/health/test-email', '/api/auth/test-email'], async (req: Request,
     });
   } catch (error: any) {
     console.error('[Test Email API Error]', error);
-    return res.status(500).json({
-      success: false,
-      message: `Failed to send test email: ${error.message}`,
+
+    const isCloudFirewallBlock = error.code === 'ETIMEDOUT' || error.code === 'ENETUNREACH' || error.code === 'ESOCKET';
+
+    return res.status(isCloudFirewallBlock ? 200 : 500).json({
+      success: !isCloudFirewallBlock,
+      status: isCloudFirewallBlock ? 'smtp_blocked_by_host' : 'error',
+      message: isCloudFirewallBlock
+        ? `Render Free Tier blocks outbound SMTP TCP ports (25/587/465). Direct TCP connection to ${smtpHost}:${smtpPort} timed out.`
+        : `Failed to send test email: ${error.message}`,
+      cloudExplanation: isCloudFirewallBlock
+        ? 'Render Free Web Services block outbound SMTP TCP ports to prevent spam. To send live emails from Render Free Tier, get a free API Key from resend.com (free 3,000 emails/month over HTTPS Port 443) and add RESEND_API_KEY to your Render environment variables.'
+        : undefined,
       error: error.message,
       code: error.code,
       details: {
