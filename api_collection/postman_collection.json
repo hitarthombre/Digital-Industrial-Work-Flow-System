@@ -1,0 +1,234 @@
+{
+  "info": {
+    "name": "Digital Industrial Workflow System (DIWS) API",
+    "description": "Postman Collection for DIWS Multi-Tenant Industrial SaaS Platform - Company Management Module & Core Endpoints",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "Authentication",
+      "item": [
+        {
+          "name": "Register Company and Owner",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"companyName\": \"Apex Manufacturing Ltd\",\n  \"companyCode\": \"APEX01\",\n  \"industry\": \"Industrial Electronics\",\n  \"firstName\": \"John\",\n  \"lastName\": \"Doe\",\n  \"email\": \"admin@apex.com\",\n  \"password\": \"Password123!\",\n  \"phone\": \"+1234567890\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/register",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "register"]
+            }
+          }
+        },
+        {
+          "name": "Login User",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"email\": \"admin@apex.com\",\n  \"password\": \"Password123!\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/auth/login",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "login"]
+            }
+          }
+        },
+        {
+          "name": "Get Current User Profile",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/auth/me",
+              "host": ["{{baseUrl}}"],
+              "path": ["auth", "me"]
+            }
+          }
+        }
+      ]
+    },
+    {
+      "name": "Companies",
+      "item": [
+        {
+          "name": "List Companies",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies"]
+            }
+          }
+        },
+        {
+          "name": "Get Company",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}"]
+            }
+          }
+        },
+        {
+          "name": "Create Company",
+          "request": {
+            "method": "POST",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Titan Industrial Group\",\n  \"code\": \"TITAN01\",\n  \"industry\": \"Steel\",\n  \"email\": \"contact@titanind.com\",\n  \"phone\": \"+19876543210\",\n  \"address\": \"100 Industrial Parkway\",\n  \"city\": \"Chicago\",\n  \"state\": \"IL\",\n  \"country\": \"USA\",\n  \"postalCode\": \"60601\",\n  \"gstNumber\": \"29AAAAA0000A1Z5\",\n  \"website\": \"https://titanind.com\",\n  \"currency\": \"USD\",\n  \"timezone\": \"America/Chicago\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/companies",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies"]
+            }
+          }
+        },
+        {
+          "name": "Update Company",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"name\": \"Apex Industrial Technologies\",\n  \"industry\": \"General Manufacturing\",\n  \"phone\": \"+1122334455\",\n  \"website\": \"https://apextech.com\",\n  \"address\": \"500 Innovation Way\",\n  \"city\": \"San Jose\",\n  \"state\": \"CA\",\n  \"country\": \"USA\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}"]
+            }
+          }
+        },
+        {
+          "name": "Delete Company",
+          "request": {
+            "method": "DELETE",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}"]
+            }
+          }
+        },
+        {
+          "name": "Get Company Settings",
+          "request": {
+            "method": "GET",
+            "header": [
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}", "settings"]
+            }
+          }
+        },
+        {
+          "name": "Update Company Settings",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"currency\": \"USD\",\n  \"timezone\": \"America/New_York\",\n  \"dateFormat\": \"YYYY-MM-DD\",\n  \"language\": \"en\",\n  \"fiscalYear\": \"April-March\",\n  \"notificationPreferences\": {\n    \"emailAlerts\": true,\n    \"lowStockAlerts\": true,\n    \"orderUpdates\": true\n  }\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/settings",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}", "settings"]
+            }
+          }
+        },
+        {
+          "name": "Update Company Branding",
+          "request": {
+            "method": "PUT",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"displayName\": \"Apex Tech Solutions\",\n  \"primaryColor\": \"#4f46e5\",\n  \"logo\": \"https://cdn.example.com/logos/apex.png\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/branding",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}", "branding"]
+            }
+          }
+        },
+        {
+          "name": "Update Company Status",
+          "request": {
+            "method": "PATCH",
+            "header": [
+              { "key": "Content-Type", "value": "application/json" },
+              { "key": "Authorization", "value": "Bearer {{accessToken}}" }
+            ],
+            "body": {
+              "mode": "raw",
+              "raw": "{\n  \"status\": \"active\"\n}"
+            },
+            "url": {
+              "raw": "{{baseUrl}}/companies/{{companyId}}/status",
+              "host": ["{{baseUrl}}"],
+              "path": ["companies", "{{companyId}}", "status"]
+            }
+          }
+        }
+      ]
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:5000/api"
+    },
+    {
+      "key": "accessToken",
+      "value": ""
+    },
+    {
+      "key": "companyId",
+      "value": ""
+    }
+  ]
+}

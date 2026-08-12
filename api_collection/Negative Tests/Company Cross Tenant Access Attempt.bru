@@ -1,0 +1,15 @@
+meta {
+  name: Negative - Company Cross Tenant Access Attempt
+  type: http
+  seq: 4
+}
+
+get {
+  url: {{baseUrl}}/companies/64b1f2e9a2b8c9d0e1f2a3b4
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

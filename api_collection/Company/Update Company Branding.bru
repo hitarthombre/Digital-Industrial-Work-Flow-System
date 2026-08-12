@@ -1,0 +1,23 @@
+meta {
+  name: Update Company Branding
+  type: http
+  seq: 8
+}
+
+put {
+  url: {{baseUrl}}/companies/{{companyId}}/branding
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "displayName": "Apex Tech Solutions",
+    "primaryColor": "#4f46e5",
+    "logo": "https://cdn.example.com/logos/apex.png"
+  }
+}

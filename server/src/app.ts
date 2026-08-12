@@ -8,6 +8,7 @@ import dns from 'dns';
 import nodemailer from 'nodemailer';
 import { connectDB } from './config/db';
 import authRouter from "./routes/auth.routes";
+import companyRouter from "./routes/company.routes";
 import userRouter from "./routes/user.routes";
 import roleRouter from "./routes/role.routes";
 import permissionRouter from "./routes/permission.routes";
@@ -56,6 +57,7 @@ app.use(morgan('dev'));
 
 // Routes
 app.use("/api/auth", authRouter);
+app.use("/api/companies", companyRouter);
 app.use("/api/users", userRouter);
 app.use("/api/roles", roleRouter);
 app.use("/api/permissions", permissionRouter);

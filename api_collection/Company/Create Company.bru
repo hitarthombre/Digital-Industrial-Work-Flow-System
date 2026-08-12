@@ -1,0 +1,34 @@
+meta {
+  name: Create Company
+  type: http
+  seq: 3
+}
+
+post {
+  url: {{baseUrl}}/companies
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Titan Industrial Group",
+    "code": "TITAN01",
+    "industry": "Steel",
+    "email": "contact@titanind.com",
+    "phone": "+19876543210",
+    "address": "100 Industrial Parkway",
+    "city": "Chicago",
+    "state": "IL",
+    "country": "USA",
+    "postalCode": "60601",
+    "gstNumber": "29AAAAA0000A1Z5",
+    "website": "https://titanind.com",
+    "currency": "USD",
+    "timezone": "America/Chicago"
+  }
+}

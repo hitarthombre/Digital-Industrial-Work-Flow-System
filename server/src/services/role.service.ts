@@ -3,7 +3,13 @@ import { Permission, IPermission } from "../models/Permission";
 
 export const SYSTEM_PERMISSIONS = [
   { code: "company:read", module: "company", description: "View company profile and settings" },
-  { code: "company:update", module: "company", description: "Update company profile and settings" },
+  { code: "company:create", module: "company", description: "Create new company tenant" },
+  { code: "company:update", module: "company", description: "Update company details and information" },
+  { code: "company:delete", module: "company", description: "Soft delete or deactivate company" },
+  { code: "company:settings:read", module: "company", description: "View company settings and configuration" },
+  { code: "company:settings:update", module: "company", description: "Update company settings and configuration" },
+  { code: "company:branding:update", module: "company", description: "Update company branding and logo" },
+  { code: "company:status:update", module: "company", description: "Update company operational status" },
   
   { code: "users:read", module: "users", description: "View company users" },
   { code: "users:create", module: "users", description: "Invite or create new users" },

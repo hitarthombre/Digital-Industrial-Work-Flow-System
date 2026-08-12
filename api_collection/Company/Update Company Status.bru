@@ -1,0 +1,21 @@
+meta {
+  name: Update Company Status
+  type: http
+  seq: 9
+}
+
+patch {
+  url: {{baseUrl}}/companies/{{companyId}}/status
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "status": "active"
+  }
+}

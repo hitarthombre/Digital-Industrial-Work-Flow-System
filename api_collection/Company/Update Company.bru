@@ -1,0 +1,28 @@
+meta {
+  name: Update Company
+  type: http
+  seq: 4
+}
+
+put {
+  url: {{baseUrl}}/companies/{{companyId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "name": "Apex Industrial Technologies",
+    "industry": "General Manufacturing",
+    "phone": "+1122334455",
+    "website": "https://apextech.com",
+    "address": "500 Innovation Way",
+    "city": "San Jose",
+    "state": "CA",
+    "country": "USA"
+  }
+}

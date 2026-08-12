@@ -1,0 +1,30 @@
+meta {
+  name: Update Company Settings
+  type: http
+  seq: 7
+}
+
+put {
+  url: {{baseUrl}}/companies/{{companyId}}/settings
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+body:json {
+  {
+    "currency": "USD",
+    "timezone": "America/New_York",
+    "dateFormat": "YYYY-MM-DD",
+    "language": "en",
+    "fiscalYear": "April-March",
+    "notificationPreferences": {
+      "emailAlerts": true,
+      "lowStockAlerts": true,
+      "orderUpdates": true
+    }
+  }
+}
