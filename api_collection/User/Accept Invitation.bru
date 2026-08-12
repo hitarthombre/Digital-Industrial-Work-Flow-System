@@ -1,0 +1,21 @@
+meta {
+  name: Accept Invitation
+  type: http
+  seq: 9
+}
+
+post {
+  url: {{baseUrl}}/users/invite/accept
+  body: json
+  auth: none
+}
+
+body:json {
+  {
+    "token": "SAMPLE_INVITATION_TOKEN",
+    "firstName": "Alex",
+    "lastName": "Morgan",
+    "password": "DIWSNewPassword123!",
+    "phone": "+1 555-987-6543"
+  }
+}

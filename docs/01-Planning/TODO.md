@@ -123,8 +123,8 @@ Version: 1.0
 - [x] Role & department assignment logic (`PUT /api/users/:id`)
 - [x] Activate/deactivate user status endpoint (`PATCH /api/users/:id/status`)
 - [x] User list, pagination & search filtering (`GET /api/users`)
-- [ ] User invitation & email token flow (`POST /api/users/invite`)
-- [ ] User activity history endpoint (`GET /api/users/:id/activity`)
+- [x] User invitation & email token flow (`POST /api/users/invite`)
+- [x] User activity history endpoint (`GET /api/users/:id/activity`)
 
 ### Frontend (UI Pages & Forms)
 

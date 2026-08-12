@@ -1,0 +1,11 @@
+meta {
+  name: Verify Invitation
+  type: http
+  seq: 8
+}
+
+get {
+  url: {{baseUrl}}/users/invite/verify/SAMPLE_INVITATION_TOKEN
+  body: none
+  auth: none
+}
