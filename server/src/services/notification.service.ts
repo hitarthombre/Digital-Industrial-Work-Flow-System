@@ -1,6 +1,7 @@
 import { Notification, INotification } from "../models/Notification";
 import { queueService } from "./queue.service";
 import nodemailer from "nodemailer";
+import dns from "dns";
 
 class NotificationService {
   constructor() {
@@ -26,12 +27,18 @@ class NotificationService {
         port: smtpPort,
         secure: smtpPort === 465,
         family: 4, // Force IPv4 to avoid IPv6 ENETUNREACH errors
+        lookup: (hostname: string, options: any, callback: any) => {
+          dns.lookup(hostname, { family: 4 }, callback);
+        },
         connectionTimeout: 10000,
         greetingTimeout: 10000,
         socketTimeout: 15000,
         auth: {
           user: smtpUser,
           pass: smtpPass,
+        },
+        tls: {
+          rejectUnauthorized: false,
         },
       } as nodemailer.TransportOptions);
 
