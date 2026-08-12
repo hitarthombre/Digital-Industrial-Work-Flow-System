@@ -83,6 +83,14 @@ router.put(
   (req: any, res: any, next: any) => companyController.updateCompanyBranding(req, res, next)
 );
 
+// Alias endpoint for logo upload from frontend
+router.post(
+  "/:id/logo",
+  enforceTenantIsolation as any,
+  requirePermission("company:branding:update") as any,
+  (req: any, res: any, next: any) => companyController.updateCompanyBranding(req, res, next)
+);
+
 // Update company operational status
 router.patch(
   "/:id/status",

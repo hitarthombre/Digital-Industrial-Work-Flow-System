@@ -112,13 +112,16 @@ export class CompanyService {
 
   /**
    * Retrieve single company by ID with strict tenant boundary check.
+   * Supports 'my-company' alias for authenticated user's workspace.
    */
   async getCompanyById(companyId: string, userCompanyId: string, isPlatformAdmin: boolean): Promise<ICompany | null> {
-    if (!isPlatformAdmin && companyId !== userCompanyId) {
+    const targetCompanyId = (companyId === "my-company" || !companyId) ? userCompanyId : companyId;
+
+    if (!isPlatformAdmin && targetCompanyId !== userCompanyId) {
       throw new Error("Forbidden: Cross-tenant data access is strictly prohibited");
     }
 
-    const company = await Company.findOne({ _id: companyId, isDeleted: false });
+    const company = await Company.findOne({ _id: targetCompanyId, isDeleted: false });
     return company;
   }
 
@@ -201,11 +204,13 @@ export class CompanyService {
     ipAddress?: string,
     userAgent?: string
   ): Promise<ICompany> {
-    if (!isPlatformAdmin && companyId !== userCompanyId) {
+    const targetCompanyId = (companyId === "my-company" || !companyId) ? userCompanyId : companyId;
+
+    if (!isPlatformAdmin && targetCompanyId !== userCompanyId) {
       throw new Error("Forbidden: Cross-tenant data access is strictly prohibited");
     }
 
-    const company = await Company.findOne({ _id: companyId, isDeleted: false });
+    const company = await Company.findOne({ _id: targetCompanyId, isDeleted: false });
     if (!company) {
       throw new Error("Company not found or deleted");
     }
@@ -271,11 +276,13 @@ export class CompanyService {
    * Retrieve company settings.
    */
   async getCompanySettings(companyId: string, userCompanyId: string, isPlatformAdmin: boolean): Promise<ICompanySettings> {
-    if (!isPlatformAdmin && companyId !== userCompanyId) {
+    const targetCompanyId = (companyId === "my-company" || !companyId) ? userCompanyId : companyId;
+
+    if (!isPlatformAdmin && targetCompanyId !== userCompanyId) {
       throw new Error("Forbidden: Cross-tenant data access is strictly prohibited");
     }
 
-    const company = await Company.findOne({ _id: companyId, isDeleted: false });
+    const company = await Company.findOne({ _id: targetCompanyId, isDeleted: false });
     if (!company) {
       throw new Error("Company not found or deleted");
     }
@@ -301,11 +308,13 @@ export class CompanyService {
     ipAddress?: string,
     userAgent?: string
   ): Promise<ICompanySettings> {
-    if (!isPlatformAdmin && companyId !== userCompanyId) {
+    const targetCompanyId = (companyId === "my-company" || !companyId) ? userCompanyId : companyId;
+
+    if (!isPlatformAdmin && targetCompanyId !== userCompanyId) {
       throw new Error("Forbidden: Cross-tenant data access is strictly prohibited");
     }
 
-    const company = await Company.findOne({ _id: companyId, isDeleted: false });
+    const company = await Company.findOne({ _id: targetCompanyId, isDeleted: false });
     if (!company) {
       throw new Error("Company not found or deleted");
     }
@@ -353,11 +362,13 @@ export class CompanyService {
     ipAddress?: string,
     userAgent?: string
   ): Promise<ICompanyBranding> {
-    if (!isPlatformAdmin && companyId !== userCompanyId) {
+    const targetCompanyId = (companyId === "my-company" || !companyId) ? userCompanyId : companyId;
+
+    if (!isPlatformAdmin && targetCompanyId !== userCompanyId) {
       throw new Error("Forbidden: Cross-tenant data access is strictly prohibited");
     }
 
-    const company = await Company.findOne({ _id: companyId, isDeleted: false });
+    const company = await Company.findOne({ _id: targetCompanyId, isDeleted: false });
     if (!company) {
       throw new Error("Company not found or deleted");
     }
@@ -402,11 +413,13 @@ export class CompanyService {
     ipAddress?: string,
     userAgent?: string
   ): Promise<ICompany> {
-    if (!isPlatformAdmin && companyId !== userCompanyId) {
+    const targetCompanyId = (companyId === "my-company" || !companyId) ? userCompanyId : companyId;
+
+    if (!isPlatformAdmin && targetCompanyId !== userCompanyId) {
       throw new Error("Forbidden: Cross-tenant data access is strictly prohibited");
     }
 
-    const company = await Company.findOne({ _id: companyId, isDeleted: false });
+    const company = await Company.findOne({ _id: targetCompanyId, isDeleted: false });
     if (!company) {
       throw new Error("Company not found or deleted");
     }
@@ -441,11 +454,13 @@ export class CompanyService {
     ipAddress?: string,
     userAgent?: string
   ): Promise<boolean> {
-    if (!isPlatformAdmin && companyId !== userCompanyId) {
+    const targetCompanyId = (companyId === "my-company" || !companyId) ? userCompanyId : companyId;
+
+    if (!isPlatformAdmin && targetCompanyId !== userCompanyId) {
       throw new Error("Forbidden: Cross-tenant data access is strictly prohibited");
     }
 
-    const company = await Company.findOne({ _id: companyId, isDeleted: false });
+    const company = await Company.findOne({ _id: targetCompanyId, isDeleted: false });
     if (!company) {
       throw new Error("Company not found or already deleted");
     }
