@@ -143,7 +143,7 @@ Version: 1.0
 ### Backend (API & Business Logic)
 
 - [ ] Factory model, service & controller (`GET /api/factories`, `POST /api/factories`, `PUT /api/factories/:id`, `DELETE /api/factories/:id`)
-- [ ] Create factory endpoint (`POST /api/factories`)
+- [x] Create factory endpoint (`POST /api/factories`)
 - [ ] Edit factory details endpoint (`PUT /api/factories/:id`)
 - [ ] Factory deletion / deactivation endpoint (`DELETE /api/factories/:id`)
 - [ ] Factory list & search query endpoint (`GET /api/factories`)

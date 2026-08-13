@@ -1,0 +1,39 @@
+meta {
+  name: Create Factory
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/factories
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+meta {
+  name: Create Factory
+  type: http
+  seq: 4
+}
+
+post {
+  url: {{baseUrl}}/factories
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+
+body:json {
+  {
+    "name": "Test Factory",
+    "code": "FACT001"
+  }
+}
