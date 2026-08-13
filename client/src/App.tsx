@@ -26,6 +26,10 @@ import CompanySettings from "./pages/company/CompanySettings";
 import CompanyBranding from "./pages/company/CompanyBranding";
 import CompanySubscription from "./pages/company/CompanySubscription";
 
+import UserList from "./pages/users/UserList";
+import UserDetails from "./pages/users/UserDetails";
+import AcceptInvitation from "./pages/auth/AcceptInvitation";
+
 // Public Layout Shell Wrapper
 function PublicLayout() {
   return (
@@ -59,6 +63,7 @@ export default function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/logout" element={<Logout />} />
+            <Route path="/accept-invite" element={<AcceptInvitation />} />
           </Route>
 
           {/* Protected Company App Workspace Routes */}
@@ -76,6 +81,9 @@ export default function App() {
             <Route path="company/settings" element={<CompanySettings />} />
             <Route path="company/branding" element={<CompanyBranding />} />
             <Route path="company/subscription" element={<CompanySubscription />} />
+            
+            <Route path="users" element={<UserList />} />
+            <Route path="users/:id" element={<UserDetails />} />
           </Route>
 
           {/* 404 Fallback */}
