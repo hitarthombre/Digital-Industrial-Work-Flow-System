@@ -1,0 +1,25 @@
+meta {
+  name: Update Factory Status
+  type: http
+  seq: 4
+}
+
+patch {
+  url: {{baseUrl}}/factories/{{factoryId}}/status
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "status": "maintenance"
+  }
+}

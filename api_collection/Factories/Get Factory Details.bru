@@ -1,0 +1,19 @@
+meta {
+  name: Get Factory Details
+  type: http
+  seq: 3
+}
+
+get {
+  url: {{baseUrl}}/factories/{{factoryId}}
+  body: none
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+headers {
+  Content-Type: application/json
+}

@@ -1,0 +1,39 @@
+meta {
+  name: Update Factory
+  type: http
+  seq: 2
+}
+
+put {
+  url: {{baseUrl}}/factories/{{factoryId}}
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+     "name": "Apex Advanced Manufacturing Plant",
+  "code": "APEX002",
+  "location": {
+    "address": "125 Advanced Industrial Estate",
+    "city": "Ahmedabad",
+    "state": "Gujarat",
+    "country": "India",
+    "postalCode": "380015",
+    "latitude": 23.0225,
+    "longitude": 72.5714
+  },
+  "contactEmail": "updated@apexmanufacturing.com",
+  "contactPhone": "+919812345678",
+  "capacity": 2500,
+  "status": "maintenance"
+  }
+}
