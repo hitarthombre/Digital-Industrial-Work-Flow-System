@@ -149,7 +149,7 @@ Version: 1.0
 - [x] Factory list & search query endpoint (`GET /api/factories`)
 - [x] Factory details retrieval endpoint (`GET /api/factories/:id`)
 - [] Factory location & geo-coordinates mapping
-- [] Factory manager assignment logic
+- [x] Factory manager assignment logic
 - [x] Factory status management (`PATCH /api/factories/:id/status`)
 
 ### Frontend (UI Pages & Forms)
