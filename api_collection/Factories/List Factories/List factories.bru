@@ -1,0 +1,18 @@
+    meta {
+  name: List Factories
+  type: http
+  seq: 10
+}
+
+get {
+  url: {{baseUrl}}/factories
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+headers {
+  Content-Type: application/json
+}

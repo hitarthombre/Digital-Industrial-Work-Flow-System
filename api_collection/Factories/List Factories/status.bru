@@ -1,0 +1,23 @@
+meta {
+  name: List Factories - Active
+  type: http
+  seq: 14
+}
+
+get {
+  url: {{baseUrl}}/factories?status=maintenance
+  body: none
+  auth: bearer
+}
+
+params:query {
+  status: maintenance
+}
+
+headers {
+  Content-Type: application/json
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}

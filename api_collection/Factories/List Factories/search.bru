@@ -1,0 +1,18 @@
+meta {
+  name: List Factories - Search
+  type: http
+  seq: 13
+}
+
+get {
+  url: {{baseUrl}}/factories?search=Apex
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+headers {
+  Content-Type: application/json
+}

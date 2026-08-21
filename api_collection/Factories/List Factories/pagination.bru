@@ -1,0 +1,18 @@
+meta {
+  name: List Factories - Pagination
+  type: http
+  seq: 11
+}
+
+get {
+  url: {{baseUrl}}/factories?page=1&limit=10
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+headers {
+  Content-Type: application/json
+}

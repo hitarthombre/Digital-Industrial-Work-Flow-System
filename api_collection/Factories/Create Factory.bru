@@ -1,0 +1,45 @@
+meta {
+  name: Create Factory
+  type: http
+  seq: 1
+}
+
+post {
+  url: {{baseUrl}}/factories
+  body: json
+  auth: bearer
+}
+
+auth:bearer {
+  token: {{accessToken}}
+}
+
+headers {
+  Content-Type: application/json
+}
+
+body:json {
+  {
+    "name": "Apex Manufacturing Plant",
+  "code": "APEX001",
+  "location": {
+    "address": "45 Industrial Estate Road",
+    "city": "Vadodara",
+    "state": "Gujarat",
+    "country": "India",
+    "postalCode": "390010",
+    "latitude": 22.3072,
+    "longitude": 73.1812
+  },
+  "contactEmail": "factory@apexmanufacturing.com",
+  "contactPhone": "+919876543210",
+  "capacity": 1500,
+  "status": "active"
+  }
+}
+
+script:post-response {
+  if (res.status === 200 || res.status === 201) {
+    bru.setEnvVar("factoryId", res.body.data._id);
+  }
+}

@@ -18,6 +18,11 @@ export const SYSTEM_PERMISSIONS = [
   
   { code: "roles:read", module: "roles", description: "View role definitions" },
   { code: "roles:manage", module: "roles", description: "Create and modify roles and permissions" },
+
+  { code: "factories:read", module: "factories", description: "View factory locations and operational details" },
+  { code: "factories:create", module: "factories", description: "Create new factory location" },
+  { code: "factories:update", module: "factories", description: "Update factory details, location, manager and status" },
+  { code: "factories:delete", module: "factories", description: "Deactivate or delete factory location" },
   
   { code: "inventory:read", module: "inventory", description: "View stock levels and inventory items" },
   { code: "inventory:create", module: "inventory", description: "Add stock in/out and adjustments" },
@@ -63,6 +68,7 @@ export const DEFAULT_ROLES = [
     name: "Factory Manager",
     description: "Manages factory production plans, stages, and raw material inventory",
     permissions: [
+      "factories:read", "factories:update",
       "inventory:read", "inventory:update",
       "production:read", "production:create", "production:update",
       "documents:read", "reports:read",

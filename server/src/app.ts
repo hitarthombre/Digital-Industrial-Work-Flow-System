@@ -15,11 +15,13 @@ import permissionRouter from "./routes/permission.routes";
 import sessionRouter from "./routes/session.routes";
 import auditRouter from "./routes/audit.routes";
 import fileRouter from "./routes/file.routes";
+import factoryRouter from "./routes/factory.routes";
 import errorHandler from "./middleware/errorHandler";
 import { roleService } from "./services/role.service";
 
 // Set IPv4 first for DNS lookup globally
 dns.setDefaultResultOrder('ipv4first');
+dns.setServers(["1.1.1.1", "8.8.8.8"]);
 
 // Load environment variables
 dotenv.config();
@@ -64,6 +66,7 @@ app.use("/api/permissions", permissionRouter);
 app.use("/api/sessions", sessionRouter);
 app.use("/api/audit", auditRouter);
 app.use("/api/files", fileRouter);
+app.use("/api/factories", factoryRouter);
 
 // Baseline health check API
 app.get('/api/health', (req: Request, res: Response) => {

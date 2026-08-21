@@ -142,15 +142,15 @@ Version: 1.0
 
 ### Backend (API & Business Logic)
 
-- [ ] Factory model, service & controller (`GET /api/factories`, `POST /api/factories`, `PUT /api/factories/:id`, `DELETE /api/factories/:id`)
-- [ ] Create factory endpoint (`POST /api/factories`)
-- [ ] Edit factory details endpoint (`PUT /api/factories/:id`)
-- [ ] Factory deletion / deactivation endpoint (`DELETE /api/factories/:id`)
-- [ ] Factory list & search query endpoint (`GET /api/factories`)
-- [ ] Factory details retrieval endpoint (`GET /api/factories/:id`)
-- [ ] Factory location & geo-coordinates mapping
-- [ ] Factory manager assignment logic
-- [ ] Factory status management (`PATCH /api/factories/:id/status`)
+- [x] Factory model, service & controller (`GET /api/factories`, `POST /api/factories`, `PUT /api/factories/:id`, `DELETE /api/factories/:id`)
+- [x] Create factory endpoint (`POST /api/factories`)
+- [x] Edit factory details endpoint (`PUT /api/factories/:id`)
+- [x] Factory deletion / deactivation endpoint (`DELETE /api/factories/:id`)
+- [x] Factory list & search query endpoint (`GET /api/factories`)
+- [x] Factory details retrieval endpoint (`GET /api/factories/:id`)
+- [] Factory location & geo-coordinates mapping
+- [x] Factory manager assignment logic
+- [x] Factory status management (`PATCH /api/factories/:id/status`)
 
 ### Frontend (UI Pages & Forms)
 
