@@ -1,0 +1,68 @@
+.diws-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35rem;
+  font-weight: 600;
+  border-radius: 9999px;
+  line-height: 1;
+  text-transform: capitalize;
+  letter-spacing: 0.02em;
+  white-space: nowrap;
+}
+
+.diws-badge-sm {
+  padding: 0.2rem 0.5rem;
+  font-size: 0.725rem;
+}
+
+.diws-badge-md {
+  padding: 0.35rem 0.75rem;
+  font-size: 0.825rem;
+}
+
+.diws-badge-lg {
+  padding: 0.45rem 1rem;
+  font-size: 0.9rem;
+}
+
+.diws-badge-icon {
+  display: inline-flex;
+  align-items: center;
+}
+
+/* Status variants */
+.diws-badge-active, .diws-badge-success {
+  background-color: #dcfce7;
+  color: #15803d;
+  border: 1px solid #bbf7d0;
+}
+
+.diws-badge-inactive, .diws-badge-secondary {
+  background-color: #f1f5f9;
+  color: #475569;
+  border: 1px solid #e2e8f0;
+}
+
+.diws-badge-maintenance, .diws-badge-warning {
+  background-color: #fef3c7;
+  color: #b45309;
+  border: 1px solid #fde68a;
+}
+
+.diws-badge-closed, .diws-badge-danger {
+  background-color: #fee2e2;
+  color: #b91c1c;
+  border: 1px solid #fca5a5;
+}
+
+.diws-badge-primary {
+  background-color: #fef3c7;
+  color: #d97706;
+  border: 1px solid #fcd34d;
+}
+
+.diws-badge-neutral {
+  background-color: #e2e8f0;
+  color: #334155;
+  border: 1px solid #cbd5e1;
+}

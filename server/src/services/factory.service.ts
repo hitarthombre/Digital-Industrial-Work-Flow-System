@@ -6,22 +6,32 @@ import { Types } from "mongoose";
 export interface CreateFactoryInput {
   name: string;
   code: string;
+  description?: string;
   location?: IFactoryLocation;
   managerId?: string;
   contactEmail?: string;
   contactPhone?: string;
   capacity?: number;
+  totalSqFt?: number;
+  shiftCount?: number;
+  workingDays?: string[];
+  operatingHours?: string;
   status?: "active" | "inactive" | "maintenance" | "closed";
 }
 
 export interface UpdateFactoryInput {
   name?: string;
   code?: string;
+  description?: string;
   location?: IFactoryLocation;
   managerId?: string | null;
   contactEmail?: string;
   contactPhone?: string;
   capacity?: number;
+  totalSqFt?: number;
+  shiftCount?: number;
+  workingDays?: string[];
+  operatingHours?: string;
   status?: "active" | "inactive" | "maintenance" | "closed";
 }
 
@@ -80,11 +90,16 @@ export class FactoryService {
       companyId,
       name: data.name.trim(),
       code: formattedCode,
+      description: data.description?.trim(),
       location: data.location,
       managerId: data.managerId ? new Types.ObjectId(data.managerId) : undefined,
       contactEmail: data.contactEmail?.trim().toLowerCase(),
       contactPhone: data.contactPhone?.trim(),
       capacity: data.capacity,
+      totalSqFt: data.totalSqFt,
+      shiftCount: data.shiftCount,
+      workingDays: data.workingDays,
+      operatingHours: data.operatingHours?.trim(),
       status: data.status || "active",
       createdBy: new Types.ObjectId(userId),
     });
@@ -157,6 +172,10 @@ export class FactoryService {
       factory.name = trimmedName;
     }
 
+    if (data.description !== undefined) {
+      factory.description = data.description ? data.description.trim() : undefined;
+    }
+
     // Manager ID update or clearance
     if (data.managerId !== undefined) {
       if (!data.managerId || data.managerId === "") {
@@ -194,6 +213,18 @@ export class FactoryService {
     }
     if (data.capacity !== undefined) {
       factory.capacity = data.capacity;
+    }
+    if (data.totalSqFt !== undefined) {
+      factory.totalSqFt = data.totalSqFt;
+    }
+    if (data.shiftCount !== undefined) {
+      factory.shiftCount = data.shiftCount;
+    }
+    if (data.workingDays !== undefined) {
+      factory.workingDays = data.workingDays;
+    }
+    if (data.operatingHours !== undefined) {
+      factory.operatingHours = data.operatingHours ? data.operatingHours.trim() : undefined;
     }
     if (data.status !== undefined) {
       factory.status = data.status;

@@ -4,6 +4,7 @@ import {
   CreateFactorySchema,
   UpdateFactorySchema,
   UpdateFactoryStatusSchema,
+  AssignFactoryManagerSchema,
 } from "../controllers/factory.controller";
 import { authenticate } from "../middleware/auth";
 import { requirePermission } from "../middleware/rbac";
@@ -52,6 +53,14 @@ router.patch(
   requirePermission("factories:update") as any,
   validateRequest(UpdateFactoryStatusSchema),
   (req: any, res: any, next: any) => factoryController.updateFactoryStatus(req, res, next)
+);
+
+// Factory manager assignment endpoint (PATCH /api/factories/:id/manager)
+router.patch(
+  "/:id/manager",
+  requirePermission("factories:update") as any,
+  validateRequest(AssignFactoryManagerSchema),
+  (req: any, res: any, next: any) => factoryController.assignFactoryManager(req, res, next)
 );
 
 // Factory deletion / deactivation endpoint (DELETE /api/factories/:id)

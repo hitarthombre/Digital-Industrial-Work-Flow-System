@@ -14,11 +14,16 @@ export interface IFactory extends Document {
   companyId: Types.ObjectId;
   name: string;
   code: string;
+  description?: string;
   location?: IFactoryLocation;
   managerId?: Types.ObjectId;
   contactEmail?: string;
   contactPhone?: string;
   capacity?: number;
+  totalSqFt?: number;
+  shiftCount?: number;
+  workingDays?: string[];
+  operatingHours?: string;
   status: "active" | "inactive" | "maintenance" | "closed";
   isDeleted: boolean;
   deletedAt?: Date;
@@ -33,6 +38,7 @@ const FactorySchema = new Schema<IFactory>(
     companyId: { type: Schema.Types.ObjectId, ref: "Company", required: true, index: true },
     name: { type: String, required: true, trim: true },
     code: { type: String, required: true, uppercase: true, trim: true },
+    description: { type: String, trim: true },
     location: {
       address: { type: String, trim: true },
       city: { type: String, trim: true },
@@ -46,6 +52,10 @@ const FactorySchema = new Schema<IFactory>(
     contactEmail: { type: String, lowercase: true, trim: true },
     contactPhone: { type: String, trim: true },
     capacity: { type: Number },
+    totalSqFt: { type: Number },
+    shiftCount: { type: Number },
+    workingDays: [{ type: String }],
+    operatingHours: { type: String, trim: true },
     status: {
       type: String,
       enum: ["active", "inactive", "maintenance", "closed"],

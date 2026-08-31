@@ -7,6 +7,7 @@ export const CreateFactorySchema = z.object({
   body: z.object({
     name: z.string().min(1, "Factory name is required"),
     code: z.string().min(1, "Factory code is required"),
+    description: z.string().optional(),
     location: z
       .object({
         address: z.string().optional(),
@@ -22,6 +23,10 @@ export const CreateFactorySchema = z.object({
     contactEmail: z.string().email("Invalid email address").optional().or(z.literal("")),
     contactPhone: z.string().optional(),
     capacity: z.number().positive("Capacity must be a positive number").optional(),
+    totalSqFt: z.number().positive().optional(),
+    shiftCount: z.number().min(1).max(3).optional(),
+    workingDays: z.array(z.string()).optional(),
+    operatingHours: z.string().optional(),
     status: z.enum(["active", "inactive", "maintenance", "closed"]).optional(),
   }),
 });
@@ -33,6 +38,7 @@ export const UpdateFactorySchema = z.object({
   body: z.object({
     name: z.string().optional(),
     code: z.string().optional(),
+    description: z.string().optional(),
     location: z
       .object({
         address: z.string().optional(),
@@ -48,6 +54,10 @@ export const UpdateFactorySchema = z.object({
     contactEmail: z.string().email("Invalid email address").optional().or(z.literal("")),
     contactPhone: z.string().optional(),
     capacity: z.number().positive("Capacity must be a positive number").optional(),
+    totalSqFt: z.number().positive().optional(),
+    shiftCount: z.number().min(1).max(3).optional(),
+    workingDays: z.array(z.string()).optional(),
+    operatingHours: z.string().optional(),
     status: z.enum(["active", "inactive", "maintenance", "closed"]).optional(),
   }),
 });
@@ -60,6 +70,15 @@ export const UpdateFactoryStatusSchema = z.object({
     status: z.enum(["active", "inactive", "maintenance", "closed"], {
       required_error: "Status is required",
     }),
+  }),
+});
+
+export const AssignFactoryManagerSchema = z.object({
+  params: z.object({
+    id: z.string().min(1, "Factory ID is required"),
+  }),
+  body: z.object({
+    managerId: z.string().nullable().optional(),
   }),
 });
 
@@ -186,6 +205,25 @@ export class FactoryController {
       res.status(200).json({
         success: true,
         message: `Factory status updated to ${req.body.status}`,
+        data: factory,
+      });
+    } catch (error) {
+      next(error);
+    }
+  }
+
+  async assignFactoryManager(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
+    try {
+      const factory = await factoryService.updateFactory(
+        req.params.id,
+        req.companyId!,
+        req.user!._id.toString(),
+        { managerId: req.body.managerId }
+      );
+
+      res.status(200).json({
+        success: true,
+        message: "Factory manager updated successfully",
         data: factory,
       });
     } catch (error) {

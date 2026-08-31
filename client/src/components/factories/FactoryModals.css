@@ -1,0 +1,144 @@
+/* Factory Modals Styling */
+.factory-modal-content {
+  display: flex;
+  flex-direction: column;
+}
+
+.factory-modal-info {
+  margin-bottom: 1rem;
+}
+
+.factory-modal-error {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+  padding: 0.75rem 1rem;
+  background-color: #fef2f2;
+  border: 1px solid #fecaca;
+  color: #991b1b;
+  border-radius: 8px;
+  font-size: 0.875rem;
+}
+
+/* Status Modal Radio Cards */
+.status-options-grid {
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: 0.75rem;
+}
+
+.status-option-card {
+  display: flex;
+  flex-direction: column;
+  padding: 0.875rem 1rem;
+  border: 1.5px solid #e2e8f0;
+  border-radius: 10px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+  background-color: #ffffff;
+}
+
+.status-option-card:hover {
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+}
+
+.status-option-card.selected {
+  border-color: #d97706;
+  background-color: #fffbeb;
+  box-shadow: 0 0 0 1px #d97706;
+}
+
+.status-option-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 0.35rem;
+}
+
+.status-option-desc {
+  margin: 0;
+  font-size: 0.825rem;
+  color: #64748b;
+  line-height: 1.35;
+}
+
+/* Manager Selection List */
+.manager-selection-list {
+  max-height: 280px;
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  padding: 0.5rem;
+  background: #fafafa;
+}
+
+.manager-user-card {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid #e2e8f0;
+  border-radius: 8px;
+  background-color: #ffffff;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.manager-user-card:hover {
+  border-color: #cbd5e1;
+  background-color: #f8fafc;
+}
+
+.manager-user-card.selected {
+  border-color: #d97706;
+  background-color: #fffbeb;
+}
+
+.user-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #0f172a, #334155);
+  color: #ffffff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: 700;
+  font-size: 0.85rem;
+  flex-shrink: 0;
+}
+
+.user-avatar.unassigned {
+  background: #94a3b8;
+}
+
+.user-info {
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+}
+
+.user-name {
+  font-weight: 600;
+  font-size: 0.9rem;
+  color: #0f172a;
+}
+
+.user-email {
+  font-size: 0.775rem;
+  color: #64748b;
+}
+
+.user-role-tag {
+  font-size: 0.7rem;
+  padding: 0.15rem 0.5rem;
+  background-color: #e2e8f0;
+  color: #334155;
+  border-radius: 4px;
+  font-weight: 500;
+  margin-right: 0.5rem;
+}

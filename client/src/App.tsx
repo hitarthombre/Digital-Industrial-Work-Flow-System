@@ -26,6 +26,11 @@ import CompanySettings from "./pages/company/CompanySettings";
 import CompanyBranding from "./pages/company/CompanyBranding";
 import CompanySubscription from "./pages/company/CompanySubscription";
 
+import FactoryList from "./pages/factories/FactoryList";
+import CreateFactory from "./pages/factories/CreateFactory";
+import FactoryDetails from "./pages/factories/FactoryDetails";
+import EditFactory from "./pages/factories/EditFactory";
+
 // Public Layout Shell Wrapper
 function PublicLayout() {
   return (
@@ -76,6 +81,12 @@ export default function App() {
             <Route path="company/settings" element={<CompanySettings />} />
             <Route path="company/branding" element={<CompanyBranding />} />
             <Route path="company/subscription" element={<CompanySubscription />} />
+
+            {/* Factory Management Module Routes */}
+            <Route path="factories" element={<FactoryList />} />
+            <Route path="factories/new" element={<CreateFactory />} />
+            <Route path="factories/:id" element={<FactoryDetails />} />
+            <Route path="factories/:id/edit" element={<EditFactory />} />
           </Route>
 
           {/* 404 Fallback */}
