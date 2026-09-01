@@ -116,6 +116,22 @@ class ApiClient {
 
     return this.handleResponse<T>(response);
   }
+
+  async patch<T>(url: string, body?: any, options: RequestOptions = {}): Promise<T> {
+    const headers = { ...this.getHeaders(options.headers) } as Record<string, string>;
+    if (body instanceof FormData) {
+      delete headers["Content-Type"];
+    }
+
+    const response = await fetch(`${API_BASE_URL}${url}`, {
+      ...options,
+      method: "PATCH",
+      headers,
+      body: body ? (body instanceof FormData ? body : JSON.stringify(body)) : undefined,
+    });
+
+    return this.handleResponse<T>(response);
+  }
 }
 
 export const api = new ApiClient();

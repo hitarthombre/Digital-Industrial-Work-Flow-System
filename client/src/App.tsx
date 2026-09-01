@@ -27,8 +27,15 @@ import CompanyBranding from "./pages/company/CompanyBranding";
 import CompanySubscription from "./pages/company/CompanySubscription";
 
 import UserList from "./pages/users/UserList";
+import CreateUser from "./pages/users/CreateUser";
 import UserDetails from "./pages/users/UserDetails";
-import AcceptInvitation from "./pages/auth/AcceptInvitation";
+import EditUser from "./pages/users/EditUser";
+import AcceptInvitation from "./pages/AcceptInvitation";
+
+import FactoryList from "./pages/factories/FactoryList";
+import CreateFactory from "./pages/factories/CreateFactory";
+import FactoryDetails from "./pages/factories/FactoryDetails";
+import EditFactory from "./pages/factories/EditFactory";
 
 // Public Layout Shell Wrapper
 function PublicLayout() {
@@ -81,9 +88,18 @@ export default function App() {
             <Route path="company/settings" element={<CompanySettings />} />
             <Route path="company/branding" element={<CompanyBranding />} />
             <Route path="company/subscription" element={<CompanySubscription />} />
-            
+
+            {/* User Management Module Routes */}
             <Route path="users" element={<UserList />} />
+            <Route path="users/new" element={<CreateUser />} />
             <Route path="users/:id" element={<UserDetails />} />
+            <Route path="users/:id/edit" element={<EditUser />} />
+
+            {/* Factory Management Module Routes */}
+            <Route path="factories" element={<FactoryList />} />
+            <Route path="factories/new" element={<CreateFactory />} />
+            <Route path="factories/:id" element={<FactoryDetails />} />
+            <Route path="factories/:id/edit" element={<EditFactory />} />
           </Route>
 
           {/* 404 Fallback */}

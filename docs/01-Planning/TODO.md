@@ -128,13 +128,13 @@ Version: 1.0
 
 ### Frontend (UI Pages & Forms)
 
-- [ ] User List Page (`/app/users`)
-- [ ] Add User / Invite User Form & Modal (`/app/users/new`)
-- [ ] User Details View (`/app/users/:id`)
-- [ ] Edit User Profile Page (`/app/users/:id/edit`)
-- [ ] Role & Department Selector Controls
-- [ ] User Status Toggle & Deactivation Dialog
-- [ ] User Activity History Timeline Component
+- [x] User List Page (`/app/users`)
+- [x] Add User / Invite User Form & Modal (`/app/users/new`)
+- [x] User Details View (`/app/users/:id`)
+- [x] Edit User Profile Page (`/app/users/:id/edit`)
+- [x] Role & Department Selector Controls
+- [x] User Status Toggle & Deactivation Dialog
+- [x] User Activity History Timeline Component
 
 ---
 
@@ -148,18 +148,18 @@ Version: 1.0
 - [x] Factory deletion / deactivation endpoint (`DELETE /api/factories/:id`)
 - [x] Factory list & search query endpoint (`GET /api/factories`)
 - [x] Factory details retrieval endpoint (`GET /api/factories/:id`)
-- [] Factory location & geo-coordinates mapping
+- [x] Factory location & geo-coordinates mapping
 - [x] Factory manager assignment logic
 - [x] Factory status management (`PATCH /api/factories/:id/status`)
 
 ### Frontend (UI Pages & Forms)
 
-- [ ] Factory List Page (`/app/factories`)
-- [ ] Create Factory Page & Form (`/app/factories/new`)
-- [ ] Factory Details View (`/app/factories/:id`)
-- [ ] Edit Factory Page (`/app/factories/:id/edit`)
-- [ ] Factory Location & Address Form Component
-- [ ] Factory Manager & Status Assignment Controls
+- [x] Factory List Page (`/app/factories`)
+- [x] Create Factory Page & Form (`/app/factories/new`)
+- [x] Factory Details View (`/app/factories/:id`)
+- [x] Edit Factory Page (`/app/factories/:id/edit`)
+- [x] Factory Location & Address Form Component
+- [x] Factory Manager & Status Assignment Controls
 
 ---
 

@@ -1,163 +1,221 @@
-import React, { useState } from 'react';
-import { Mail, CheckCircle2, Copy } from 'lucide-react';
-import Modal from '../Modal';
-import Button from '../Button';
-import Input from '../Input';
-import Select from '../Select';
+import React, { useState } from "react";
+import { Modal } from "../Modal";
+import { Button } from "../Button";
+import { api } from "../../services/api";
+import { Send, Mail, Shield, CheckCircle2, AlertCircle, Copy } from "lucide-react";
 
 interface InviteUserModalProps {
   isOpen: boolean;
   onClose: () => void;
-  onSuccess?: () => void;
+  onSuccess: () => void;
 }
 
-export function InviteUserModal({ isOpen, onClose, onSuccess }: InviteUserModalProps) {
-  const [email, setEmail] = useState('');
-  const [role, setRole] = useState('Employee');
-  const [department, setDepartment] = useState('');
-  
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [error, setError] = useState('');
-  const [successLink, setSuccessLink] = useState('');
+export const InviteUserModal: React.FC<InviteUserModalProps> = ({
+  isOpen,
+  onClose,
+  onSuccess,
+}) => {
+  const [email, setEmail] = useState("");
+  const [role, setRole] = useState("Employee");
+  const [departmentId, setDepartmentId] = useState("");
 
-  const roles = [
-    { value: 'Company Admin', label: 'Company Admin' },
-    { value: 'Factory Manager', label: 'Factory Manager' },
-    { value: 'Warehouse Supervisor', label: 'Warehouse Supervisor' },
-    { value: 'Quality Engineer', label: 'Quality Engineer' },
-    { value: 'Operator', label: 'Operator' },
-    { value: 'Employee', label: 'Employee' },
-  ];
+  const [submitting, setSubmitting] = useState(false);
+  const [error, setError] = useState<string | null>(null);
+  const [inviteResult, setInviteResult] = useState<{
+    email: string;
+    role: string;
+    inviteUrl: string;
+    expiresAt: string;
+  } | null>(null);
 
-  const departments = [
-    { value: '', label: 'None (Optional)' },
-    { value: 'Production', label: 'Production' },
-    { value: 'Quality Control', label: 'Quality Control' },
-    { value: 'Maintenance', label: 'Maintenance' },
-    { value: 'Warehouse', label: 'Warehouse' },
-    { value: 'Management', label: 'Management' },
-  ];
+  const [copied, setCopied] = useState(false);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!email) {
-      setError('Email address is required.');
+    if (!email.trim()) {
+      setError("Email address is required.");
       return;
     }
-    
-    setIsSubmitting(true);
-    setError('');
-    
+
+    setSubmitting(true);
+    setError(null);
     try {
-      // Simulating API call to POST /api/users/invite
-      await new Promise(resolve => setTimeout(resolve, 800));
-      
-      const mockToken = Math.random().toString(36).substring(2, 15);
-      const inviteUrl = `${window.location.origin}/accept-invite?token=${mockToken}`;
-      
-      setSuccessLink(inviteUrl);
-      if (onSuccess) onSuccess();
-    } catch (err) {
-      setError('Failed to send invitation. Please try again.');
+      const response = await api.post<{
+        success: boolean;
+        message: string;
+        data: {
+          id: string;
+          email: string;
+          role: string;
+          inviteUrl: string;
+          expiresAt: string;
+        };
+      }>("/users/invite", {
+        email: email.trim(),
+        role,
+        departmentId: departmentId.trim() || undefined,
+      });
+
+      if (response.data) {
+        setInviteResult(response.data);
+        onSuccess();
+      }
+    } catch (err: any) {
+      setError(err.message || "Failed to send invitation.");
     } finally {
-      setIsSubmitting(false);
+      setSubmitting(false);
     }
   };
 
   const handleCopyLink = () => {
-    navigator.clipboard.writeText(successLink);
+    if (inviteResult?.inviteUrl) {
+      navigator.clipboard.writeText(inviteResult.inviteUrl);
+      setCopied(true);
+      setTimeout(() => setCopied(false), 3000);
+    }
   };
 
-  const handleResetAndClose = () => {
-    setEmail('');
-    setRole('Employee');
-    setDepartment('');
-    setError('');
-    setSuccessLink('');
+  const handleReset = () => {
+    setEmail("");
+    setRole("Employee");
+    setDepartmentId("");
+    setError(null);
+    setInviteResult(null);
     onClose();
   };
 
   return (
-    <Modal isOpen={isOpen} onClose={handleResetAndClose} title="Invite New User" maxWidth="md">
-      {!successLink ? (
-        <form onSubmit={handleSubmit} className="diws-grid gap-4">
+    <Modal
+      isOpen={isOpen}
+      onClose={handleReset}
+      title="Invite Team Member"
+      maxWidth="md"
+    >
+      {inviteResult ? (
+        <div className="flex flex-col gap-4 py-2">
+          <div className="flex items-center gap-3 p-4 bg-emerald-50 border border-emerald-200 rounded-xl text-emerald-800">
+            <CheckCircle2 size={28} className="text-emerald-600 flex-shrink-0" />
+            <div>
+              <h4 className="font-bold text-sm">Invitation Sent Successfully!</h4>
+              <p className="text-xs text-emerald-700 mt-0.5">
+                An email invitation has been dispatched to <strong>{inviteResult.email}</strong>.
+              </p>
+            </div>
+          </div>
+
+          <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl">
+            <label className="text-xs font-bold text-slate-500 uppercase tracking-wider block mb-2">
+              Direct Workspace Access Link
+            </label>
+            <div className="flex items-center gap-2">
+              <input
+                type="text"
+                readOnly
+                value={inviteResult.inviteUrl}
+                className="w-full bg-white border border-slate-300 rounded-lg px-3 py-2 text-xs font-mono text-slate-700 outline-none"
+              />
+              <Button
+                variant={copied ? "primary" : "secondary"}
+                type="button"
+                onClick={handleCopyLink}
+                icon={copied ? <CheckCircle2 size={15} /> : <Copy size={15} />}
+              >
+                {copied ? "Copied" : "Copy"}
+              </Button>
+            </div>
+            <p className="text-[11px] text-slate-400 mt-2">
+              This tokenized activation URL will expire in 7 days.
+            </p>
+          </div>
+
+          <div className="flex justify-end mt-2">
+            <Button variant="copper" type="button" onClick={handleReset}>
+              Done
+            </Button>
+          </div>
+        </div>
+      ) : (
+        <form onSubmit={handleSubmit} className="flex flex-col gap-4 py-2">
+          <p className="text-xs text-slate-500">
+            Send an email invitation link for a new user to set up their account and join your company workspace.
+          </p>
+
           {error && (
-            <div className="diws-alert diws-alert-error">
-              {error}
+            <div className="p-3 bg-rose-50 border border-rose-200 rounded-lg text-rose-700 text-xs flex items-center gap-2">
+              <AlertCircle size={16} />
+              <span>{error}</span>
             </div>
           )}
-          
-          <Input
-            label="Email Address"
-            id="invite-email"
-            type="email"
-            value={email}
-            onChange={(e) => setEmail(e.target.value)}
-            placeholder="user@company.com"
-            icon={<Mail size={18} />}
-            required
-          />
-          
-          <Select
-            label="Role"
-            id="invite-role"
-            value={role}
-            onChange={(e) => setRole(e.target.value)}
-            options={roles}
-            required
-          />
 
-          <Select
-            label="Department"
-            id="invite-department"
-            value={department}
-            onChange={(e) => setDepartment(e.target.value)}
-            options={departments}
-          />
-          
-          <div className="diws-flex diws-justify-between diws-mt-6" style={{ gap: '1rem' }}>
-            <Button type="button" variant="outline" onClick={handleResetAndClose} fullWidth>
+          <div>
+            <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+              Email Address <span className="text-rose-500">*</span>
+            </label>
+            <div className="relative">
+              <Mail className="absolute left-3 top-3 text-slate-400" size={16} />
+              <input
+                type="email"
+                required
+                placeholder="colleague@company.com"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
+                className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition"
+              />
+            </div>
+          </div>
+
+          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Assigned Role
+              </label>
+              <div className="relative">
+                <Shield className="absolute left-3 top-3 text-slate-400" size={16} />
+                <select
+                  value={role}
+                  onChange={(e) => setRole(e.target.value)}
+                  className="w-full pl-10 pr-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition cursor-pointer"
+                >
+                  <option value="Admin">Admin</option>
+                  <option value="Manager">Manager</option>
+                  <option value="Supervisor">Supervisor</option>
+                  <option value="Operator">Operator</option>
+                  <option value="Employee">Employee</option>
+                </select>
+              </div>
+            </div>
+
+            <div>
+              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
+                Department Code / ID (Optional)
+              </label>
+              <input
+                type="text"
+                placeholder="e.g. DEPT-PROD-01"
+                value={departmentId}
+                onChange={(e) => setDepartmentId(e.target.value)}
+                className="w-full px-3 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition"
+              />
+            </div>
+          </div>
+
+          <div className="flex items-center justify-end gap-3 pt-4 border-t border-slate-200 mt-2">
+            <Button variant="outline" type="button" onClick={handleReset} disabled={submitting}>
               Cancel
             </Button>
-            <Button type="submit" variant="copper" loading={isSubmitting} fullWidth>
+            <Button
+              variant="copper"
+              type="submit"
+              loading={submitting}
+              icon={<Send size={16} />}
+            >
               Send Invitation
             </Button>
           </div>
         </form>
-      ) : (
-        <div className="diws-flex-col diws-items-center diws-text-center" style={{ padding: '2rem 1rem' }}>
-          <div style={{ color: 'var(--success-color)', marginBottom: '1rem' }}>
-            <CheckCircle2 size={64} />
-          </div>
-          <h3 style={{ fontSize: '1.25rem', fontWeight: 600, marginBottom: '0.5rem', color: 'var(--forest-dark)' }}>
-            Invitation Sent!
-          </h3>
-          <p style={{ color: 'var(--text-muted)', marginBottom: '1.5rem' }}>
-            We've sent an invitation email to <strong>{email}</strong>.
-          </p>
-          
-          <div className="diws-alert diws-alert-success diws-flex-col" style={{ width: '100%', alignItems: 'center' }}>
-            <span style={{ fontSize: '0.85rem', marginBottom: '0.5rem', fontWeight: 600 }}>Or share this link directly:</span>
-            <div className="diws-flex diws-items-center" style={{ background: '#fff', padding: '0.5rem', borderRadius: '4px', width: '100%', border: '1px solid var(--border-color)', gap: '0.5rem' }}>
-              <input 
-                type="text" 
-                readOnly 
-                value={successLink} 
-                style={{ flex: 1, border: 'none', outline: 'none', fontSize: '0.8rem', color: 'var(--text-muted)' }} 
-              />
-              <Button type="button" variant="secondary" onClick={handleCopyLink} icon={<Copy size={16} />} style={{ padding: '0.25rem 0.5rem' }}>
-                Copy
-              </Button>
-            </div>
-          </div>
-          
-          <Button type="button" variant="primary" onClick={handleResetAndClose} className="diws-mt-6">
-            Done
-          </Button>
-        </div>
       )}
     </Modal>
   );
-}
+};
 
 export default InviteUserModal;

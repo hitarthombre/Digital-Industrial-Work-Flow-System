@@ -3,6 +3,7 @@ import '../custom-ui.css';
 
 export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElement> {
   variant?: 'primary' | 'copper' | 'secondary' | 'outline' | 'danger';
+  size?: 'sm' | 'md' | 'lg';
   fullWidth?: boolean;
   loading?: boolean;
   icon?: React.ReactNode;
@@ -11,6 +12,7 @@ export interface ButtonProps extends React.ButtonHTMLAttributes<HTMLButtonElemen
 export function Button({ 
   children, 
   variant = 'primary', 
+  size = 'md',
   fullWidth = false, 
   loading = false,
   icon,
