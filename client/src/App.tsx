@@ -26,6 +26,12 @@ import CompanySettings from "./pages/company/CompanySettings";
 import CompanyBranding from "./pages/company/CompanyBranding";
 import CompanySubscription from "./pages/company/CompanySubscription";
 
+import UserList from "./pages/users/UserList";
+import CreateUser from "./pages/users/CreateUser";
+import UserDetails from "./pages/users/UserDetails";
+import EditUser from "./pages/users/EditUser";
+import AcceptInvitation from "./pages/AcceptInvitation";
+
 import FactoryList from "./pages/factories/FactoryList";
 import CreateFactory from "./pages/factories/CreateFactory";
 import FactoryDetails from "./pages/factories/FactoryDetails";
@@ -64,6 +70,7 @@ export default function App() {
             <Route path="/reset-password" element={<ResetPassword />} />
             <Route path="/verify-email" element={<VerifyEmail />} />
             <Route path="/logout" element={<Logout />} />
+            <Route path="/accept-invite" element={<AcceptInvitation />} />
           </Route>
 
           {/* Protected Company App Workspace Routes */}
@@ -81,6 +88,12 @@ export default function App() {
             <Route path="company/settings" element={<CompanySettings />} />
             <Route path="company/branding" element={<CompanyBranding />} />
             <Route path="company/subscription" element={<CompanySubscription />} />
+
+            {/* User Management Module Routes */}
+            <Route path="users" element={<UserList />} />
+            <Route path="users/new" element={<CreateUser />} />
+            <Route path="users/:id" element={<UserDetails />} />
+            <Route path="users/:id/edit" element={<EditUser />} />
 
             {/* Factory Management Module Routes */}
             <Route path="factories" element={<FactoryList />} />
