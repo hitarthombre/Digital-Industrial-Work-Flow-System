@@ -24,6 +24,12 @@ export const SYSTEM_PERMISSIONS = [
   { code: "factories:update", module: "factories", description: "Update factory details, location, manager and status" },
   { code: "factories:delete", module: "factories", description: "Deactivate or delete factory location" },
   
+  { code: "warehouses:read", module: "warehouses", description: "View warehouse details, capacity and stock" },
+  { code: "warehouses:create", module: "warehouses", description: "Create new warehouse facility" },
+  { code: "warehouses:update", module: "warehouses", description: "Update warehouse details and capacity" },
+  { code: "warehouses:delete", module: "warehouses", description: "Deactivate or delete warehouse facility" },
+  { code: "warehouses:transfer", module: "warehouses", description: "Perform stock transfers between warehouses" },
+
   { code: "inventory:read", module: "inventory", description: "View stock levels and inventory items" },
   { code: "inventory:create", module: "inventory", description: "Add stock in/out and adjustments" },
   { code: "inventory:update", module: "inventory", description: "Modify stock items and locations" },
@@ -79,6 +85,7 @@ export const DEFAULT_ROLES = [
     name: "Warehouse Manager",
     description: "Manages warehouse stock movements, adjustments, and dispatching",
     permissions: [
+      "warehouses:read", "warehouses:create", "warehouses:update", "warehouses:delete", "warehouses:transfer",
       "inventory:read", "inventory:create", "inventory:update",
       "dispatch:read", "documents:read", "reports:read",
     ],
