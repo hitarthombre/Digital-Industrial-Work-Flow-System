@@ -37,6 +37,11 @@ import CreateFactory from "./pages/factories/CreateFactory";
 import FactoryDetails from "./pages/factories/FactoryDetails";
 import EditFactory from "./pages/factories/EditFactory";
 
+import WarehouseList from "./pages/warehouses/WarehouseList";
+import CreateWarehouse from "./pages/warehouses/CreateWarehouse";
+import WarehouseDetails from "./pages/warehouses/WarehouseDetails";
+import EditWarehouse from "./pages/warehouses/EditWarehouse";
+
 // Public Layout Shell Wrapper
 function PublicLayout() {
   return (
@@ -100,6 +105,12 @@ export default function App() {
             <Route path="factories/new" element={<CreateFactory />} />
             <Route path="factories/:id" element={<FactoryDetails />} />
             <Route path="factories/:id/edit" element={<EditFactory />} />
+
+            {/* Warehouse Management Module Routes */}
+            <Route path="warehouses" element={<WarehouseList />} />
+            <Route path="warehouses/new" element={<CreateWarehouse />} />
+            <Route path="warehouses/:id" element={<WarehouseDetails />} />
+            <Route path="warehouses/:id/edit" element={<EditWarehouse />} />
           </Route>
 
           {/* 404 Fallback */}

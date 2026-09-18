@@ -156,7 +156,7 @@ export default function AcceptInvitation() {
             </div>
             <div className="diws-text-right">
               <div style={{ fontSize: '0.85rem', color: 'var(--text-muted)', fontWeight: 600 }}>ASSIGNED ROLE</div>
-              <Badge variant="copper">{invitedRole}</Badge>
+              <Badge variant="primary">{invitedRole}</Badge>
             </div>
           </div>
 
