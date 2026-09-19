@@ -6,12 +6,7 @@ import { Select } from "../Select";
 import {
   Building2,
   User,
-  Mail,
-  Phone,
   MapPin,
-  FileText,
-  Star,
-  ShieldCheck,
   CreditCard,
   Tag,
   AlertCircle,

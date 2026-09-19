@@ -7,7 +7,6 @@ import { Badge } from "../../components/Badge";
 import SupplierVault from "../../components/suppliers/SupplierVault";
 import PurchaseHistoryTimeline from "../../components/suppliers/PurchaseHistoryTimeline";
 import {
-  Building2,
   ArrowLeft,
   Edit,
   Trash2,
@@ -15,16 +14,12 @@ import {
   Phone,
   User,
   MapPin,
-  CreditCard,
-  Tag,
   Star,
   ShieldCheck,
   FileCheck,
   TrendingUp,
   RefreshCw,
   AlertTriangle,
-  Clock,
-  CheckCircle2,
 } from "lucide-react";
 import "./SupplierPages.css";
 
@@ -34,7 +29,7 @@ export const SupplierDetails: React.FC = () => {
 
   const [supplier, setSupplier] = useState<ISupplier | null>(null);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
   const [activeTab, setActiveTab] = useState<"vault" | "timeline">("vault");
 
   useEffect(() => {

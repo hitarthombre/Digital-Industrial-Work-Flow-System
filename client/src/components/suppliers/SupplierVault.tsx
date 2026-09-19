@@ -8,7 +8,6 @@ import { Badge } from "../Badge";
 import { api } from "../../services/api";
 import {
   FileText,
-  Upload,
   Plus,
   Trash2,
   Download,
@@ -16,7 +15,6 @@ import {
   ShieldCheck,
   AlertTriangle,
   Clock,
-  ExternalLink,
   FileCheck,
 } from "lucide-react";
 

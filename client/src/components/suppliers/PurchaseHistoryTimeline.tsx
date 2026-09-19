@@ -24,7 +24,7 @@ export const PurchaseHistoryTimeline: React.FC<PurchaseHistoryTimelineProps> = (
 }) => {
   const [history, setHistory] = useState<IPurchaseHistoryItem[]>([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [, setError] = useState<string | null>(null);
 
   useEffect(() => {
     fetchPurchaseHistory();

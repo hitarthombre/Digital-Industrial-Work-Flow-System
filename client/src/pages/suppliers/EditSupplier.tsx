@@ -76,7 +76,7 @@ export const EditSupplier: React.FC = () => {
       setTimeout(() => {
         navigate(`/app/suppliers/${id}`);
       }, 1200);
-    } flex {
+    } finally {
       setSubmitting(false);
     }
   };

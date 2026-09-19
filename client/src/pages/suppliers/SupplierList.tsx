@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import type { ISupplier, SupplierCategory, SupplierStatus, GetSuppliersResponse } from "../../types/supplier";
+import type { ISupplier, SupplierStatus, GetSuppliersResponse } from "../../types/supplier";
 import { api } from "../../services/api";
 import { Button } from "../../components/Button";
 import { Badge } from "../../components/Badge";
@@ -21,13 +21,9 @@ import {
   MapPin,
   Mail,
   Phone,
-  Tag,
   AlertTriangle,
   TrendingUp,
   Award,
-  CheckCircle2,
-  Clock,
-  XCircle,
 } from "lucide-react";
 import "./SupplierPages.css";
 
