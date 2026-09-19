@@ -42,6 +42,11 @@ import CreateWarehouse from "./pages/warehouses/CreateWarehouse";
 import WarehouseDetails from "./pages/warehouses/WarehouseDetails";
 import EditWarehouse from "./pages/warehouses/EditWarehouse";
 
+import SupplierList from "./pages/suppliers/SupplierList";
+import CreateSupplier from "./pages/suppliers/CreateSupplier";
+import SupplierDetails from "./pages/suppliers/SupplierDetails";
+import EditSupplier from "./pages/suppliers/EditSupplier";
+
 // Public Layout Shell Wrapper
 function PublicLayout() {
   return (
@@ -111,6 +116,12 @@ export default function App() {
             <Route path="warehouses/new" element={<CreateWarehouse />} />
             <Route path="warehouses/:id" element={<WarehouseDetails />} />
             <Route path="warehouses/:id/edit" element={<EditWarehouse />} />
+
+            {/* Supplier Management Module Routes */}
+            <Route path="suppliers" element={<SupplierList />} />
+            <Route path="suppliers/new" element={<CreateSupplier />} />
+            <Route path="suppliers/:id" element={<SupplierDetails />} />
+            <Route path="suppliers/:id/edit" element={<EditSupplier />} />
           </Route>
 
           {/* 404 Fallback */}

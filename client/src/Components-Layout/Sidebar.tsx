@@ -227,6 +227,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
               <Warehouse size={18} className="diws-sidebar-icon" />
               {!collapsed && <span>Warehouses</span>}
             </NavLink>
+
+            <NavLink
+              to="/app/suppliers"
+              className={({ isActive }) =>
+                `diws-sidebar-item ${isActive ? "active" : ""}`
+              }
+              onClick={onCloseMobile}
+            >
+              <Building2 size={18} className="diws-sidebar-icon" />
+              {!collapsed && <span>Suppliers</span>}
+            </NavLink>
           </div>
 
           {/* GROUP 4: OPERATIONS */}

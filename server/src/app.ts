@@ -17,6 +17,7 @@ import auditRouter from "./routes/audit.routes";
 import fileRouter from "./routes/file.routes";
 import factoryRouter from "./routes/factory.routes";
 import warehouseRouter from "./routes/warehouse.routes";
+import supplierRouter from "./routes/supplier.routes";
 import errorHandler from "./middleware/errorHandler";
 import { roleService } from "./services/role.service";
 
@@ -69,6 +70,7 @@ app.use("/api/audit", auditRouter);
 app.use("/api/files", fileRouter);
 app.use("/api/factories", factoryRouter);
 app.use("/api/warehouses", warehouseRouter);
+app.use("/api/suppliers", supplierRouter);
 
 // Baseline health check API
 app.get('/api/health', (req: Request, res: Response) => {
