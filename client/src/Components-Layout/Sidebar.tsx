@@ -11,6 +11,7 @@ import {
   Factory,
   Warehouse,
   Boxes,
+  Package,
   ShoppingCart,
   Cpu,
   TrendingUp,
@@ -243,6 +244,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
           {/* GROUP 4: OPERATIONS */}
           <div className="diws-sidebar-group">
             {!collapsed && <div className="diws-sidebar-group-label">OPERATIONS</div>}
+
+            <NavLink
+              to="/app/products"
+              className={({ isActive }) =>
+                `diws-sidebar-item ${isActive ? "active" : ""}`
+              }
+              onClick={onCloseMobile}
+            >
+              <Package size={18} className="diws-sidebar-icon" />
+              {!collapsed && <span>Products</span>}
+            </NavLink>
 
             <NavLink
               to="/app/inventory"

@@ -47,6 +47,11 @@ import CreateSupplier from "./pages/suppliers/CreateSupplier";
 import SupplierDetails from "./pages/suppliers/SupplierDetails";
 import EditSupplier from "./pages/suppliers/EditSupplier";
 
+import ProductList from "./pages/products/ProductList";
+import CreateProduct from "./pages/products/CreateProduct";
+import ProductDetails from "./pages/products/ProductDetails";
+import EditProduct from "./pages/products/EditProduct";
+
 // Public Layout Shell Wrapper
 function PublicLayout() {
   return (
@@ -122,6 +127,12 @@ export default function App() {
             <Route path="suppliers/new" element={<CreateSupplier />} />
             <Route path="suppliers/:id" element={<SupplierDetails />} />
             <Route path="suppliers/:id/edit" element={<EditSupplier />} />
+
+            {/* Product Catalog Module Routes */}
+            <Route path="products" element={<ProductList />} />
+            <Route path="products/new" element={<CreateProduct />} />
+            <Route path="products/:id" element={<ProductDetails />} />
+            <Route path="products/:id/edit" element={<EditProduct />} />
           </Route>
 
           {/* 404 Fallback */}
