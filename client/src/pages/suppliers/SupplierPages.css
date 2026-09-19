@@ -547,3 +547,150 @@
   justify-content: space-between;
   padding-top: 1rem;
 }
+
+/* Mobile & Tablet Responsive Media Queries */
+@media (max-width: 768px) {
+  .sup-page-container {
+    padding: 1rem;
+    gap: 1rem;
+  }
+
+  .sup-page-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sup-page-header > div:last-child {
+    width: 100%;
+    display: flex;
+  }
+
+  .sup-page-header > div:last-child button {
+    width: 100%;
+    justify-content: center;
+  }
+
+  .sup-stats-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 0.75rem;
+  }
+
+  .sup-stat-card {
+    padding: 0.85rem;
+    gap: 0.75rem;
+  }
+
+  .sup-stat-icon-wrapper {
+    width: 40px;
+    height: 40px;
+  }
+
+  .sup-stat-value {
+    font-size: 1.1rem;
+  }
+
+  .sup-control-bar {
+    flex-direction: column;
+    align-items: stretch;
+    padding: 0.85rem;
+    gap: 0.75rem;
+  }
+
+  .sup-search-form {
+    width: 100%;
+    min-width: unset;
+  }
+
+  .sup-filters-group {
+    width: 100%;
+    justify-content: space-between;
+    gap: 0.5rem;
+  }
+
+  .sup-select-filter {
+    flex: 1;
+    min-width: 110px;
+    font-size: 0.75rem;
+    padding: 0.45rem 0.5rem;
+  }
+
+  .sup-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sup-details-header {
+    padding: 1rem;
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sup-details-header > div:last-child {
+    flex-direction: row;
+    width: 100%;
+  }
+
+  .sup-details-header > div:last-child button {
+    flex: 1;
+    justify-content: center;
+  }
+
+  .sup-tabs-nav {
+    overflow-x: auto;
+    white-space: nowrap;
+    padding-bottom: 0.25rem;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .sup-tab-btn {
+    padding: 0.6rem 0.85rem;
+    font-size: 0.8125rem;
+    flex-shrink: 0;
+  }
+
+  .sup-vault-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sup-timeline-list {
+    padding-left: 1.5rem;
+  }
+
+  .sup-timeline-node {
+    left: -1.5rem;
+  }
+
+  .sup-pagination {
+    flex-direction: column;
+    gap: 0.75rem;
+    align-items: center;
+    text-align: center;
+  }
+}
+
+@media (max-width: 480px) {
+  .sup-stats-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .sup-page-title {
+    font-size: 1.3rem;
+  }
+
+  .sup-filters-group {
+    flex-direction: column;
+    align-items: stretch;
+  }
+
+  .sup-select-filter {
+    width: 100%;
+  }
+
+  .sup-view-toggle {
+    justify-content: center;
+    width: 100%;
+  }
+
+  .sup-view-toggle .toggle-btn {
+    flex: 1;
+  }
+}
