@@ -16,6 +16,7 @@ import sessionRouter from "./routes/session.routes";
 import auditRouter from "./routes/audit.routes";
 import fileRouter from "./routes/file.routes";
 import factoryRouter from "./routes/factory.routes";
+import customerRouter from "./routes/customer.routes";
 import errorHandler from "./middleware/errorHandler";
 import { roleService } from "./services/role.service";
 
@@ -67,6 +68,7 @@ app.use("/api/sessions", sessionRouter);
 app.use("/api/audit", auditRouter);
 app.use("/api/files", fileRouter);
 app.use("/api/factories", factoryRouter);
+app.use("/api/customers", customerRouter);
 
 // Baseline health check API
 app.get('/api/health', (req: Request, res: Response) => {

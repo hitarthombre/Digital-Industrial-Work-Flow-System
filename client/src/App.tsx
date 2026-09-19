@@ -37,6 +37,11 @@ import CreateFactory from "./pages/factories/CreateFactory";
 import FactoryDetails from "./pages/factories/FactoryDetails";
 import EditFactory from "./pages/factories/EditFactory";
 
+import CustomerList from "./pages/customers/CustomerList";
+import CreateCustomer from "./pages/customers/CreateCustomer";
+import CustomerDetails from "./pages/customers/CustomerDetails";
+import EditCustomer from "./pages/customers/EditCustomer";
+
 // Public Layout Shell Wrapper
 function PublicLayout() {
   return (
@@ -100,6 +105,12 @@ export default function App() {
             <Route path="factories/new" element={<CreateFactory />} />
             <Route path="factories/:id" element={<FactoryDetails />} />
             <Route path="factories/:id/edit" element={<EditFactory />} />
+
+            {/* Customer Management Module Routes */}
+            <Route path="customers" element={<CustomerList />} />
+            <Route path="customers/new" element={<CreateCustomer />} />
+            <Route path="customers/:id" element={<CustomerDetails />} />
+            <Route path="customers/:id/edit" element={<EditCustomer />} />
           </Route>
 
           {/* 404 Fallback */}

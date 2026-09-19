@@ -207,6 +207,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </NavLink>
 
             <NavLink
+              to="/app/customers"
+              className={({ isActive }) =>
+                `diws-sidebar-item ${isActive ? "active" : ""}`
+              }
+              onClick={onCloseMobile}
+            >
+              <Building2 size={18} className="diws-sidebar-icon" />
+              {!collapsed && <span>Customers</span>}
+            </NavLink>
+
+            <NavLink
               to="/app/factories"
               className={({ isActive }) =>
                 `diws-sidebar-item ${isActive ? "active" : ""}`
