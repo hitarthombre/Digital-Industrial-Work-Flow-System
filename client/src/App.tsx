@@ -57,6 +57,8 @@ import CreateProduct from "./pages/products/CreateProduct";
 import ProductDetails from "./pages/products/ProductDetails";
 import EditProduct from "./pages/products/EditProduct";
 
+import InventoryList from "./pages/inventory/InventoryList";
+
 // Public Layout Shell Wrapper
 function PublicLayout() {
   return (
@@ -144,6 +146,9 @@ export default function App() {
             <Route path="products/new" element={<CreateProduct />} />
             <Route path="products/:id" element={<ProductDetails />} />
             <Route path="products/:id/edit" element={<EditProduct />} />
+
+            {/* Inventory Management Module Routes */}
+            <Route path="inventory" element={<InventoryList />} />
           </Route>
 
           {/* 404 Fallback */}

@@ -216,16 +216,16 @@ Version: 1.0
 
 ## 13. Inventory Management
 
-- [ ] Add stock in
-- [ ] Stock out
+- [x] Add stock in
+- [x] Stock out
 - [x] Stock transfer
-- [ ] Stock adjustment
-- [ ] Stock history
-- [ ] Raw material stock
-- [ ] Finished goods stock
+- [x] Stock adjustment
+- [x] Stock history
+- [x] Raw material stock
+- [x] Finished goods stock
 - [x] Low stock alerts
-- [ ] Inventory reports
-- [ ] Stock movement logs
+- [x] Inventory reports
+- [x] Stock movement logs
 
 ---
 
@@ -237,7 +237,7 @@ Version: 1.0
 - [ ] Purchase order tracking
 - [ ] Goods receipt note
 - [ ] Purchase returns
-- [ ] Supplier purchase history
+- [x] Supplier purchase history
 - [ ] Procurement reports
 
 ---
