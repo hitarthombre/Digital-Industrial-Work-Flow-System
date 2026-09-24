@@ -8,6 +8,7 @@ import {
   Palette,
   CreditCard,
   Users,
+  UserCheck,
   Factory,
   Warehouse,
   Boxes,
@@ -238,6 +239,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               <Building2 size={18} className="diws-sidebar-icon" />
               {!collapsed && <span>Suppliers</span>}
+            </NavLink>
+
+            <NavLink
+              to="/app/customers"
+              className={({ isActive }) =>
+                `diws-sidebar-item ${isActive ? "active" : ""}`
+              }
+              onClick={onCloseMobile}
+            >
+              <UserCheck size={18} className="diws-sidebar-icon" />
+              {!collapsed && <span>Customers</span>}
             </NavLink>
           </div>
 

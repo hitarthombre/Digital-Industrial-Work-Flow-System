@@ -47,6 +47,11 @@ import CreateSupplier from "./pages/suppliers/CreateSupplier";
 import SupplierDetails from "./pages/suppliers/SupplierDetails";
 import EditSupplier from "./pages/suppliers/EditSupplier";
 
+import CustomerList from "./pages/customers/CustomerList";
+import CreateCustomer from "./pages/customers/CreateCustomer";
+import CustomerDetails from "./pages/customers/CustomerDetails";
+import EditCustomer from "./pages/customers/EditCustomer";
+
 import ProductList from "./pages/products/ProductList";
 import CreateProduct from "./pages/products/CreateProduct";
 import ProductDetails from "./pages/products/ProductDetails";
@@ -127,6 +132,12 @@ export default function App() {
             <Route path="suppliers/new" element={<CreateSupplier />} />
             <Route path="suppliers/:id" element={<SupplierDetails />} />
             <Route path="suppliers/:id/edit" element={<EditSupplier />} />
+
+            {/* Customer Management Module Routes */}
+            <Route path="customers" element={<CustomerList />} />
+            <Route path="customers/new" element={<CreateCustomer />} />
+            <Route path="customers/:id" element={<CustomerDetails />} />
+            <Route path="customers/:id/edit" element={<EditCustomer />} />
 
             {/* Product Catalog Module Routes */}
             <Route path="products" element={<ProductList />} />

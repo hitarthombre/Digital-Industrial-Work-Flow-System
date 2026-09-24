@@ -204,13 +204,13 @@ Version: 1.0
 
 ## 12. Customer Management
 
-- [ ] Create customer
-- [ ] Edit customer
-- [ ] Delete customer
-- [ ] Customer list
-- [ ] Customer details
-- [ ] Customer order history
-- [ ] Customer documents
+- [x] Create customer
+- [x] Edit customer
+- [x] Delete customer
+- [x] Customer list
+- [x] Customer details
+- [x] Customer order history
+- [x] Customer documents
 
 ---
 
