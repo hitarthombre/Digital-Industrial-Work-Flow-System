@@ -33,6 +33,11 @@ export const SYSTEM_PERMISSIONS = [
   { code: "inventory:read", module: "inventory", description: "View stock levels and inventory items" },
   { code: "inventory:create", module: "inventory", description: "Add stock in/out and adjustments" },
   { code: "inventory:update", module: "inventory", description: "Modify stock items and locations" },
+
+  { code: "products:read", module: "products", description: "View product catalog, categories and variants" },
+  { code: "products:create", module: "products", description: "Create new product, category, or variant" },
+  { code: "products:update", module: "products", description: "Update product catalog, categories and variants" },
+  { code: "products:delete", module: "products", description: "Delete product, category, or variant" },
   
   { code: "production:read", module: "production", description: "View production plans and work orders" },
   { code: "production:create", module: "production", description: "Create production plans and work orders" },
