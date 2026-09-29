@@ -3,6 +3,8 @@ import { Schema, model, Document, Types } from "mongoose";
 export interface IStockMovement extends Document {
   companyId: Types.ObjectId;
   warehouseId: Types.ObjectId;
+  destinationWarehouseId?: Types.ObjectId;
+  inventoryId?: Types.ObjectId;
   productId?: Types.ObjectId;
   sku: string;
   itemName: string;
@@ -24,6 +26,8 @@ const StockMovementSchema = new Schema<IStockMovement>(
   {
     companyId: { type: Schema.Types.ObjectId, ref: "Company", required: true, index: true },
     warehouseId: { type: Schema.Types.ObjectId, ref: "Warehouse", required: true, index: true },
+    destinationWarehouseId: { type: Schema.Types.ObjectId, ref: "Warehouse", index: true },
+    inventoryId: { type: Schema.Types.ObjectId, ref: "Inventory", index: true },
     productId: { type: Schema.Types.ObjectId, ref: "Product", index: true },
     sku: { type: String, required: true, trim: true, uppercase: true },
     itemName: { type: String, required: true, trim: true },

@@ -216,6 +216,21 @@ Version: 1.0
 
 ## 13. Inventory Management
 
+### Backend (API, Schemas & Business Logic)
+
+- [x] Create Mongoose schemas for Inventory, StockMovement, StockAdjustment, and LowStockAlert
+- [x] Implement Stock In endpoint (`POST /api/inventory/stock-in`)
+- [x] Implement Stock Out endpoint (`POST /api/inventory/stock-out`)
+- [x] Implement Stock Transfer endpoint (`POST /api/inventory/transfer`)
+- [x] Implement Stock Adjustment endpoint (`POST /api/inventory/adjust`)
+- [x] Build Stock Movement History logging endpoint (`GET /api/inventory/history`)
+- [x] Support Raw Material stock endpoint (`GET /api/inventory/raw-materials`) & Finished Goods stock endpoint (`GET /api/inventory/finished-goods`)
+- [x] Implement Low Stock Alert check service and notification trigger (`GET /api/inventory/alerts/low-stock`)
+- [x] Generate Inventory Reports endpoint (`GET /api/inventory/reports`)
+- [x] Add Zod validation schemas, Winston logging, and audit error handling for all inventory routes
+
+### Frontend (UI Pages & Components)
+
 - [x] Add stock in
 - [x] Stock out
 - [x] Stock transfer
