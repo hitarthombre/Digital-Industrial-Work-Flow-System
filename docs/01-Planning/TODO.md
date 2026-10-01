@@ -231,16 +231,14 @@ Version: 1.0
 
 ### Frontend (UI Pages & Components)
 
-- [x] Add stock in
-- [x] Stock out
-- [x] Stock transfer
-- [x] Stock adjustment
-- [x] Stock history
-- [x] Raw material stock
-- [x] Finished goods stock
-- [x] Low stock alerts
-- [x] Inventory reports
-- [x] Stock movement logs
+- [x] Create Inventory Overview Page (`/app/inventory`) with tabs for Raw Materials & Finished Goods
+- [x] Build Stock In (`StockInModal.tsx`) & Stock Out (`StockOutModal.tsx`) modal forms with real-time field validation
+- [x] Design Stock Transfer Form (`StockTransferModal.tsx`) for transferring inventory between warehouses
+- [x] Create Stock Adjustment Form (`StockAdjustmentModal.tsx`) for manual cycle count reconciliations
+- [x] Build Low Stock Alert Banner & Notification Panel drawer (`LowStockAlertBanner.tsx`)
+- [x] Implement Stock Movement History Timeline & Audit Log Table (`StockMovementTimeline.tsx`)
+- [x] Build Inventory Reports & Stock Distribution Chart Components (`InventoryReportsCharts.tsx`)
+- [x] Integrate React Query / Axios hooks with backend `/api/inventory` endpoints (`useInventory.ts` & `inventoryService.ts`)
 
 ---
 

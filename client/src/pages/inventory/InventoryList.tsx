@@ -1,100 +1,97 @@
 import React, { useState, useEffect } from "react";
 import { api } from "../../services/api";
 import { inventoryService } from "../../services/inventoryService";
-import type {
-  IStockMovementItem,
-  StockLevelItem,
-  RecordMovementInput,
-} from "../../services/inventoryService";
+import type { StockLevelItem } from "../../services/inventoryService";
+import {
+  useRawMaterials,
+  useFinishedGoods,
+  useInventoryHistory,
+  useLowStockAlerts,
+  useInventoryReports,
+  useStockInMutation,
+  useStockOutMutation,
+  useStockTransferMutation,
+  useStockAdjustmentMutation,
+} from "../../hooks/useInventory";
+
+import { LowStockAlertBanner, LowStockNotificationPanel } from "../../components/inventory/LowStockAlertBanner";
+import { StockInModal } from "../../components/inventory/StockInModal";
+import { StockOutModal } from "../../components/inventory/StockOutModal";
+import { StockTransferModal } from "../../components/inventory/StockTransferModal";
+import { StockAdjustmentModal } from "../../components/inventory/StockAdjustmentModal";
+import { StockMovementTimeline } from "../../components/inventory/StockMovementTimeline";
+import { InventoryReportsCharts } from "../../components/inventory/InventoryReportsCharts";
+
 import {
   Boxes,
   ArrowDownLeft,
   ArrowUpRight,
+  ArrowLeftRight,
+  SlidersHorizontal,
   RefreshCw,
   Search,
-  SlidersHorizontal,
   FileText,
   Layers,
   DollarSign,
   PackageCheck,
-  CheckCircle2,
-  AlertCircle,
+  Bell,
+  Plus,
 } from "lucide-react";
+
 import "./InventoryPages.css";
 
 export const InventoryList: React.FC = () => {
-  // Tabs
-  const [activeTab, setActiveTab] = useState<"levels" | "movements" | "reports">("levels");
+  // Navigation Tabs
+  const [activeTab, setActiveTab] = useState<"raw_materials" | "finished_goods" | "all_levels" | "movements" | "reports">("raw_materials");
 
-  // State
-  const [movements, setMovements] = useState<IStockMovementItem[]>([]);
-  const [stockLevels, setStockLevels] = useState<StockLevelItem[]>([]);
+  // Filter States
+  const [searchQuery, setSearchQuery] = useState("");
+  const [selectedType, setSelectedType] = useState<string>("ALL");
+  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
+  const [selectedWarehouse, setSelectedWarehouse] = useState<string>("ALL");
+
+  // Warehouses list
   const [warehouses, setWarehouses] = useState<any[]>([
     { _id: "wh-1", name: "Central Hub Warehouse", code: "WH-CENTRAL-01" },
     { _id: "wh-2", name: "West Coast Assembly Facility", code: "WH-WEST-02" },
   ]);
-  const [loading, setLoading] = useState(true);
 
-  // Stats
-  const [stats, setStats] = useState({
-    totalMovements: 0,
-    totalStockInQty: 0,
-    totalStockOutQty: 0,
-    totalValuation: 0,
-    rawMaterialMovements: 0,
-    finishedGoodsMovements: 0,
+  // Modal Control States
+  const [isStockInModalOpen, setIsStockInModalOpen] = useState(false);
+  const [isStockOutModalOpen, setIsStockOutModalOpen] = useState(false);
+  const [isTransferModalOpen, setIsTransferModalOpen] = useState(false);
+  const [isAdjustmentModalOpen, setIsAdjustmentModalOpen] = useState(false);
+  const [isNotifPanelOpen, setIsNotifPanelOpen] = useState(false);
+
+  // Initial modal prefill data
+  const [modalInitialData, setModalInitialData] = useState<{ sku?: string; itemName?: string; itemCategory?: string }>({});
+
+  // Custom Inventory Hooks (Task 8)
+  const rawMaterialsHook = useRawMaterials({ search: searchQuery, warehouseId: selectedWarehouse });
+  const finishedGoodsHook = useFinishedGoods({ search: searchQuery, warehouseId: selectedWarehouse });
+  const historyHook = useInventoryHistory({
+    search: searchQuery,
+    type: selectedType,
+    itemCategory: selectedCategory,
+    warehouseId: selectedWarehouse,
   });
+  const alertsHook = useLowStockAlerts();
+  const reportsHook = useInventoryReports();
 
-  // Filters
-  const [searchQuery, setSearchQuery] = useState("");
-  const [selectedType, setSelectedType] = useState<string>("ALL");
-  const [selectedCategory, setSelectedCategory] = useState<string>("ALL");
+  // Master Stock Levels state for all SKUs
+  const [allStockLevels, setAllStockLevels] = useState<StockLevelItem[]>([]);
+  const [loadingAllLevels, setLoadingAllLevels] = useState(true);
 
-  // Modal State
-  const [isModalOpen, setIsModalOpen] = useState(false);
-  const [movementType, setMovementType] = useState<"stock_in" | "stock_out" | "adjustment">("stock_in");
-  const [formData, setFormData] = useState<RecordMovementInput>({
-    warehouseId: "",
-    sku: "",
-    itemName: "",
-    type: "stock_in",
-    itemCategory: "finished_goods",
-    quantity: 1,
-    unit: "pcs",
-    unitCost: 0,
-    referenceNumber: "",
-    reason: "",
-    notes: "",
-  });
-  const [isSubmitting, setIsSubmitting] = useState(false);
-  const [formError, setFormError] = useState("");
+  // Mutations
+  const stockInMutation = useStockInMutation();
+  const stockOutMutation = useStockOutMutation();
+  const transferMutation = useStockTransferMutation();
+  const adjustmentMutation = useStockAdjustmentMutation();
 
   useEffect(() => {
-    fetchData();
     fetchWarehouses();
-  }, [selectedType, selectedCategory]);
-
-  const fetchData = async () => {
-    setLoading(true);
-    try {
-      const [movRes, levRes] = await Promise.all([
-        inventoryService.getMovements({
-          search: searchQuery,
-          type: selectedType,
-          itemCategory: selectedCategory,
-        }),
-        inventoryService.getStockLevels(),
-      ]);
-
-      if (movRes.data) setMovements(movRes.data);
-      if (movRes.stats) setStats(movRes.stats);
-      if (levRes.stockItems) setStockLevels(levRes.stockItems);
-    } catch (err) {
-      console.error("Failed to load inventory data", err);
-    } finally {
-      setLoading(false);
-    }
-  };
+    fetchAllStockLevels();
+  }, []);
 
   const fetchWarehouses = async () => {
     try {
@@ -103,131 +100,142 @@ export const InventoryList: React.FC = () => {
         setWarehouses(res.data);
       }
     } catch (_) {
-      // Fallback to sample warehouses
+      // Keep default sample warehouses
     }
   };
 
-  const handleSearchSubmit = (e: React.FormEvent) => {
-    e.preventDefault();
-    fetchData();
-  };
-
-  const openMovementModal = (type: "stock_in" | "stock_out" | "adjustment") => {
-    setMovementType(type);
-    setFormError("");
-    setFormData({
-      warehouseId: warehouses[0]?._id || "wh-1",
-      sku: "",
-      itemName: "",
-      type,
-      itemCategory: "finished_goods",
-      quantity: 1,
-      unit: "pcs",
-      unitCost: 0,
-      referenceNumber: type === "stock_in" ? "PO-REC-" + Date.now().toString().slice(-4) : "SO-DISP-" + Date.now().toString().slice(-4),
-      reason: type === "stock_in" ? "Supplier Purchase Receipt" : type === "stock_out" ? "Sales Order Dispatch" : "Inventory Count Adjustment",
-      notes: "",
-    });
-    setIsModalOpen(true);
-  };
-
-  const handleModalSubmit = async (e: React.FormEvent) => {
-    e.preventDefault();
-    setFormError("");
-
-    if (!formData.warehouseId) {
-      setFormError("Please select a warehouse location.");
-      return;
-    }
-    if (!formData.sku.trim()) {
-      setFormError("Item SKU is required.");
-      return;
-    }
-    if (!formData.itemName.trim()) {
-      setFormError("Item name is required.");
-      return;
-    }
-    if (formData.quantity <= 0) {
-      setFormError("Quantity must be greater than 0.");
-      return;
-    }
-
-    setIsSubmitting(true);
+  const fetchAllStockLevels = async () => {
+    setLoadingAllLevels(true);
     try {
-      await inventoryService.recordMovement({
-        ...formData,
-        type: movementType,
-      });
-      setIsModalOpen(false);
-      fetchData();
-    } catch (err: any) {
-      setFormError(err.message || "Failed to record stock movement");
+      const res = await inventoryService.getStockLevels();
+      if (res.stockItems) {
+        setAllStockLevels(res.stockItems);
+      }
+    } catch (_) {
     } finally {
-      setIsSubmitting(false);
+      setLoadingAllLevels(false);
     }
   };
+
+  const refreshAllData = () => {
+    fetchAllStockLevels();
+    rawMaterialsHook.refetch();
+    finishedGoodsHook.refetch();
+    historyHook.refetch();
+    alertsHook.refetch();
+    reportsHook.refetch();
+  };
+
+  // Quick Action Triggers
+  const handleOpenStockIn = (sku?: string, itemName?: string, category?: string) => {
+    setModalInitialData({ sku, itemName, itemCategory: category });
+    setIsStockInModalOpen(true);
+  };
+
+  const handleOpenStockOut = (sku?: string, itemName?: string, category?: string) => {
+    setModalInitialData({ sku, itemName, itemCategory: category });
+    setIsStockOutModalOpen(true);
+  };
+
+  const handleOpenAdjustment = (sku?: string, itemName?: string) => {
+    setModalInitialData({ sku, itemName });
+    setIsAdjustmentModalOpen(true);
+  };
+
+  // Total valuation calculation across all stock items
+  const totalValuation = allStockLevels.reduce((acc, item) => acc + (item.totalValue || 0), 0);
 
   return (
     <div className="inv-page-container">
+      {/* LOW STOCK ALERT BANNER (Task 5) */}
+      <LowStockAlertBanner
+        alerts={alertsHook.alerts}
+        onOpenPanel={() => setIsNotifPanelOpen(true)}
+        onQuickStockIn={(sku, itemName, cat) => handleOpenStockIn(sku, itemName, cat)}
+      />
+
       {/* PAGE HEADER */}
       <div className="inv-page-header">
         <div className="inv-header-left">
           <div className="inv-breadcrumbs">
             <span>Operations</span>
             <span>/</span>
-            <span className="active">Inventory & Stock Operations</span>
+            <span className="active">Inventory Stock Control</span>
           </div>
           <h1 className="inv-page-title">
             <Boxes className="text-copper" size={30} />
-            Inventory Control & Stock Movements
+            Inventory Stock Management
           </h1>
           <p className="inv-page-subtitle">
-            Track stock in receipts, stock out dispatches, cycle count adjustments, raw materials, and finished goods valuation.
+            Manage raw materials, finished goods stock levels, inter-warehouse transfers, manual reconciliations, and automated low-stock notifications.
           </p>
         </div>
 
         <div className="inv-header-actions">
           <button
             type="button"
+            className="inv-notif-bell-btn"
+            onClick={() => setIsNotifPanelOpen(true)}
+            title="View Low Stock Notifications"
+          >
+            <Bell size={18} />
+            {alertsHook.alerts.length > 0 && (
+              <span className="inv-notif-badge">{alertsHook.alerts.length}</span>
+            )}
+          </button>
+
+          <button
+            type="button"
             className="diws-btn diws-btn-secondary"
-            onClick={fetchData}
-            title="Refresh Data"
+            onClick={refreshAllData}
+            title="Refresh All Data"
           >
             <RefreshCw size={16} /> Refresh
           </button>
+
           <button
             type="button"
             className="diws-btn diws-btn-success"
-            onClick={() => openMovementModal("stock_in")}
+            onClick={() => handleOpenStockIn()}
           >
-            <ArrowDownLeft size={18} /> Record Stock In
+            <ArrowDownLeft size={18} /> Stock In
           </button>
+
           <button
             type="button"
             className="diws-btn diws-btn-warning"
-            onClick={() => openMovementModal("stock_out")}
+            onClick={() => handleOpenStockOut()}
           >
-            <ArrowUpRight size={18} /> Record Stock Out
+            <ArrowUpRight size={18} /> Stock Out
           </button>
+
+          <button
+            type="button"
+            className="diws-btn diws-btn-secondary"
+            onClick={() => setIsTransferModalOpen(true)}
+          >
+            <ArrowLeftRight size={18} /> Transfer
+          </button>
+
           <button
             type="button"
             className="diws-btn diws-btn-primary"
-            onClick={() => openMovementModal("adjustment")}
+            onClick={() => handleOpenAdjustment()}
           >
             <SlidersHorizontal size={18} /> Adjustment
           </button>
         </div>
       </div>
 
-      {/* STATS CARDS */}
+      {/* OVERVIEW STATS CARDS */}
       <div className="inv-stats-grid">
         <div className="inv-stat-card">
           <div className="inv-stat-icon-wrap forest">
             <PackageCheck size={24} />
           </div>
           <div className="inv-stat-info">
-            <span className="inv-stat-value">{stockLevels.length}</span>
-            <span className="inv-stat-label">Tracked Catalog SKUs</span>
+            <span className="inv-stat-value">{allStockLevels.length} SKUs</span>
+            <span className="inv-stat-label">Tracked Catalog Items</span>
           </div>
         </div>
 
@@ -236,8 +244,8 @@ export const InventoryList: React.FC = () => {
             <ArrowDownLeft size={24} />
           </div>
           <div className="inv-stat-info">
-            <span className="inv-stat-value">+{stats.totalStockInQty} units</span>
-            <span className="inv-stat-label">Total Stock Received</span>
+            <span className="inv-stat-value">+{historyHook.stats?.totalStockInQty || 0} units</span>
+            <span className="inv-stat-label">Stock Received (Stock In)</span>
           </div>
         </div>
 
@@ -246,8 +254,8 @@ export const InventoryList: React.FC = () => {
             <ArrowUpRight size={24} />
           </div>
           <div className="inv-stat-info">
-            <span className="inv-stat-value">-{stats.totalStockOutQty} units</span>
-            <span className="inv-stat-label">Total Stock Issued</span>
+            <span className="inv-stat-value">-{historyHook.stats?.totalStockOutQty || 0} units</span>
+            <span className="inv-stat-label">Stock Issued (Stock Out)</span>
           </div>
         </div>
 
@@ -257,96 +265,178 @@ export const InventoryList: React.FC = () => {
           </div>
           <div className="inv-stat-info">
             <span className="inv-stat-value">
-              ${stats.totalValuation.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              ${totalValuation.toLocaleString(undefined, { minimumFractionDigits: 2 })}
             </span>
-            <span className="inv-stat-label">Total Stock Valuation</span>
+            <span className="inv-stat-label">Gross Stock Valuation</span>
           </div>
         </div>
       </div>
 
-      {/* TABS NAVIGATION */}
+      {/* MAIN NAVIGATION TABS */}
       <div className="inv-tabs-header">
         <button
-          className={`inv-tab-btn ${activeTab === "levels" ? "active" : ""}`}
-          onClick={() => setActiveTab("levels")}
+          className={`inv-tab-btn ${activeTab === "raw_materials" ? "active" : ""}`}
+          onClick={() => setActiveTab("raw_materials")}
         >
-          <Layers size={18} /> Current Stock Levels
+          <Layers size={18} /> Raw Materials Inventory
+          {rawMaterialsHook.summary && (
+            <span className="inv-tab-count">{rawMaterialsHook.summary.totalItems}</span>
+          )}
         </button>
+
+        <button
+          className={`inv-tab-btn ${activeTab === "finished_goods" ? "active" : ""}`}
+          onClick={() => setActiveTab("finished_goods")}
+        >
+          <Boxes size={18} /> Finished Goods Inventory
+          {finishedGoodsHook.summary && (
+            <span className="inv-tab-count">{finishedGoodsHook.summary.totalItems}</span>
+          )}
+        </button>
+
+        <button
+          className={`inv-tab-btn ${activeTab === "all_levels" ? "active" : ""}`}
+          onClick={() => setActiveTab("all_levels")}
+        >
+          <PackageCheck size={18} /> All Stock Catalog
+          <span className="inv-tab-count">{allStockLevels.length}</span>
+        </button>
+
         <button
           className={`inv-tab-btn ${activeTab === "movements" ? "active" : ""}`}
           onClick={() => setActiveTab("movements")}
         >
-          <FileText size={18} /> Stock Movement Audit Logs
+          <FileText size={18} /> Stock Movements & Audit Log
         </button>
+
         <button
           className={`inv-tab-btn ${activeTab === "reports" ? "active" : ""}`}
           onClick={() => setActiveTab("reports")}
         >
-          <DollarSign size={18} /> Inventory Reports & Valuation
+          <DollarSign size={18} /> Reports & Valuation Charts
         </button>
       </div>
 
-      {/* TAB CONTENT 1: CURRENT STOCK LEVELS */}
-      {activeTab === "levels" && (
+      {/* TAB CONTENT 1: RAW MATERIALS */}
+      {activeTab === "raw_materials" && (
         <div className="inv-tab-body">
-          {loading ? (
+          <div className="inv-toolbar">
+            <div className="inv-search-form">
+              <Search size={18} className="inv-search-icon" />
+              <input
+                type="text"
+                className="inv-search-input"
+                placeholder="Search raw materials by SKU, item name..."
+                value={searchQuery}
+                onChange={(e) => setSearchQuery(e.target.value)}
+              />
+            </div>
+
+            <button
+              type="button"
+              className="diws-btn diws-btn-success"
+              onClick={() => handleOpenStockIn(undefined, undefined, "raw_material")}
+            >
+              <Plus size={16} /> Add Raw Material Stock In
+            </button>
+          </div>
+
+          {rawMaterialsHook.loading ? (
             <div style={{ textAlign: "center", padding: "3rem" }}>
               <div className="diws-spinner" style={{ margin: "0 auto 1rem" }} />
-              <p style={{ color: "var(--text-secondary)" }}>Loading stock levels...</p>
+              <p style={{ color: "var(--text-secondary)" }}>Loading Raw Materials stock levels...</p>
             </div>
           ) : (
             <div className="inv-table-card">
               <table className="inv-data-table">
                 <thead>
                   <tr>
-                    <th>SKU & Item Name</th>
-                    <th>Category</th>
-                    <th>Stock In</th>
-                    <th>Stock Out</th>
-                    <th>Current Stock</th>
+                    <th>SKU Code & Raw Material</th>
+                    <th>Warehouse Location</th>
+                    <th>On-Hand Stock</th>
+                    <th>Min / Max Threshold</th>
                     <th>Unit Cost</th>
-                    <th>Total Valuation</th>
+                    <th>Valuation</th>
                     <th>Status</th>
+                    <th>Actions</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {stockLevels.length === 0 ? (
+                  {rawMaterialsHook.data.length === 0 ? (
                     <tr>
                       <td colSpan={8} style={{ textAlign: "center", padding: "3rem" }}>
                         <Boxes size={36} color="#94A3B8" style={{ margin: "0 auto 0.5rem" }} />
-                        <p style={{ color: "#64748B" }}>No stock items found in inventory.</p>
+                        <p style={{ color: "#64748B" }}>No raw material items match your filters.</p>
                       </td>
                     </tr>
                   ) : (
-                    stockLevels.map((item) => (
-                      <tr key={item.sku}>
-                        <td>
-                          <div style={{ fontWeight: 700, color: "#1E293B" }}>{item.itemName}</div>
-                          <span className="inv-code-tag">{item.sku}</span>
-                        </td>
-                        <td>
-                          <span className={`inv-cat-pill ${item.itemCategory}`}>
-                            {item.itemCategory.replace("_", " ")}
-                          </span>
-                        </td>
-                        <td>+{item.stockIn} {item.unit}</td>
-                        <td>-{item.stockOut} {item.unit}</td>
-                        <td>
-                          <strong style={{ fontSize: "1.05rem", color: item.currentStock > 10 ? "#047857" : "#D97706" }}>
-                            {item.currentStock} {item.unit}
-                          </strong>
-                        </td>
-                        <td>${item.unitCost.toFixed(2)}</td>
-                        <td>
-                          <strong>${item.totalValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}</strong>
-                        </td>
-                        <td>
-                          <span className={`inv-status-tag ${item.currentStock > 10 ? "healthy" : "low"}`}>
-                            {item.currentStock > 10 ? "Optimal Stock" : "Low Stock Alert"}
-                          </span>
-                        </td>
-                      </tr>
-                    ))
+                    rawMaterialsHook.data.map((item) => {
+                      const isLow = item.currentStock <= (item.minThreshold || 10);
+                      const isZero = item.currentStock === 0;
+
+                      return (
+                        <tr key={item.sku}>
+                          <td>
+                            <div style={{ fontWeight: 700, color: "#1E293B" }}>{item.itemName}</div>
+                            <span className="inv-code-tag">{item.sku}</span>
+                          </td>
+                          <td>
+                            <span className="inv-wh-tag">
+                              {typeof item.warehouseId === "object" ? item.warehouseId?.name : "Main Warehouse"}
+                            </span>
+                            {item.locationInWarehouse && (
+                              <div style={{ fontSize: "0.75rem", color: "#64748B" }}>{item.locationInWarehouse}</div>
+                            )}
+                          </td>
+                          <td>
+                            <strong
+                              style={{
+                                fontSize: "1.05rem",
+                                color: isZero ? "#DC2626" : isLow ? "#D97706" : "#047857",
+                              }}
+                            >
+                              {item.currentStock} {item.unit}
+                            </strong>
+                          </td>
+                          <td>
+                            <span style={{ fontSize: "0.85rem", color: "#64748B" }}>
+                              Min: {item.minThreshold || 10} / Max: {item.maxThreshold || 500}
+                            </span>
+                          </td>
+                          <td>${(item.unitCost || 0).toFixed(2)}</td>
+                          <td>
+                            <strong>
+                              ${(item.totalValue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            </strong>
+                          </td>
+                          <td>
+                            <span className={`inv-status-tag ${isZero ? "out" : isLow ? "low" : "healthy"}`}>
+                              {isZero ? "Out of Stock" : isLow ? "Low Stock Alert" : "In Stock"}
+                            </span>
+                          </td>
+                          <td>
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                className="diws-btn diws-btn-success diws-btn-sm"
+                                onClick={() => handleOpenStockIn(item.sku, item.itemName, "raw_material")}
+                                title="Stock In Receipt"
+                              >
+                                <ArrowDownLeft size={14} /> +Stock In
+                              </button>
+                              <button
+                                type="button"
+                                className="diws-btn diws-btn-warning diws-btn-sm"
+                                onClick={() => handleOpenStockOut(item.sku, item.itemName, "raw_material")}
+                                title="Issue Stock Out"
+                              >
+                                <ArrowUpRight size={14} /> -Stock Out
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
                   )}
                 </tbody>
               </table>
@@ -355,348 +445,308 @@ export const InventoryList: React.FC = () => {
         </div>
       )}
 
-      {/* TAB CONTENT 2: MOVEMENT AUDIT LOGS */}
-      {activeTab === "movements" && (
+      {/* TAB CONTENT 2: FINISHED GOODS */}
+      {activeTab === "finished_goods" && (
         <div className="inv-tab-body">
-          {/* TOOLBAR */}
           <div className="inv-toolbar">
-            <form onSubmit={handleSearchSubmit} className="inv-search-form">
+            <div className="inv-search-form">
               <Search size={18} className="inv-search-icon" />
               <input
                 type="text"
                 className="inv-search-input"
-                placeholder="Search by SKU, item name, reference #, or reason..."
+                placeholder="Search finished goods by SKU, product name..."
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
               />
-            </form>
-
-            <div className="inv-filters-row">
-              <select
-                className="inv-filter-select"
-                value={selectedType}
-                onChange={(e) => setSelectedType(e.target.value)}
-              >
-                <option value="ALL">All Movement Types</option>
-                <option value="stock_in">Stock In (Receipt)</option>
-                <option value="stock_out">Stock Out (Issue)</option>
-                <option value="adjustment">Stock Adjustment</option>
-              </select>
-
-              <select
-                className="inv-filter-select"
-                value={selectedCategory}
-                onChange={(e) => setSelectedCategory(e.target.value)}
-              >
-                <option value="ALL">All Categories</option>
-                <option value="raw_material">Raw Materials</option>
-                <option value="finished_goods">Finished Goods</option>
-                <option value="components">Components</option>
-                <option value="packaging">Packaging</option>
-              </select>
             </div>
+
+            <button
+              type="button"
+              className="diws-btn diws-btn-warning"
+              onClick={() => handleOpenStockOut(undefined, undefined, "finished_goods")}
+            >
+              <ArrowUpRight size={16} /> Dispatch Finished Goods
+            </button>
           </div>
 
-          <div className="inv-table-card">
-            <table className="inv-data-table">
-              <thead>
-                <tr>
-                  <th>Timestamp</th>
-                  <th>Type</th>
-                  <th>SKU & Item Name</th>
-                  <th>Quantity</th>
-                  <th>Reference #</th>
-                  <th>Reason / Notes</th>
-                  <th>Valuation Impact</th>
-                </tr>
-              </thead>
-              <tbody>
-                {movements.length === 0 ? (
+          {finishedGoodsHook.loading ? (
+            <div style={{ textAlign: "center", padding: "3rem" }}>
+              <div className="diws-spinner" style={{ margin: "0 auto 1rem" }} />
+              <p style={{ color: "var(--text-secondary)" }}>Loading Finished Goods inventory...</p>
+            </div>
+          ) : (
+            <div className="inv-table-card">
+              <table className="inv-data-table">
+                <thead>
                   <tr>
-                    <td colSpan={7} style={{ textAlign: "center", padding: "3rem" }}>
-                      <FileText size={36} color="#94A3B8" style={{ margin: "0 auto 0.5rem" }} />
-                      <p style={{ color: "#64748B" }}>No stock movement records matching filters.</p>
-                    </td>
+                    <th>SKU Code & Finished Product</th>
+                    <th>Warehouse Location</th>
+                    <th>Current Stock</th>
+                    <th>Min / Max Threshold</th>
+                    <th>Unit Cost</th>
+                    <th>Total Value</th>
+                    <th>Status</th>
+                    <th>Actions</th>
                   </tr>
-                ) : (
-                  movements.map((mov) => (
-                    <tr key={mov._id}>
-                      <td>
-                        <div style={{ fontSize: "0.85rem", color: "#64748B" }}>
-                          {new Date(mov.createdAt).toLocaleDateString()}
-                        </div>
-                        <div style={{ fontSize: "0.78rem", color: "#94A3B8" }}>
-                          {new Date(mov.createdAt).toLocaleTimeString([], { hour: "2-digit", minute: "2-digit" })}
-                        </div>
-                      </td>
-                      <td>
-                        <span className={`inv-type-badge ${mov.type}`}>
-                          {mov.type === "stock_in" ? (
-                            <><ArrowDownLeft size={14} /> Stock In</>
-                          ) : mov.type === "stock_out" ? (
-                            <><ArrowUpRight size={14} /> Stock Out</>
-                          ) : (
-                            <><SlidersHorizontal size={14} /> Adjustment</>
-                          )}
-                        </span>
-                      </td>
-                      <td>
-                        <div style={{ fontWeight: 600 }}>{mov.itemName}</div>
-                        <span className="inv-code-tag">{mov.sku}</span>
-                      </td>
-                      <td>
-                        <strong style={{ color: mov.type === "stock_in" ? "#047857" : "#DC2626" }}>
-                          {mov.type === "stock_in" ? "+" : "-"}{mov.quantity} {mov.unit}
-                        </strong>
-                      </td>
-                      <td>
-                        <span className="inv-ref-tag">{mov.referenceNumber}</span>
-                      </td>
-                      <td>
-                        <div>{mov.reason || "Operational Transaction"}</div>
-                        {mov.notes && <div style={{ fontSize: "0.8rem", color: "#64748B" }}>{mov.notes}</div>}
-                      </td>
-                      <td>
-                        <strong>${(mov.totalValue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}</strong>
+                </thead>
+                <tbody>
+                  {finishedGoodsHook.data.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} style={{ textAlign: "center", padding: "3rem" }}>
+                        <Boxes size={36} color="#94A3B8" style={{ margin: "0 auto 0.5rem" }} />
+                        <p style={{ color: "#64748B" }}>No finished goods matching search filters.</p>
                       </td>
                     </tr>
-                  ))
-                )}
-              </tbody>
-            </table>
-          </div>
+                  ) : (
+                    finishedGoodsHook.data.map((item) => {
+                      const isLow = item.currentStock <= (item.minThreshold || 10);
+                      const isZero = item.currentStock === 0;
+
+                      return (
+                        <tr key={item.sku}>
+                          <td>
+                            <div style={{ fontWeight: 700, color: "#1E293B" }}>{item.itemName}</div>
+                            <span className="inv-code-tag">{item.sku}</span>
+                          </td>
+                          <td>
+                            <span className="inv-wh-tag">
+                              {typeof item.warehouseId === "object" ? item.warehouseId?.name : "Central Hub Warehouse"}
+                            </span>
+                          </td>
+                          <td>
+                            <strong
+                              style={{
+                                fontSize: "1.05rem",
+                                color: isZero ? "#DC2626" : isLow ? "#D97706" : "#047857",
+                              }}
+                            >
+                              {item.currentStock} {item.unit}
+                            </strong>
+                          </td>
+                          <td>
+                            <span style={{ fontSize: "0.85rem", color: "#64748B" }}>
+                              Min: {item.minThreshold || 10} / Max: {item.maxThreshold || 500}
+                            </span>
+                          </td>
+                          <td>${(item.unitCost || 0).toFixed(2)}</td>
+                          <td>
+                            <strong>
+                              ${(item.totalValue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            </strong>
+                          </td>
+                          <td>
+                            <span className={`inv-status-tag ${isZero ? "out" : isLow ? "low" : "healthy"}`}>
+                              {isZero ? "Out of Stock" : isLow ? "Low Stock Alert" : "In Stock"}
+                            </span>
+                          </td>
+                          <td>
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                className="diws-btn diws-btn-warning diws-btn-sm"
+                                onClick={() => handleOpenStockOut(item.sku, item.itemName, "finished_goods")}
+                                title="Issue / Dispatch"
+                              >
+                                <ArrowUpRight size={14} /> Dispatch
+                              </button>
+                              <button
+                                type="button"
+                                className="diws-btn diws-btn-secondary diws-btn-sm"
+                                onClick={() => handleOpenAdjustment(item.sku, item.itemName)}
+                                title="Reconcile Count"
+                              >
+                                Adjust
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
         </div>
       )}
 
-      {/* TAB CONTENT 3: REPORTS & VALUATION */}
+      {/* TAB CONTENT 3: ALL STOCK CATALOG */}
+      {activeTab === "all_levels" && (
+        <div className="inv-tab-body">
+          {loadingAllLevels ? (
+            <div style={{ textAlign: "center", padding: "3rem" }}>
+              <div className="diws-spinner" style={{ margin: "0 auto 1rem" }} />
+              <p style={{ color: "var(--text-secondary)" }}>Loading complete stock levels catalog...</p>
+            </div>
+          ) : (
+            <div className="inv-table-card">
+              <table className="inv-data-table">
+                <thead>
+                  <tr>
+                    <th>SKU & Item Name</th>
+                    <th>Category</th>
+                    <th>Location</th>
+                    <th>Current Stock</th>
+                    <th>Unit Cost</th>
+                    <th>Total Value</th>
+                    <th>Status</th>
+                    <th>Quick Actions</th>
+                  </tr>
+                </thead>
+                <tbody>
+                  {allStockLevels.length === 0 ? (
+                    <tr>
+                      <td colSpan={8} style={{ textAlign: "center", padding: "3rem" }}>
+                        <Boxes size={36} color="#94A3B8" style={{ margin: "0 auto 0.5rem" }} />
+                        <p style={{ color: "#64748B" }}>No stock items found in inventory.</p>
+                      </td>
+                    </tr>
+                  ) : (
+                    allStockLevels.map((item) => {
+                      const isLow = item.currentStock <= (item.minThreshold || 10);
+                      const isZero = item.currentStock === 0;
+
+                      return (
+                        <tr key={item.sku}>
+                          <td>
+                            <div style={{ fontWeight: 700, color: "#1E293B" }}>{item.itemName}</div>
+                            <span className="inv-code-tag">{item.sku}</span>
+                          </td>
+                          <td>
+                            <span className={`inv-cat-pill ${item.itemCategory}`}>
+                              {item.itemCategory ? item.itemCategory.replace("_", " ") : "finished goods"}
+                            </span>
+                          </td>
+                          <td>
+                            <span className="inv-wh-tag">
+                              {typeof item.warehouseId === "object" ? item.warehouseId?.name : "Main Warehouse"}
+                            </span>
+                          </td>
+                          <td>
+                            <strong
+                              style={{
+                                fontSize: "1.05rem",
+                                color: isZero ? "#DC2626" : isLow ? "#D97706" : "#047857",
+                              }}
+                            >
+                              {item.currentStock} {item.unit}
+                            </strong>
+                          </td>
+                          <td>${(item.unitCost || 0).toFixed(2)}</td>
+                          <td>
+                            <strong>
+                              ${(item.totalValue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                            </strong>
+                          </td>
+                          <td>
+                            <span className={`inv-status-tag ${isZero ? "out" : isLow ? "low" : "healthy"}`}>
+                              {isZero ? "Out of Stock" : isLow ? "Low Stock Alert" : "In Stock"}
+                            </span>
+                          </td>
+                          <td>
+                            <div className="flex items-center gap-1">
+                              <button
+                                type="button"
+                                className="diws-btn diws-btn-success diws-btn-sm"
+                                onClick={() => handleOpenStockIn(item.sku, item.itemName, item.itemCategory)}
+                              >
+                                +In
+                              </button>
+                              <button
+                                type="button"
+                                className="diws-btn diws-btn-warning diws-btn-sm"
+                                onClick={() => handleOpenStockOut(item.sku, item.itemName, item.itemCategory)}
+                              >
+                                -Out
+                              </button>
+                            </div>
+                          </td>
+                        </tr>
+                      );
+                    })
+                  )}
+                </tbody>
+              </table>
+            </div>
+          )}
+        </div>
+      )}
+
+      {/* TAB CONTENT 4: STOCK MOVEMENTS & AUDIT LOG (Task 6) */}
+      {activeTab === "movements" && (
+        <div className="inv-tab-body">
+          <StockMovementTimeline
+            movements={historyHook.movements}
+            loading={historyHook.loading}
+            searchQuery={searchQuery}
+            onSearchChange={setSearchQuery}
+            selectedType={selectedType}
+            onTypeChange={setSelectedType}
+            selectedCategory={selectedCategory}
+            onCategoryChange={setSelectedCategory}
+            warehouses={warehouses}
+            selectedWarehouse={selectedWarehouse}
+            onWarehouseChange={setSelectedWarehouse}
+          />
+        </div>
+      )}
+
+      {/* TAB CONTENT 5: REPORTS & VALUATION CHARTS (Task 7) */}
       {activeTab === "reports" && (
         <div className="inv-tab-body">
-          <div className="inv-report-grid">
-            <div className="inv-report-card">
-              <h3 className="inv-report-title">
-                <DollarSign size={20} /> Total Valuation Summary
-              </h3>
-              <p style={{ color: "#64748B", marginBottom: "1.5rem" }}>
-                Financial breakdown of inventory items on hand across all factory & warehouse units.
-              </p>
-              <div className="inv-report-metric-box">
-                <div className="metric-row">
-                  <span>Raw Materials Valuation</span>
-                  <strong>
-                    $
-                    {stockLevels
-                      .filter((i) => i.itemCategory === "raw_material")
-                      .reduce((acc, i) => acc + i.totalValue, 0)
-                      .toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                  </strong>
-                </div>
-                <div className="metric-row">
-                  <span>Finished Goods Valuation</span>
-                  <strong>
-                    $
-                    {stockLevels
-                      .filter((i) => i.itemCategory === "finished_goods")
-                      .reduce((acc, i) => acc + i.totalValue, 0)
-                      .toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                  </strong>
-                </div>
-                <div className="metric-row total">
-                  <span>Gross Inventory Asset Value</span>
-                  <strong className="text-copper">
-                    ${stats.totalValuation.toLocaleString(undefined, { minimumFractionDigits: 2 })}
-                  </strong>
-                </div>
-              </div>
-            </div>
-
-            <div className="inv-report-card">
-              <h3 className="inv-report-title">
-                <CheckCircle2 size={20} /> Inventory Health Metrics
-              </h3>
-              <p style={{ color: "#64748B", marginBottom: "1.5rem" }}>
-                Operational turnover stats and stock balance checks.
-              </p>
-              <div className="inv-health-stats">
-                <div className="health-box">
-                  <span className="health-num">{stockLevels.length}</span>
-                  <span className="health-label">Active SKUs</span>
-                </div>
-                <div className="health-box">
-                  <span className="health-num">{stockLevels.filter((s) => s.currentStock <= 10).length}</span>
-                  <span className="health-label">Low Stock Warnings</span>
-                </div>
-                <div className="health-box">
-                  <span className="health-num">99.4%</span>
-                  <span className="health-label">Audit Accuracy Rate</span>
-                </div>
-              </div>
-            </div>
-          </div>
+          <InventoryReportsCharts
+            report={reportsHook.report}
+            loading={reportsHook.loading}
+          />
         </div>
       )}
 
-      {/* RECORD MOVEMENT MODAL */}
-      {isModalOpen && (
-        <div className="diws-modal-backdrop" onClick={() => setIsModalOpen(false)}>
-          <div className="diws-modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "560px" }}>
-            <div className="diws-modal-header">
-              <h3 className="diws-modal-title">
-                {movementType === "stock_in"
-                  ? "Record Stock In (Goods Receipt)"
-                  : movementType === "stock_out"
-                  ? "Record Stock Out (Goods Issue)"
-                  : "Record Stock Adjustment"}
-              </h3>
-              <button type="button" className="diws-modal-close" onClick={() => setIsModalOpen(false)}>
-                &times;
-              </button>
-            </div>
+      {/* MODAL FORMS & DRAWER PANELS */}
+      <StockInModal
+        isOpen={isStockInModalOpen}
+        onClose={() => setIsStockInModalOpen(false)}
+        warehouses={warehouses}
+        initialData={modalInitialData}
+        onSuccess={refreshAllData}
+        onSubmit={stockInMutation.execute}
+      />
 
-            <form onSubmit={handleModalSubmit}>
-              <div className="diws-modal-body">
-                {formError && (
-                  <div className="inv-error-alert">
-                    <AlertCircle size={16} /> {formError}
-                  </div>
-                )}
+      <StockOutModal
+        isOpen={isStockOutModalOpen}
+        onClose={() => setIsStockOutModalOpen(false)}
+        warehouses={warehouses}
+        stockItems={allStockLevels}
+        initialData={modalInitialData}
+        onSuccess={refreshAllData}
+        onSubmit={stockOutMutation.execute}
+      />
 
-                <div className="inv-form-group">
-                  <label className="inv-form-label">Target Warehouse *</label>
-                  <select
-                    className="inv-form-input"
-                    value={formData.warehouseId}
-                    onChange={(e) => setFormData({ ...formData, warehouseId: e.target.value })}
-                    required
-                  >
-                    <option value="">Select Warehouse Location</option>
-                    {warehouses.map((wh) => (
-                      <option key={wh._id} value={wh._id}>
-                        {wh.name} ({wh.code})
-                      </option>
-                    ))}
-                  </select>
-                </div>
+      <StockTransferModal
+        isOpen={isTransferModalOpen}
+        onClose={() => setIsTransferModalOpen(false)}
+        warehouses={warehouses}
+        stockItems={allStockLevels}
+        onSuccess={refreshAllData}
+        onSubmit={transferMutation.execute}
+      />
 
-                <div className="inv-form-row">
-                  <div className="inv-form-group">
-                    <label className="inv-form-label">SKU Code *</label>
-                    <input
-                      type="text"
-                      className="inv-form-input"
-                      placeholder="e.g. SRV-800"
-                      value={formData.sku}
-                      onChange={(e) => setFormData({ ...formData, sku: e.target.value })}
-                      required
-                    />
-                  </div>
+      <StockAdjustmentModal
+        isOpen={isAdjustmentModalOpen}
+        onClose={() => setIsAdjustmentModalOpen(false)}
+        warehouses={warehouses}
+        stockItems={allStockLevels}
+        initialData={modalInitialData}
+        onSuccess={refreshAllData}
+        onSubmit={adjustmentMutation.execute}
+      />
 
-                  <div className="inv-form-group">
-                    <label className="inv-form-label">Item Category</label>
-                    <select
-                      className="inv-form-input"
-                      value={formData.itemCategory}
-                      onChange={(e) => setFormData({ ...formData, itemCategory: e.target.value as any })}
-                    >
-                      <option value="finished_goods">Finished Goods</option>
-                      <option value="raw_material">Raw Material</option>
-                      <option value="components">Components</option>
-                      <option value="packaging">Packaging</option>
-                    </select>
-                  </div>
-                </div>
-
-                <div className="inv-form-group">
-                  <label className="inv-form-label">Item Name *</label>
-                  <input
-                    type="text"
-                    className="inv-form-input"
-                    placeholder="e.g. Brushless Servo Motor 3.5kW"
-                    value={formData.itemName}
-                    onChange={(e) => setFormData({ ...formData, itemName: e.target.value })}
-                    required
-                  />
-                </div>
-
-                <div className="inv-form-row">
-                  <div className="inv-form-group">
-                    <label className="inv-form-label">Quantity *</label>
-                    <input
-                      type="number"
-                      min={1}
-                      className="inv-form-input"
-                      value={formData.quantity}
-                      onChange={(e) => setFormData({ ...formData, quantity: Number(e.target.value) })}
-                      required
-                    />
-                  </div>
-
-                  <div className="inv-form-group">
-                    <label className="inv-form-label">Unit of Measure</label>
-                    <input
-                      type="text"
-                      className="inv-form-input"
-                      placeholder="pcs, kg, meters..."
-                      value={formData.unit}
-                      onChange={(e) => setFormData({ ...formData, unit: e.target.value })}
-                    />
-                  </div>
-
-                  <div className="inv-form-group">
-                    <label className="inv-form-label">Unit Cost ($)</label>
-                    <input
-                      type="number"
-                      step="0.01"
-                      min={0}
-                      className="inv-form-input"
-                      value={formData.unitCost}
-                      onChange={(e) => setFormData({ ...formData, unitCost: Number(e.target.value) })}
-                    />
-                  </div>
-                </div>
-
-                <div className="inv-form-group">
-                  <label className="inv-form-label">Reference # / PO / SO</label>
-                  <input
-                    type="text"
-                    className="inv-form-input"
-                    placeholder="e.g. PO-RECEIPT-9081"
-                    value={formData.referenceNumber}
-                    onChange={(e) => setFormData({ ...formData, referenceNumber: e.target.value })}
-                  />
-                </div>
-
-                <div className="inv-form-group">
-                  <label className="inv-form-label">Reason / Purpose</label>
-                  <input
-                    type="text"
-                    className="inv-form-input"
-                    placeholder="e.g. Supplier Purchase Delivery"
-                    value={formData.reason}
-                    onChange={(e) => setFormData({ ...formData, reason: e.target.value })}
-                  />
-                </div>
-              </div>
-
-              <div className="diws-modal-footer">
-                <button
-                  type="button"
-                  className="diws-btn diws-btn-secondary"
-                  onClick={() => setIsModalOpen(false)}
-                >
-                  Cancel
-                </button>
-                <button
-                  type="submit"
-                  className="diws-btn diws-btn-primary"
-                  disabled={isSubmitting}
-                >
-                  {isSubmitting ? "Recording..." : "Confirm & Save Movement"}
-                </button>
-              </div>
-            </form>
-          </div>
-        </div>
-      )}
+      <LowStockNotificationPanel
+        isOpen={isNotifPanelOpen}
+        onClose={() => setIsNotifPanelOpen(false)}
+        alerts={alertsHook.alerts}
+        onStockInItem={(sku, name, cat) => handleOpenStockIn(sku, name, cat)}
+        onAdjustItem={(sku, name) => handleOpenAdjustment(sku, name)}
+      />
     </div>
   );
 };
