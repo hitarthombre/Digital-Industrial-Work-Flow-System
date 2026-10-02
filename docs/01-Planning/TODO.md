@@ -244,14 +244,14 @@ Version: 1.0
 
 ## 14. Procurement Module
 
-- [ ] Purchase request creation
-- [ ] Purchase request approval
-- [ ] Purchase order creation
-- [ ] Purchase order tracking
-- [ ] Goods receipt note
-- [ ] Purchase returns
+- [x] Purchase request creation
+- [x] Purchase request approval
+- [x] Purchase order creation
+- [x] Purchase order tracking
+- [x] Goods receipt note
+- [x] Purchase returns
 - [x] Supplier purchase history
-- [ ] Procurement reports
+- [x] Procurement reports
 
 
 ## 15. Production Module
