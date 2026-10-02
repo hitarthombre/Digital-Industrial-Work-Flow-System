@@ -244,14 +244,14 @@ Version: 1.0
 
 ## 14. Procurement Module
 
-- [x] Purchase request creation
-- [x] Purchase request approval
-- [x] Purchase order creation
-- [x] Purchase order tracking
-- [x] Goods receipt note
-- [x] Purchase returns
-- [x] Supplier purchase history
-- [x] Procurement reports
+- [x] Purchase request creation & Form Modal (`PurchaseRequestModal.tsx` & `PurchaseRequestsList.tsx`)
+- [x] Purchase request approval & RBAC controls (`PurchaseRequestModal.tsx`)
+- [x] Purchase order creation & management (`PurchaseOrderModal.tsx` & `PurchaseOrdersList.tsx`)
+- [x] Purchase order live tracking & progress bar (`POLiveTracker.tsx` & `PurchaseOrderDetailsPage.tsx`)
+- [x] Goods receipt note (GRN) inspection form (`GRNFormModal.tsx`)
+- [x] Purchase return request modal (`PurchaseReturnModal.tsx`)
+- [x] Supplier purchase history timeline tab (`PurchaseHistoryTimeline.tsx`)
+- [x] Procurement summary reports dashboard & API integration (`ProcurementDashboard.tsx`, `useProcurement.ts`, `procurementService.ts`)
 
 
 ## 15. Production Module

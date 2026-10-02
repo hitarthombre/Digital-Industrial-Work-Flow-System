@@ -59,6 +59,11 @@ import EditProduct from "./pages/products/EditProduct";
 
 import InventoryList from "./pages/inventory/InventoryList";
 
+import ProcurementDashboard from "./pages/procurement/ProcurementDashboard";
+import PurchaseRequestsList from "./pages/procurement/PurchaseRequestsList";
+import PurchaseOrdersList from "./pages/procurement/PurchaseOrdersList";
+import PurchaseOrderDetailsPage from "./pages/procurement/PurchaseOrderDetailsPage";
+
 // Public Layout Shell Wrapper
 function PublicLayout() {
   return (
@@ -149,6 +154,13 @@ export default function App() {
 
             {/* Inventory Management Module Routes */}
             <Route path="inventory" element={<InventoryList />} />
+
+            {/* Procurement Operations Module Routes */}
+            <Route path="procurement" element={<ProcurementDashboard />} />
+            <Route path="procurement/requests" element={<PurchaseRequestsList />} />
+            <Route path="procurement/orders" element={<PurchaseOrdersList />} />
+            <Route path="procurement/orders/:id" element={<PurchaseOrderDetailsPage />} />
+            <Route path="procurement/reports" element={<ProcurementDashboard />} />
           </Route>
 
           {/* 404 Fallback */}

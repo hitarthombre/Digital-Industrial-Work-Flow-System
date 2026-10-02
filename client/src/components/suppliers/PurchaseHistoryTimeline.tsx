@@ -34,13 +34,23 @@ export const PurchaseHistoryTimeline: React.FC<PurchaseHistoryTimelineProps> = (
     setLoading(true);
     setError(null);
     try {
+      // Try procurement supplier history endpoint first
       const response = await api.get<PurchaseHistoryResponse>(
-        `/suppliers/${supplierId}/purchase-history`
+        `/procurement/suppliers/${supplierId}/history`
       );
-      if (response.data) {
+      if (response && response.data) {
         setHistory(response.data);
       }
     } catch (err: any) {
+      try {
+        const altResponse = await api.get<PurchaseHistoryResponse>(
+          `/suppliers/${supplierId}/purchase-history`
+        );
+        if (altResponse && altResponse.data) {
+          setHistory(altResponse.data);
+          return;
+        }
+      } catch (_) {}
       // Provide clean default historical sample purchase data if endpoint is not seeded yet
       setHistory([
         {

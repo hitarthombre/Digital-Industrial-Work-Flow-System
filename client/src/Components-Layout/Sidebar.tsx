@@ -46,12 +46,22 @@ export const Sidebar: React.FC<SidebarProps> = ({
     location.pathname.startsWith("/app/company")
   );
 
+  const [isProcurementSubmenuOpen, setIsProcurementSubmenuOpen] = useState(
+    location.pathname.startsWith("/app/procurement")
+  );
+
   const toggleCompanySubmenu = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsCompanySubmenuOpen((prev) => !prev);
   };
 
+  const toggleProcurementSubmenu = (e: React.MouseEvent) => {
+    e.preventDefault();
+    setIsProcurementSubmenuOpen((prev) => !prev);
+  };
+
   const isCompanyActive = location.pathname.startsWith("/app/company");
+  const isProcurementActive = location.pathname.startsWith("/app/procurement");
 
   return (
     <>
@@ -279,16 +289,65 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {!collapsed && <span>Inventory</span>}
             </NavLink>
 
-            <NavLink
-              to="/app/procurement"
-              className={({ isActive }) =>
-                `diws-sidebar-item ${isActive ? "active" : ""}`
-              }
-              onClick={onCloseMobile}
+            {/* Procurement Nav Trigger & Submenu */}
+            <button
+              className={`diws-sidebar-item diws-sidebar-submenu-trigger ${
+                isProcurementActive ? "active" : ""
+              }`}
+              onClick={toggleProcurementSubmenu}
             >
-              <ShoppingCart size={18} className="diws-sidebar-icon" />
-              {!collapsed && <span>Procurement</span>}
-            </NavLink>
+              <div className="diws-sidebar-item-left">
+                <ShoppingCart size={18} className="diws-sidebar-icon" />
+                {!collapsed && <span>Procurement</span>}
+              </div>
+              {!collapsed && (
+                <div className="diws-sidebar-submenu-arrow">
+                  {isProcurementSubmenuOpen ? (
+                    <ChevronDown size={16} />
+                  ) : (
+                    <ChevronRight size={16} />
+                  )}
+                </div>
+              )}
+            </button>
+
+            {isProcurementSubmenuOpen && !collapsed && (
+              <div className="diws-sidebar-submenu">
+                <NavLink
+                  to="/app/procurement"
+                  end
+                  className={({ isActive }) =>
+                    `diws-sidebar-subitem ${isActive ? "active" : ""}`
+                  }
+                  onClick={onCloseMobile}
+                >
+                  <BarChart3 size={15} />
+                  <span>Dashboard</span>
+                </NavLink>
+
+                <NavLink
+                  to="/app/procurement/requests"
+                  className={({ isActive }) =>
+                    `diws-sidebar-subitem ${isActive ? "active" : ""}`
+                  }
+                  onClick={onCloseMobile}
+                >
+                  <ShoppingCart size={15} />
+                  <span>Purchase Requests</span>
+                </NavLink>
+
+                <NavLink
+                  to="/app/procurement/orders"
+                  className={({ isActive }) =>
+                    `diws-sidebar-subitem ${isActive ? "active" : ""}`
+                  }
+                  onClick={onCloseMobile}
+                >
+                  <FileText size={15} />
+                  <span>Purchase Orders</span>
+                </NavLink>
+              </div>
+            )}
 
             <NavLink
               to="/app/production"
