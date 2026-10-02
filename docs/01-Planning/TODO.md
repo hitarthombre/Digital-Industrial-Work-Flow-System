@@ -253,7 +253,6 @@ Version: 1.0
 - [x] Supplier purchase history
 - [ ] Procurement reports
 
----
 
 ## 15. Production Module
 
@@ -278,7 +277,6 @@ Version: 1.0
 - [ ] Sales history
 - [ ] Sales reports
 
----
 
 ## 17. Dispatch Module
 
