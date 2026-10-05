@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import { Cpu, Plus, RefreshCw, ClipboardList, CalendarRange, Gauge, AlertTriangle, Factory, Eye, CheckCircle2, XCircle } from "lucide-react";
+import { Cpu, Plus, RefreshCw, ClipboardList, CalendarRange, Gauge, AlertTriangle, Factory, Eye, CheckCircle2, XCircle, List, KanbanSquare } from "lucide-react";
 import { Button } from "../../components/Button";
 import { Chart } from "../../components/Chart";
 import {
@@ -18,9 +18,10 @@ import {
 import { ListFilters, toQuery } from "../../components/ops/ListFilters";
 import type { ListFilterValue } from "../../components/ops/ListFilters";
 import { ProductionPlanModal, WorkOrderModal } from "../../components/production/ProductionModals";
+import { WorkOrderBoard } from "../../components/production/WorkOrderBoard";
 import { useApiQuery, useDebounced, useMutation } from "../../hooks/useApiQuery";
 import { productionService } from "../../services/operationsService";
-import type { IProductionPlan, ProductionPlanStatus } from "../../types/operations";
+import type { IProductionPlan, ProductionPlanStatus, IWorkOrder, WorkOrderStatus } from "../../types/operations";
 import { formatDate, formatNumber, formatMoney, refName } from "../../utils/format";
 import "../procurement/ProcurementPages.css";
 
@@ -36,9 +37,12 @@ export const ProductionDashboard: React.FC = () => {
   const [planPage, setPlanPage] = useState(1);
   const [showPlanModal, setShowPlanModal] = useState(false);
   const [workOrderFor, setWorkOrderFor] = useState<IProductionPlan | null | undefined>(undefined);
+  const [woView, setWoView] = useState<"table" | "board">("table");
   const planAction = useMutation();
+  const boardAction = useMutation();
 
-  const woQuery = toQuery({ ...woFilters, search: useDebounced(woFilters.search) }, woPage);
+  // The board shows every matching work order at once, so it skips pagination
+  const woQuery = toQuery({ ...woFilters, search: useDebounced(woFilters.search) }, woView === "board" ? 1 : woPage, woView === "board" ? 100 : 20);
   const planQuery = toQuery({ ...planFilters, search: useDebounced(planFilters.search) }, planPage);
 
   const reports = useApiQuery(() => productionService.getReports(), []);
@@ -51,6 +55,12 @@ export const ProductionDashboard: React.FC = () => {
     reports.refetch();
     workOrders.refetch();
     plans.refetch();
+  };
+
+  const moveWorkOrder = async (wo: IWorkOrder, status: WorkOrderStatus) => {
+    await boardAction.mutate(() => productionService.updateWorkOrderStatus(wo._id, status)).catch(() => undefined);
+    workOrders.refetch();
+    reports.refetch();
   };
 
   const changePlanStatus = async (plan: IProductionPlan, status: ProductionPlanStatus) => {
@@ -115,7 +125,32 @@ export const ProductionDashboard: React.FC = () => {
               { value: "plannedQuantity", label: "Quantity" },
             ]}
           />
-          <ErrorBanner message={workOrders.error} onRetry={workOrders.refetch} />
+          <div className="flex justify-end gap-1 mb-3">
+            {(["table", "board"] as const).map((v) => (
+              <button
+                key={v}
+                type="button"
+                onClick={() => setWoView(v)}
+                className={`text-xs font-bold px-3 py-1.5 rounded-lg border flex items-center gap-1 ${
+                  woView === v ? "border-amber-500 bg-amber-50 text-amber-800" : "border-slate-200 bg-white text-slate-600"
+                }`}
+              >
+                {v === "table" ? <List size={13} /> : <KanbanSquare size={13} />}
+                {v === "table" ? "Table" : "Board"}
+              </button>
+            ))}
+          </div>
+          <ErrorBanner message={workOrders.error || boardAction.error} onRetry={workOrders.refetch} />
+          {woView === "board" ? (
+            workOrders.loading && !workOrders.data ? (
+              <LoadingBox label="Loading work orders..." />
+            ) : (
+              <>
+                <p className="text-[11px] text-slate-500 mb-2">Drag a card to another column to change its status. Click a card to open it.</p>
+                <WorkOrderBoard workOrders={workOrders.data?.data || []} onMove={moveWorkOrder} />
+              </>
+            )
+          ) : (
           <div className="proc-card p-0 overflow-hidden">
             {workOrders.loading ? (
               <LoadingBox label="Loading work orders..." />
@@ -193,6 +228,7 @@ export const ProductionDashboard: React.FC = () => {
               <Pager {...workOrders.data.pagination} page={woPage} onChange={setWoPage} />
             )}
           </div>
+          )}
         </>
       )}
 

@@ -259,7 +259,7 @@ Version: 1.0
 - [x] Production planning (`ProductionPlan` model, `/api/production/plans`, plans tab in `ProductionDashboard.tsx`)
 - [x] Work order creation (`WorkOrder` model, `POST /api/production/work-orders`, `WorkOrderModal`)
 - [x] Job card management (`/work-orders/:id/job-cards`, job cards panel in `WorkOrderDetails.tsx`)
-- [x] Production stage tracking (`PATCH /work-orders/:id/stages/:stageId`, stage tracker)
+- [x] Production stage tracking (`PATCH /work-orders/:id/stages/:stageId`, stage tracker, drag-and-drop status board `WorkOrderBoard.tsx`)
 - [x] Material consumption (`POST /work-orders/:id/consume` issues raw material stock, `ConsumeMaterialModal`)
 - [x] Production completion (`POST /work-orders/:id/output` receives finished goods, `RecordOutputModal`)
 - [x] Scrap tracking (`POST /work-orders/:id/scrap`, scrap log)
