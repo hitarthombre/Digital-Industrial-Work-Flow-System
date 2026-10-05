@@ -322,7 +322,7 @@ Version: 1.0
 
 - [x] Inventory report
 - [x] Purchase report
-- [ ] Production report
+- [x] Production report
 - [ ] Sales report
 - [ ] Dispatch report
 - [x] Supplier report
