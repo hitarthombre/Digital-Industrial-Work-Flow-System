@@ -28,6 +28,8 @@ export class AuditService {
       module?: string;
       action?: string;
       userId?: string;
+      startDate?: string;
+      endDate?: string;
       page?: number;
       limit?: number;
     }
@@ -40,6 +42,15 @@ export class AuditService {
     if (query.module) filter.module = query.module;
     if (query.action) filter.action = query.action;
     if (query.userId) filter.userId = query.userId;
+    if (query.startDate || query.endDate) {
+      filter.createdAt = {};
+      if (query.startDate) filter.createdAt.$gte = new Date(query.startDate);
+      if (query.endDate) {
+        const end = new Date(query.endDate);
+        end.setHours(23, 59, 59, 999);
+        filter.createdAt.$lte = end;
+      }
+    }
 
     const [logs, total] = await Promise.all([
       AuditLog.find(filter)

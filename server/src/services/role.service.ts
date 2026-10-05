@@ -1,5 +1,6 @@
 import { Role, IRole } from "../models/Role";
 import { Permission, IPermission } from "../models/Permission";
+import { auditService } from "./audit.service";
 
 export const SYSTEM_PERMISSIONS = [
   { code: "company:read", module: "company", description: "View company profile and settings" },
@@ -186,22 +187,44 @@ export class RoleService {
     });
   }
 
-  async createRole(companyId: string, name: string, description: string | undefined, permissions: string[]): Promise<IRole> {
+  async createRole(
+    companyId: string,
+    name: string,
+    description: string | undefined,
+    permissions: string[],
+    actorId?: string
+  ): Promise<IRole> {
     const existing = await Role.findOne({ name, companyId });
     if (existing) {
       throw new Error(`Role '${name}' already exists in this company`);
     }
 
-    return Role.create({
+    const role = await Role.create({
       companyId,
       name,
       description,
       permissions,
       isSystemRole: false,
     });
+
+    await auditService.log({
+      companyId,
+      userId: actorId,
+      action: "ROLE_CREATED",
+      module: "permissions",
+      referenceId: role._id.toString(),
+      after: { name, permissions },
+    });
+
+    return role;
   }
 
-  async updateRole(roleId: string, companyId: string, data: { name?: string; description?: string; permissions?: string[] }): Promise<IRole | null> {
+  async updateRole(
+    roleId: string,
+    companyId: string,
+    data: { name?: string; description?: string; permissions?: string[] },
+    actorId?: string
+  ): Promise<IRole | null> {
     const role = await Role.findOne({ _id: roleId, companyId });
     if (!role) {
       throw new Error("Custom role not found or access denied");
@@ -211,20 +234,46 @@ export class RoleService {
       throw new Error("System roles cannot be modified");
     }
 
+    const before = { name: role.name, permissions: [...role.permissions] };
+
     if (data.name) role.name = data.name;
     if (data.description !== undefined) role.description = data.description;
     if (data.permissions) role.permissions = data.permissions;
 
-    return role.save();
+    const saved = await role.save();
+
+    const granted = saved.permissions.filter((p) => !before.permissions.includes(p));
+    const revoked = before.permissions.filter((p) => !saved.permissions.includes(p));
+    await auditService.log({
+      companyId,
+      userId: actorId,
+      action: "ROLE_PERMISSIONS_UPDATED",
+      module: "permissions",
+      referenceId: saved._id.toString(),
+      before,
+      after: { name: saved.name, permissions: saved.permissions, granted, revoked },
+    });
+
+    return saved;
   }
 
-  async deleteRole(roleId: string, companyId: string): Promise<boolean> {
+  async deleteRole(roleId: string, companyId: string, actorId?: string): Promise<boolean> {
     const role = await Role.findOne({ _id: roleId, companyId });
     if (!role || role.isSystemRole) {
       throw new Error("Role not found or system roles cannot be deleted");
     }
 
     await Role.deleteOne({ _id: roleId });
+
+    await auditService.log({
+      companyId,
+      userId: actorId,
+      action: "ROLE_DELETED",
+      module: "permissions",
+      referenceId: roleId,
+      before: { name: role.name, permissions: role.permissions },
+    });
+
     return true;
   }
 }

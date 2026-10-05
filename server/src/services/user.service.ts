@@ -1,6 +1,7 @@
 import bcrypt from "bcryptjs";
 import { User, IUser } from "../models/User";
 import { Role } from "../models/Role";
+import { auditService } from "./audit.service";
 
 export class UserService {
   async getUsers(
@@ -120,7 +121,8 @@ export class UserService {
       role?: string;
       roleId?: string;
       departmentId?: string;
-    }
+    },
+    actorId?: string
   ): Promise<IUser | null> {
     const user = await User.findOne({ _id: userId, companyId });
     if (!user) {
@@ -131,6 +133,8 @@ export class UserService {
     if (data.lastName) user.lastName = data.lastName;
     if (data.phone !== undefined) user.phone = data.phone;
     if (data.departmentId !== undefined) user.departmentId = data.departmentId as any;
+
+    const previousRole = { role: user.role, roleId: user.roleId?.toString() };
 
     if (data.roleId) {
       const roleObj = await Role.findById(data.roleId);
@@ -143,6 +147,20 @@ export class UserService {
     }
 
     await user.save();
+
+    // Role assignment changes what a user may do, so it is part of the permission audit trail
+    if (previousRole.role !== user.role || previousRole.roleId !== user.roleId?.toString()) {
+      await auditService.log({
+        companyId,
+        userId: actorId,
+        action: "USER_ROLE_CHANGED",
+        module: "permissions",
+        referenceId: user._id.toString(),
+        before: previousRole,
+        after: { role: user.role, roleId: user.roleId?.toString(), email: user.email },
+      });
+    }
+
     return User.findById(user._id).select("-passwordHash").populate("roleId", "name permissions");
   }
 

@@ -58,7 +58,7 @@ export class RoleController {
   async createRole(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {
       const { name, description, permissions } = req.body;
-      const role = await roleService.createRole(req.companyId!, name, description, permissions);
+      const role = await roleService.createRole(req.companyId!, name, description, permissions, req.user?._id?.toString());
 
       res.status(201).json({
         success: true,
@@ -72,7 +72,7 @@ export class RoleController {
 
   async updateRole(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {
-      const role = await roleService.updateRole(req.params.id, req.companyId!, req.body);
+      const role = await roleService.updateRole(req.params.id, req.companyId!, req.body, req.user?._id?.toString());
 
       res.status(200).json({
         success: true,
@@ -86,7 +86,7 @@ export class RoleController {
 
   async deleteRole(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {
-      await roleService.deleteRole(req.params.id, req.companyId!);
+      await roleService.deleteRole(req.params.id, req.companyId!, req.user?._id?.toString());
 
       res.status(200).json({
         success: true,

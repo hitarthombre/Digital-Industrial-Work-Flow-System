@@ -1,4 +1,5 @@
-import { Notification, INotification } from "../models/Notification";
+import { Types } from "mongoose";
+import { Notification, INotification, NotificationType } from "../models/Notification";
 import { queueService } from "./queue.service";
 import nodemailer from "nodemailer";
 import dns from "dns";
@@ -120,7 +121,8 @@ class NotificationService {
     title: string,
     message: string,
     type: INotification["type"],
-    userEmail?: string
+    userEmail?: string,
+    extras: { link?: string; referenceKey?: string } = {}
   ): Promise<INotification> {
     const notification = await Notification.create({
       companyId,
@@ -129,6 +131,8 @@ class NotificationService {
       message,
       type,
       status: "unread",
+      link: extras.link,
+      referenceKey: extras.referenceKey,
     });
 
     console.log(`[Notification] Created: ${title} (User: ${userId})`);
@@ -145,18 +149,71 @@ class NotificationService {
     return notification;
   }
 
+  /**
+   * Fan out an in-app alert (e.g. an order status change) to several users.
+   * Recipients are de-duplicated and failures never break the calling workflow.
+   */
+  async notifyUsers(
+    companyId: string,
+    userIds: Array<string | Types.ObjectId | undefined | null>,
+    title: string,
+    message: string,
+    type: NotificationType,
+    extras: { link?: string; referenceKey?: string } = {}
+  ): Promise<void> {
+    const recipients = [...new Set(userIds.filter(Boolean).map((id) => String(id)))];
+    for (const userId of recipients) {
+      try {
+        await this.createNotification(companyId, userId, title, message, type, undefined, extras);
+      } catch (err: any) {
+        console.warn(`[Notification] Failed to notify user ${userId}: ${err.message}`);
+      }
+    }
+  }
+
+  // Paginated notification history for a user
+  async getNotifications(
+    userId: string,
+    query: { status?: string; type?: string; page?: any; limit?: any }
+  ) {
+    const page = Math.max(Number(query.page) || 1, 1);
+    const limit = Math.min(Math.max(Number(query.limit) || 20, 1), 100);
+    const filter: any = { userId };
+    if (query.status === "unread" || query.status === "read") filter.status = query.status;
+    if (query.type) filter.type = query.type;
+
+    const [items, total, unread] = await Promise.all([
+      Notification.find(filter).sort({ createdAt: -1 }).skip((page - 1) * limit).limit(limit),
+      Notification.countDocuments(filter),
+      Notification.countDocuments({ userId, status: "unread" }),
+    ]);
+
+    return { items, total, unread, page, limit, pages: Math.ceil(total / limit) };
+  }
+
+  async getUnreadCount(userId: string): Promise<number> {
+    return Notification.countDocuments({ userId, status: "unread" });
+  }
+
   // Retrieve unread notifications for a specific user
   async getUnreadNotifications(userId: string): Promise<INotification[]> {
     return Notification.find({ userId, status: "unread" }).sort({ createdAt: -1 });
   }
 
-  // Mark a specific notification as read
-  async markAsRead(notificationId: string): Promise<INotification | null> {
-    return Notification.findByIdAndUpdate(
-      notificationId,
+  // Mark a specific notification as read (scoped to its owner)
+  async markAsRead(notificationId: string, userId?: string): Promise<INotification | null> {
+    const filter: any = { _id: notificationId };
+    if (userId) filter.userId = userId;
+    return Notification.findOneAndUpdate(
+      filter,
       { status: "read", readAt: new Date() },
       { new: true }
     );
+  }
+
+  async deleteNotification(notificationId: string, userId: string): Promise<boolean> {
+    const result = await Notification.deleteOne({ _id: notificationId, userId });
+    return result.deletedCount > 0;
   }
 
   // Mark all notifications for a user as read

@@ -11,7 +11,10 @@ export class AuditController {
       const action = req.query.action as string;
       const userId = req.query.userId as string;
 
-      const result = await auditService.getAuditLogs(req.companyId!, { page, limit, module, action, userId });
+      const startDate = req.query.startDate as string | undefined;
+      const endDate = req.query.endDate as string | undefined;
+
+      const result = await auditService.getAuditLogs(req.companyId!, { page, limit, module, action, userId, startDate, endDate });
 
       res.status(200).json({
         success: true,

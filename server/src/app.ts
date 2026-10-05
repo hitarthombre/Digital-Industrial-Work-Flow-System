@@ -22,8 +22,16 @@ import customerRouter from "./routes/customer.routes";
 import productRouter from "./routes/product.routes";
 import inventoryRouter from "./routes/inventory.routes";
 import procurementRouter from "./routes/procurement.routes";
+import productionRouter from "./routes/production.routes";
+import salesRouter from "./routes/sales.routes";
+import dispatchRouter from "./routes/dispatch.routes";
+import documentRouter from "./routes/document.routes";
+import reportRouter from "./routes/report.routes";
+import notificationRouter from "./routes/notification.routes";
+import workspaceRouter from "./routes/workspace.routes";
 import errorHandler from "./middleware/errorHandler";
 import { roleService } from "./services/role.service";
+import { reminderService } from "./services/reminder.service";
 
 // Set IPv4 first for DNS lookup globally
 dns.setDefaultResultOrder('ipv4first');
@@ -52,16 +60,21 @@ const logger = winston.createLogger({
 const app = express();
 const PORT = process.env.PORT || 5000;
 
-// Connect to Database & Seed System Roles/Permissions
-connectDB().then(async () => {
-  await roleService.initDefaultRolesAndPermissions();
-});
+const isTestEnv = process.env.NODE_ENV === "test";
+
+// Connect to Database & Seed System Roles/Permissions (tests manage their own in-memory database)
+if (!isTestEnv) {
+  connectDB().then(async () => {
+    await roleService.initDefaultRolesAndPermissions();
+    reminderService.start();
+  });
+}
 
 // Middleware
 app.use(helmet());
 app.use(cors());
 app.use(express.json());
-app.use(morgan('dev'));
+if (!isTestEnv) app.use(morgan('dev'));
 
 // Routes
 app.use("/api/auth", authRouter);
@@ -79,6 +92,13 @@ app.use("/api/customers", customerRouter);
 app.use("/api/products", productRouter);
 app.use("/api/inventory", inventoryRouter);
 app.use("/api/procurement", procurementRouter);
+app.use("/api/production", productionRouter);
+app.use("/api/sales", salesRouter);
+app.use("/api/dispatch", dispatchRouter);
+app.use("/api/documents", documentRouter);
+app.use("/api/reports", reportRouter);
+app.use("/api/notifications", notificationRouter);
+app.use("/api", workspaceRouter);
 
 // Baseline health check API
 app.get('/api/health', (req: Request, res: Response) => {
@@ -239,8 +259,10 @@ function mongooseConnectionState(): string {
 app.use(errorHandler as any);
 
 // Start Server
-app.listen(PORT, () => {
-  logger.info(`Server is running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
-});
+if (!isTestEnv) {
+  app.listen(PORT, () => {
+    logger.info(`Server is running in ${process.env.NODE_ENV || 'development'} mode on port ${PORT}`);
+  });
+}
 
 export default app;

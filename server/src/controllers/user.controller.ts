@@ -123,7 +123,7 @@ export class UserController {
 
   async updateUser(req: AuthenticatedRequest, res: Response, next: NextFunction): Promise<void> {
     try {
-      const user = await userService.updateUser(req.params.id, req.companyId!, req.body);
+      const user = await userService.updateUser(req.params.id, req.companyId!, req.body, req.user?._id?.toString());
 
       res.status(200).json({
         success: true,
