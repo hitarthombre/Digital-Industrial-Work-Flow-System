@@ -530,6 +530,22 @@
   gap: 1rem;
 }
 
+.diws-header-icon-btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  background: none;
+  border: none;
+  color: #FFFFFF;
+  cursor: pointer;
+  padding: 0.45rem;
+  border-radius: var(--radius-sm);
+}
+
+.diws-header-icon-btn:hover {
+  background-color: rgba(255, 255, 255, 0.1);
+}
+
 .diws-mobile-toggle {
   display: none;
   background: none;

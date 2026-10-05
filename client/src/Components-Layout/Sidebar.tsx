@@ -24,6 +24,8 @@ import {
   X,
   PanelLeftClose,
   PanelLeftOpen,
+  Receipt,
+  ShieldCheck,
 } from "lucide-react";
 
 interface SidebarProps {
@@ -50,6 +52,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
     location.pathname.startsWith("/app/procurement")
   );
 
+  const [isSalesSubmenuOpen, setIsSalesSubmenuOpen] = useState(location.pathname.startsWith("/app/sales"));
+
   const toggleCompanySubmenu = (e: React.MouseEvent) => {
     e.preventDefault();
     setIsCompanySubmenuOpen((prev) => !prev);
@@ -62,6 +66,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
   const isCompanyActive = location.pathname.startsWith("/app/company");
   const isProcurementActive = location.pathname.startsWith("/app/procurement");
+  const isSalesActive = location.pathname.startsWith("/app/sales");
 
   return (
     <>
@@ -360,16 +365,48 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {!collapsed && <span>Production</span>}
             </NavLink>
 
-            <NavLink
-              to="/app/sales"
-              className={({ isActive }) =>
-                `diws-sidebar-item ${isActive ? "active" : ""}`
-              }
-              onClick={onCloseMobile}
+            {/* Sales Nav Trigger & Submenu */}
+            <button
+              className={`diws-sidebar-item diws-sidebar-submenu-trigger ${
+                isSalesActive ? "active" : ""
+              }`}
+              onClick={(e) => {
+                e.preventDefault();
+                setIsSalesSubmenuOpen((prev) => !prev);
+              }}
             >
-              <TrendingUp size={18} className="diws-sidebar-icon" />
-              {!collapsed && <span>Sales</span>}
-            </NavLink>
+              <div className="diws-sidebar-item-left">
+                <TrendingUp size={18} className="diws-sidebar-icon" />
+                {!collapsed && <span>Sales</span>}
+              </div>
+              {!collapsed && (
+                <div className="diws-sidebar-submenu-arrow">
+                  {isSalesSubmenuOpen ? <ChevronDown size={16} /> : <ChevronRight size={16} />}
+                </div>
+              )}
+            </button>
+
+            {isSalesSubmenuOpen && !collapsed && (
+              <div className="diws-sidebar-submenu">
+                {[
+                  { to: "/app/sales", label: "Overview", icon: <BarChart3 size={15} />, end: true },
+                  { to: "/app/sales/quotations", label: "Quotations", icon: <FileText size={15} /> },
+                  { to: "/app/sales/orders", label: "Sales Orders", icon: <ShoppingCart size={15} /> },
+                  { to: "/app/sales/invoices", label: "Invoices", icon: <Receipt size={15} /> },
+                ].map((item) => (
+                  <NavLink
+                    key={item.to}
+                    to={item.to}
+                    end={item.end}
+                    className={({ isActive }) => `diws-sidebar-subitem ${isActive ? "active" : ""}`}
+                    onClick={onCloseMobile}
+                  >
+                    {item.icon}
+                    <span>{item.label}</span>
+                  </NavLink>
+                ))}
+              </div>
+            )}
 
             <NavLink
               to="/app/dispatch"
@@ -407,6 +444,17 @@ export const Sidebar: React.FC<SidebarProps> = ({
             >
               <BarChart3 size={18} className="diws-sidebar-icon" />
               {!collapsed && <span>Reports</span>}
+            </NavLink>
+
+            <NavLink
+              to="/app/audit"
+              className={({ isActive }) =>
+                `diws-sidebar-item ${isActive ? "active" : ""}`
+              }
+              onClick={onCloseMobile}
+            >
+              <ShieldCheck size={18} className="diws-sidebar-icon" />
+              {!collapsed && <span>Audit Trail</span>}
             </NavLink>
           </div>
         </nav>

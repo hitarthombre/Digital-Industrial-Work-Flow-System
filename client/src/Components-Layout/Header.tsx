@@ -2,10 +2,11 @@ import React, { useState, useEffect, useRef } from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useAuth } from "../context/AuthContext";
 import { api } from "../services/api";
+import { GlobalSearch } from "./GlobalSearch";
+import { NotificationBell } from "./NotificationBell";
 import {
   Building2,
   ChevronDown,
-  Search,
   User as UserIcon,
   Settings,
   CreditCard,
@@ -41,7 +42,6 @@ export const Header: React.FC<HeaderProps> = ({
   const [selectedCompany, setSelectedCompany] = useState<CompanyOption | null>(null);
   const [isCompanyDropdownOpen, setIsCompanyDropdownOpen] = useState(false);
   const [isProfileDropdownOpen, setIsProfileDropdownOpen] = useState(false);
-  const [searchQuery, setSearchQuery] = useState("");
 
   const companyDropdownRef = useRef<HTMLDivElement>(null);
   const profileDropdownRef = useRef<HTMLDivElement>(null);
@@ -246,20 +246,13 @@ export const Header: React.FC<HeaderProps> = ({
 
       {/* Center: Global Search Bar */}
       <div className="diws-header-center">
-        <div className="diws-search-bar">
-          <Search size={16} className="diws-search-icon" />
-          <input
-            type="text"
-            placeholder="Search products, orders, warehouses, suppliers..."
-            value={searchQuery}
-            onChange={(e) => setSearchQuery(e.target.value)}
-          />
-          <kbd className="diws-search-shortcut">Ctrl K</kbd>
-        </div>
+        <GlobalSearch />
       </div>
 
       {/* Right Side: Quick Links & Profile Dropdown */}
       <div className="diws-header-right">
+        <NotificationBell />
+
         {/* User Profile Menu */}
         <div className="diws-profile-dropdown" ref={profileDropdownRef}>
           <button

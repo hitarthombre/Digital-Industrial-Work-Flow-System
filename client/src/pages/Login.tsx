@@ -21,7 +21,7 @@ export default function Login() {
   const [errorMsg, setErrorMsg] = useState<string | null>(null);
 
   // Retrieve redirect target from state if available
-  const from = (location.state as any)?.from?.pathname || '/';
+  const from = (location.state as any)?.from?.pathname || '/app/dashboard';
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();

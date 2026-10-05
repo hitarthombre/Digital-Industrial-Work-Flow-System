@@ -60,6 +60,8 @@ class ApiClient {
     if (options.params) {
       const queryParams = new URLSearchParams();
       Object.entries(options.params).forEach(([key, val]) => {
+        // Unset filters should not reach the API as the string "undefined"
+        if (val === undefined || val === null || val === "") return;
         queryParams.append(key, String(val));
       });
       requestUrl += `?${queryParams.toString()}`;
@@ -115,6 +117,23 @@ class ApiClient {
     });
 
     return this.handleResponse<T>(response);
+  }
+
+  // Fetch a binary response (e.g. a PDF/Excel export) with the session's auth header
+  async download(url: string, params?: Record<string, string | number | boolean | undefined>): Promise<Blob> {
+    const query = new URLSearchParams();
+    Object.entries(params || {}).forEach(([key, val]) => {
+      if (val !== undefined && val !== "") query.append(key, String(val));
+    });
+    const qs = query.toString();
+    const response = await fetch(`${API_BASE_URL}${url}${qs ? `?${qs}` : ""}`, {
+      method: "GET",
+      headers: this.getHeaders(),
+    });
+    if (!response.ok) {
+      await this.handleResponse(response);
+    }
+    return response.blob();
   }
 
   async patch<T>(url: string, body?: any, options: RequestOptions = {}): Promise<T> {

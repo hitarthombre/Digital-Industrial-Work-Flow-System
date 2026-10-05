@@ -64,6 +64,24 @@ import PurchaseRequestsList from "./pages/procurement/PurchaseRequestsList";
 import PurchaseOrdersList from "./pages/procurement/PurchaseOrdersList";
 import PurchaseOrderDetailsPage from "./pages/procurement/PurchaseOrderDetailsPage";
 
+import ProductionDashboard from "./pages/production/ProductionDashboard";
+import WorkOrderDetails from "./pages/production/WorkOrderDetails";
+
+import SalesDashboard from "./pages/sales/SalesDashboard";
+import QuotationsList from "./pages/sales/QuotationsList";
+import SalesOrdersList from "./pages/sales/SalesOrdersList";
+import SalesOrderDetails from "./pages/sales/SalesOrderDetails";
+import InvoicesList from "./pages/sales/InvoicesList";
+
+import DispatchList from "./pages/dispatch/DispatchList";
+import DispatchDetails from "./pages/dispatch/DispatchDetails";
+
+import MainDashboard from "./pages/dashboard/MainDashboard";
+import DocumentLibrary from "./pages/documents/DocumentLibrary";
+import ReportsCenter from "./pages/reports/ReportsCenter";
+import AuditTrail from "./pages/audit/AuditTrail";
+import NotificationsPage from "./pages/notifications/NotificationsPage";
+
 // Public Layout Shell Wrapper
 function PublicLayout() {
   return (
@@ -109,8 +127,8 @@ export default function App() {
               </ProtectedRoute>
             }
           >
-            <Route index element={<Navigate to="/app/company" replace />} />
-            <Route path="dashboard" element={<Navigate to="/app/company" replace />} />
+            <Route index element={<Navigate to="/app/dashboard" replace />} />
+            <Route path="dashboard" element={<MainDashboard />} />
             <Route path="company" element={<CompanyProfile />} />
             <Route path="company/settings" element={<CompanySettings />} />
             <Route path="company/branding" element={<CompanyBranding />} />
@@ -161,6 +179,27 @@ export default function App() {
             <Route path="procurement/orders" element={<PurchaseOrdersList />} />
             <Route path="procurement/orders/:id" element={<PurchaseOrderDetailsPage />} />
             <Route path="procurement/reports" element={<ProcurementDashboard />} />
+
+            {/* Production Module Routes */}
+            <Route path="production" element={<ProductionDashboard />} />
+            <Route path="production/work-orders/:id" element={<WorkOrderDetails />} />
+
+            {/* Sales Module Routes */}
+            <Route path="sales" element={<SalesDashboard />} />
+            <Route path="sales/quotations" element={<QuotationsList />} />
+            <Route path="sales/orders" element={<SalesOrdersList />} />
+            <Route path="sales/orders/:id" element={<SalesOrderDetails />} />
+            <Route path="sales/invoices" element={<InvoicesList />} />
+
+            {/* Dispatch Module Routes */}
+            <Route path="dispatch" element={<DispatchList />} />
+            <Route path="dispatch/:id" element={<DispatchDetails />} />
+
+            {/* Records, Reports & Workspace Routes */}
+            <Route path="documents" element={<DocumentLibrary />} />
+            <Route path="reports" element={<ReportsCenter />} />
+            <Route path="audit" element={<AuditTrail />} />
+            <Route path="notifications" element={<NotificationsPage />} />
           </Route>
 
           {/* 404 Fallback */}
