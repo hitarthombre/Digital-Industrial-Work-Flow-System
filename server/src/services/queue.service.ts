@@ -18,7 +18,7 @@ class QueueService {
 
   constructor() {
     // Start background processing tick
-    setInterval(() => this.processQueue(), 1000);
+    setInterval(() => this.processQueue(), 1000).unref();
   }
 
   // Register worker handler

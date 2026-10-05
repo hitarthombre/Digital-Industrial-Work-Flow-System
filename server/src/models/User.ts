@@ -8,6 +8,7 @@ export interface IUser extends Document {
   email: string;
   phone?: string;
   passwordHash: string;
+  password?: string;
   role: string;
   roleId?: Schema.Types.ObjectId;
   departmentId?: Schema.Types.ObjectId;
@@ -26,7 +27,13 @@ const UserSchema = new Schema<IUser>(
     lastName: { type: String, required: true, trim: true },
     email: { type: String, required: true, unique: true, lowercase: true, trim: true, index: true },
     phone: { type: String, trim: true },
-    passwordHash: { type: String, required: true },
+    password: { type: String, select: false },
+    passwordHash: {
+      type: String,
+      required: function (this: any) {
+        return !this.password && !this.passwordHash;
+      },
+    },
     role: {
       type: String,
       default: "Employee",
@@ -52,6 +59,33 @@ const UserSchema = new Schema<IUser>(
 
 UserSchema.index({ companyId: 1, email: 1 });
 UserSchema.index({ companyId: 1, status: 1 });
+
+// Pre-validate hook to populate passwordHash if password is provided
+UserSchema.pre("validate", async function (next) {
+  const user = this as any;
+  if (user.password) {
+    const salt = await bcrypt.genSalt(10);
+    user.passwordHash = await bcrypt.hash(user.password, salt);
+    user.password = undefined;
+  }
+  next();
+});
+
+// Pre-save hook to hash password with bcrypt on save
+UserSchema.pre("save", async function (next) {
+  const user = this as any;
+  if (user.password) {
+    const salt = await bcrypt.genSalt(10);
+    user.passwordHash = await bcrypt.hash(user.password, salt);
+    user.password = undefined;
+  } else if (user.isModified("passwordHash") && user.passwordHash) {
+    if (!user.passwordHash.startsWith("$2a$") && !user.passwordHash.startsWith("$2b$")) {
+      const salt = await bcrypt.genSalt(10);
+      user.passwordHash = await bcrypt.hash(user.passwordHash, salt);
+    }
+  }
+  next();
+});
 
 // Method to verify passwords
 UserSchema.methods.comparePassword = async function (password: string): Promise<boolean> {
