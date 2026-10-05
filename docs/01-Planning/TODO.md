@@ -256,49 +256,49 @@ Version: 1.0
 
 ## 15. Production Module
 
-- [ ] Production planning
-- [ ] Work order creation
-- [ ] Job card management
-- [ ] Production stage tracking
-- [ ] Material consumption
-- [ ] Production completion
-- [ ] Scrap tracking
-- [ ] Production reports
+- [x] Production planning (`ProductionPlan` model, `/api/production/plans`, plans tab in `ProductionDashboard.tsx`)
+- [x] Work order creation (`WorkOrder` model, `POST /api/production/work-orders`, `WorkOrderModal`)
+- [x] Job card management (`/work-orders/:id/job-cards`, job cards panel in `WorkOrderDetails.tsx`)
+- [x] Production stage tracking (`PATCH /work-orders/:id/stages/:stageId`, stage tracker)
+- [x] Material consumption (`POST /work-orders/:id/consume` issues raw material stock, `ConsumeMaterialModal`)
+- [x] Production completion (`POST /work-orders/:id/output` receives finished goods, `RecordOutputModal`)
+- [x] Scrap tracking (`POST /work-orders/:id/scrap`, scrap log)
+- [x] Production reports (`GET /api/production/reports`, reports tab)
 
 ---
 
 ## 16. Sales Module
 
-- [ ] Quotation creation
-- [ ] Sales order creation
-- [ ] Sales order approval
-- [ ] Sales invoice creation
-- [ ] Sales payment tracking
-- [ ] Sales history
-- [ ] Sales reports
+- [x] Quotation creation (`Quotation` model, `/api/sales/quotations`, `QuotationsList.tsx`, convert-to-order flow)
+- [x] Sales order creation (`SalesOrder` model, `POST /api/sales/orders`, `SalesOrderModal`, synced to customer order history)
+- [x] Sales order approval (`PATCH /api/sales/orders/:id/approve`, `OrderApprovalModal`)
+- [x] Sales invoice creation (`SalesInvoice` model, `POST /api/sales/invoices`, `InvoiceModal`)
+- [x] Sales payment tracking (`POST /api/sales/invoices/:id/payments`, overdue detection, `InvoicesList.tsx`)
+- [x] Sales history (`GET /api/sales/history` activity feed on `SalesDashboard.tsx`)
+- [x] Sales reports (`GET /api/sales/reports`, revenue trend, top customers/products)
 
 
 ## 17. Dispatch Module
 
-- [ ] Dispatch order creation
-- [ ] Transport details entry
-- [ ] Delivery tracking
-- [ ] Shipment status update
-- [ ] Dispatch document upload
-- [ ] Dispatch reports
+- [x] Dispatch order creation (`DispatchOrder` model, `POST /api/dispatch`, from a sales order or ad hoc)
+- [x] Transport details entry (`PUT /api/dispatch/:id/transport`, `TransportModal`)
+- [x] Delivery tracking (`GET /api/dispatch/:id/track`, progress stepper in `DispatchDetails.tsx`)
+- [x] Shipment status update (`PATCH /api/dispatch/:id/status`, deducts stock on ship, updates sales order)
+- [x] Dispatch document upload (`POST /api/dispatch/:id/documents`, `DispatchDocumentModal`)
+- [x] Dispatch reports (`GET /api/dispatch/reports`, reports tab in `DispatchList.tsx`)
 
 ---
 
 ## 18. Document Management
 
 - [x] Upload documents
-- [ ] Categorize documents
-- [ ] Search documents
+- [x] Categorize documents (`Document` model with categories, category browser in `DocumentLibrary.tsx`)
+- [x] Search documents (`GET /api/documents?search=` across title, file, tags, number, linked record)
 - [x] Preview files
 - [x] Download files
 - [x] Link files to records
-- [ ] Store SOPs
-- [ ] Store manuals
+- [x] Store SOPs (`sop` category in the document library)
+- [x] Store manuals (`manual` category in the document library)
 - [x] Store certificates
 - [x] Store product documents
 
@@ -306,29 +306,29 @@ Version: 1.0
 
 ## 19. Dashboard
 
-- [ ] Build main dashboard
-- [ ] Add KPI cards
-- [ ] Add recent activity panel
-- [ ] Add inventory summary
-- [ ] Add production summary
-- [ ] Add procurement summary
-- [ ] Add sales summary
-- [ ] Add alerts section
-- [ ] Add quick action buttons
+- [x] Build main dashboard (`MainDashboard.tsx` at `/app/dashboard`, `GET /api/dashboard/summary`)
+- [x] Add KPI cards
+- [x] Add recent activity panel
+- [x] Add inventory summary
+- [x] Add production summary
+- [x] Add procurement summary
+- [x] Add sales summary
+- [x] Add alerts section
+- [x] Add quick action buttons
 
 ---
 
 ## 20. Reports
 
-- [ ] Inventory report
-- [ ] Purchase report
-- [ ] Production report
-- [ ] Sales report
-- [ ] Dispatch report
-- [ ] Supplier report
-- [ ] Customer report
-- [ ] Export PDF
-- [ ] Export Excel
+- [x] Inventory report (`GET /api/reports/inventory`, `ReportsCenter.tsx`)
+- [x] Purchase report
+- [x] Production report
+- [x] Sales report
+- [x] Dispatch report
+- [x] Supplier report
+- [x] Customer report
+- [x] Export PDF (`GET /api/reports/:type/export?format=pdf`, PDFKit)
+- [x] Export Excel (`GET /api/reports/:type/export?format=xlsx`, ExcelJS)
 
 ---
 
@@ -337,22 +337,22 @@ Version: 1.0
 - [x] In-app notifications
 - [x] Email notifications
 - [x] Low stock alerts
-- [ ] Order status alerts
-- [ ] Task reminders
+- [x] Order status alerts (PO, sales order, work order, plan and shipment status changes notify the owners; bell in `Header.tsx`)
+- [x] Task reminders (`reminder.service.ts` hourly sweep: overdue work orders/invoices, late POs/shipments, pending approvals)
 - [x] Notification history
 
 ---
 
 ## 22. Search & Filters
 
-- [ ] Global search
+- [x] Global search (`GET /api/search`, permission-aware; `GlobalSearch.tsx` with Ctrl+K)
 - [x] Module-wise search
 - [x] Date filters
 - [x] Status filters
 - [x] Factory filters
 - [x] Warehouse filters
 - [x] Sort options
-- [ ] Saved filters
+- [x] Saved filters (`SavedFilter` model, `/api/saved-filters`, `SavedFiltersBar` on operations lists)
 
 ---
 
@@ -362,8 +362,8 @@ Version: 1.0
 - [x] Audit log system
 - [x] Track create/update/delete events
 - [x] Track login/logout events
-- [ ] Track permission changes
-- [ ] Track stock changes
+- [x] Track permission changes (role create/update/delete and user role changes audited under `permissions`)
+- [x] Track stock changes (stock in/out/transfer/adjust audited under `inventory`; `AuditTrail.tsx` "Stock changes" view)
 
 ---
 
