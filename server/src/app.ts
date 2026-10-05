@@ -98,9 +98,8 @@ app.use("/api/dispatch", dispatchRouter);
 app.use("/api/documents", documentRouter);
 app.use("/api/reports", reportRouter);
 app.use("/api/notifications", notificationRouter);
-app.use("/api", workspaceRouter);
 
-// Baseline health check API
+// Baseline health check API (Public)
 app.get('/api/health', (req: Request, res: Response) => {
   res.status(200).json({
     status: 'up',
@@ -177,7 +176,7 @@ app.get(['/api/health/test-email', '/api/auth/test-email'], async (req: Request,
       port: smtpPort,
       secure: smtpPort === 465,
       family: 4,
-      connectionTimeout: 4000, // 4s timeout for fast response
+      connectionTimeout: 4000,
       greetingTimeout: 4000,
       socketTimeout: 5000,
       auth: {
@@ -242,6 +241,8 @@ app.get(['/api/health/test-email', '/api/auth/test-email'], async (req: Request,
     });
   }
 });
+
+app.use("/api", workspaceRouter);
 
 // Helper function to check mongoose connection state
 function mongooseConnectionState(): string {
