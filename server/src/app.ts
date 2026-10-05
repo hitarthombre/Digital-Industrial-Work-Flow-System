@@ -22,6 +22,7 @@ import customerRouter from "./routes/customer.routes";
 import productRouter from "./routes/product.routes";
 import inventoryRouter from "./routes/inventory.routes";
 import procurementRouter from "./routes/procurement.routes";
+import productionRouter from "./routes/production.routes";
 import errorHandler from "./middleware/errorHandler";
 import { roleService } from "./services/role.service";
 
@@ -79,6 +80,7 @@ app.use("/api/customers", customerRouter);
 app.use("/api/products", productRouter);
 app.use("/api/inventory", inventoryRouter);
 app.use("/api/procurement", procurementRouter);
+app.use("/api/production", productionRouter);
 
 // Baseline health check API
 app.get('/api/health', (req: Request, res: Response) => {

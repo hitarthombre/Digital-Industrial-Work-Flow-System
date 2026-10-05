@@ -63,6 +63,7 @@ import ProcurementDashboard from "./pages/procurement/ProcurementDashboard";
 import PurchaseRequestsList from "./pages/procurement/PurchaseRequestsList";
 import PurchaseOrdersList from "./pages/procurement/PurchaseOrdersList";
 import PurchaseOrderDetailsPage from "./pages/procurement/PurchaseOrderDetailsPage";
+import ProductionDashboardPage from "./pages/production/ProductionDashboardPage";
 
 // Public Layout Shell Wrapper
 function PublicLayout() {
@@ -160,7 +161,8 @@ export default function App() {
             <Route path="procurement/requests" element={<PurchaseRequestsList />} />
             <Route path="procurement/orders" element={<PurchaseOrdersList />} />
             <Route path="procurement/orders/:id" element={<PurchaseOrderDetailsPage />} />
-            <Route path="procurement/reports" element={<ProcurementDashboard />} />
+            {/* Production Module Routes */}
+            <Route path="production" element={<ProductionDashboardPage />} />
           </Route>
 
           {/* 404 Fallback */}
