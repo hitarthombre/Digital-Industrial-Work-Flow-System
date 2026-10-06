@@ -41,16 +41,22 @@ export default function Login() {
       });
 
       if (response.success && response.data) {
-        const { token, user } = response.data;
-        login(token, user);
-        
-        if (rememberMe) {
-          localStorage.setItem('diws_remember_email', email);
-        } else {
-          localStorage.removeItem('diws_remember_email');
-        }
+        const token = response.data.accessToken || response.data.token;
+        const user = response.data.user;
 
-        navigate(from, { replace: true });
+        if (token && user) {
+          login(token, user);
+          
+          if (rememberMe) {
+            localStorage.setItem('diws_remember_email', email);
+          } else {
+            localStorage.removeItem('diws_remember_email');
+          }
+
+          navigate(from, { replace: true });
+        } else {
+          setErrorMsg('Login failed: Token or user data missing in response.');
+        }
       } else {
         setErrorMsg(response.message || 'Login failed. Please check your credentials.');
       }

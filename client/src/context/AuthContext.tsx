@@ -31,7 +31,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     const storedToken = localStorage.getItem("diws_token");
     const storedUser = localStorage.getItem("diws_user");
 
-    if (storedToken && storedUser) {
+    if (storedToken && storedToken !== "undefined" && storedUser) {
       try {
         setToken(storedToken);
         setUser(JSON.parse(storedUser));
@@ -40,6 +40,9 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         localStorage.removeItem("diws_token");
         localStorage.removeItem("diws_user");
       }
+    } else {
+      localStorage.removeItem("diws_token");
+      localStorage.removeItem("diws_user");
     }
     setLoading(false);
   }, []);

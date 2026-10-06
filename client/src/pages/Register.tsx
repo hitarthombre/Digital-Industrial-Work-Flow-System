@@ -144,7 +144,8 @@ export default function Register() {
       const response: any = await api.post('/auth/register', payload);
 
       if (response.success && response.data) {
-        const { token, user, verificationToken } = response.data;
+        const token = response.data.accessToken || response.data.token;
+        const { user, verificationToken } = response.data;
         
         // Log in user session
         if (token && user) {
