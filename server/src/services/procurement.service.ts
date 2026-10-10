@@ -838,6 +838,21 @@ export class ProcurementService {
       notes: input.notes,
     });
 
+    // Update Supplier credit / total spend adjustment and history log
+    supplier.totalSpend = Math.max(0, Number(((supplier.totalSpend || 0) - totalReturnAmount).toFixed(2)));
+    supplier.purchaseHistory = supplier.purchaseHistory || [];
+    supplier.purchaseHistory.push({
+      poNumber: po.poNumber,
+      date: new Date(),
+      itemSummary: `[RETURN - ${input.reason}] ${processedItems.map((i) => `${i.itemName} (x${i.quantityReturned})`).join(", ")}`.slice(0, 200),
+      itemsCount: processedItems.length,
+      totalAmount: totalReturnAmount,
+      currency: "USD",
+      status: "processing",
+      notes: `Purchase Return ${returnNumber} processed (${input.reason})`,
+    } as any);
+    await supplier.save();
+
     // =======================================================
     // AUTOMATIC STOCK DEDUCTION (STOCK OUT) ON PURCHASE RETURN
     // =======================================================
