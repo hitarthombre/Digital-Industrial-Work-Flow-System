@@ -1,4 +1,5 @@
 import bcrypt from "bcryptjs";
+import mongoose from "mongoose";
 import { User, IUser } from "../models/User";
 import { Role } from "../models/Role";
 import { auditService } from "./audit.service";
@@ -82,17 +83,28 @@ export class UserService {
     let assignedRoleId = data.roleId;
     let assignedRoleName = data.role || "Employee";
 
-    if (assignedRoleId) {
+    if (assignedRoleId && mongoose.Types.ObjectId.isValid(assignedRoleId)) {
       const roleObj = await Role.findById(assignedRoleId);
       if (roleObj) {
         assignedRoleName = roleObj.name;
       }
     } else {
-      const defaultRoleObj = await Role.findOne({ name: assignedRoleName });
+      const roleNameAliases: Record<string, string> = {
+        Admin: "Company Admin",
+        Manager: "Factory Manager",
+        Supervisor: "Production Planner",
+        Operator: "Employee",
+      };
+      const candidateNames = [assignedRoleName, roleNameAliases[assignedRoleName]].filter(Boolean);
+      const defaultRoleObj = await Role.findOne({ name: { $in: candidateNames } });
       if (defaultRoleObj) {
         assignedRoleId = (defaultRoleObj._id as any).toString();
+        assignedRoleName = defaultRoleObj.name;
       }
     }
+
+    const safeRoleId = assignedRoleId && mongoose.Types.ObjectId.isValid(assignedRoleId) ? assignedRoleId : undefined;
+    const safeDepartmentId = typeof data.departmentId === "string" ? (data.departmentId.trim() || undefined) : data.departmentId;
 
     const user = await User.create({
       companyId,
@@ -102,8 +114,8 @@ export class UserService {
       phone: data.phone,
       passwordHash,
       role: assignedRoleName,
-      roleId: assignedRoleId,
-      departmentId: data.departmentId,
+      roleId: safeRoleId,
+      departmentId: safeDepartmentId,
       status: "active",
       isEmailVerified: false,
     });
@@ -132,18 +144,33 @@ export class UserService {
     if (data.firstName) user.firstName = data.firstName;
     if (data.lastName) user.lastName = data.lastName;
     if (data.phone !== undefined) user.phone = data.phone;
-    if (data.departmentId !== undefined) user.departmentId = data.departmentId as any;
+    if (data.departmentId !== undefined) {
+      user.departmentId = typeof data.departmentId === "string" ? (data.departmentId.trim() || undefined) : data.departmentId;
+    }
 
     const previousRole = { role: user.role, roleId: user.roleId?.toString() };
 
-    if (data.roleId) {
+    if (data.roleId && mongoose.Types.ObjectId.isValid(data.roleId)) {
       const roleObj = await Role.findById(data.roleId);
       if (roleObj) {
         user.roleId = roleObj._id as any;
         user.role = roleObj.name;
       }
     } else if (data.role) {
-      user.role = data.role;
+      const roleNameAliases: Record<string, string> = {
+        Admin: "Company Admin",
+        Manager: "Factory Manager",
+        Supervisor: "Production Planner",
+        Operator: "Employee",
+      };
+      const candidateNames = [data.role, roleNameAliases[data.role]].filter(Boolean);
+      const roleObj = await Role.findOne({ name: { $in: candidateNames } });
+      if (roleObj) {
+        user.roleId = roleObj._id as any;
+        user.role = roleObj.name;
+      } else {
+        user.role = data.role;
+      }
     }
 
     await user.save();
@@ -226,19 +253,35 @@ export class UserService {
     let assignedRoleId = data.roleId;
     let assignedRoleName = data.role || "Employee";
 
-    if (assignedRoleId) {
+    if (assignedRoleId && mongoose.Types.ObjectId.isValid(assignedRoleId)) {
       const roleObj = await Role.findById(assignedRoleId);
       if (roleObj) {
         assignedRoleName = roleObj.name;
       }
+    } else {
+      const roleNameAliases: Record<string, string> = {
+        Admin: "Company Admin",
+        Manager: "Factory Manager",
+        Supervisor: "Production Planner",
+        Operator: "Employee",
+      };
+      const candidateNames = [assignedRoleName, roleNameAliases[assignedRoleName]].filter(Boolean);
+      const defaultRoleObj = await Role.findOne({ name: { $in: candidateNames } });
+      if (defaultRoleObj) {
+        assignedRoleId = (defaultRoleObj._id as any).toString();
+        assignedRoleName = defaultRoleObj.name;
+      }
     }
+
+    const safeRoleId = assignedRoleId && mongoose.Types.ObjectId.isValid(assignedRoleId) ? assignedRoleId : undefined;
+    const safeDepartmentId = typeof data.departmentId === "string" ? (data.departmentId.trim() || undefined) : data.departmentId;
 
     const invitation = await UserInvitation.create({
       companyId,
       email: data.email.toLowerCase(),
       role: assignedRoleName,
-      roleId: assignedRoleId,
-      departmentId: data.departmentId,
+      roleId: safeRoleId,
+      departmentId: safeDepartmentId,
       invitedBy: invitedByUserId,
       token,
       status: "pending",

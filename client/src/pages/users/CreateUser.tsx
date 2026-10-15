@@ -33,9 +33,19 @@ export const CreateUser: React.FC = () => {
   const [error, setError] = useState<string | null>(null);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    if (name === "phone") {
+      // Allow only digits and limit to 10 numbers
+      const digitsOnly = value.replace(/\D/g, "").slice(0, 10);
+      setFormData((prev) => ({
+        ...prev,
+        phone: digitsOnly,
+      }));
+      return;
+    }
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
@@ -43,6 +53,11 @@ export const CreateUser: React.FC = () => {
     e.preventDefault();
     if (!formData.firstName.trim() || !formData.lastName.trim() || !formData.email.trim()) {
       setError("First name, last name, and email address are required.");
+      return;
+    }
+
+    if (formData.phone && formData.phone.length !== 10) {
+      setError("Phone number must be exactly 10 digits.");
       return;
     }
 
@@ -90,7 +105,7 @@ export const CreateUser: React.FC = () => {
       </div>
 
       {/* Main Form Container */}
-      <div className="max-w-3xl bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+      <div className="user-form-card">
         {error && (
           <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-sm flex items-center gap-2 mb-6">
             <AlertCircle size={18} />
@@ -98,18 +113,17 @@ export const CreateUser: React.FC = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit}>
           {/* Section 1: Personal Details */}
-          <div>
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-              <User size={14} className="text-amber-600" /> Personal Identity
-            </h3>
+          <div className="user-form-section">
+            <div className="user-section-header">
+              <User size={15} className="user-section-icon" />
+              <span>Personal Identity</span>
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  First Name <span className="text-rose-500">*</span>
-                </label>
+            <div className="user-form-grid">
+              <div className="user-form-group">
+                <label className="user-form-label required">First Name</label>
                 <input
                   type="text"
                   name="firstName"
@@ -117,14 +131,12 @@ export const CreateUser: React.FC = () => {
                   placeholder="e.g. John"
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition"
+                  className="user-form-input"
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Last Name <span className="text-rose-500">*</span>
-                </label>
+              <div className="user-form-group">
+                <label className="user-form-label required">Last Name</label>
                 <input
                   type="text"
                   name="lastName"
@@ -132,25 +144,26 @@ export const CreateUser: React.FC = () => {
                   placeholder="e.g. Doe"
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition"
+                  className="user-form-input"
                 />
               </div>
             </div>
           </div>
 
           {/* Section 2: Contact & Authentication */}
-          <div>
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-              <Mail size={14} className="text-amber-600" /> Contact & Access Credentials
-            </h3>
+          <div className="user-form-section">
+            <div className="user-section-header">
+              <Mail size={15} className="user-section-icon" />
+              <span>Contact & Access Credentials</span>
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Email Address <span className="text-rose-500">*</span>
-                </label>
-                <div className="relative">
-                  <Mail className="absolute left-3.5 top-3 text-slate-400" size={16} />
+            <div className="user-form-grid">
+              <div className="user-form-group">
+                <label className="user-form-label required">Email Address</label>
+                <div className="user-input-wrapper">
+                  <span className="user-input-icon">
+                    <Mail size={16} />
+                  </span>
                   <input
                     type="email"
                     name="email"
@@ -158,68 +171,77 @@ export const CreateUser: React.FC = () => {
                     placeholder="john.doe@company.com"
                     value={formData.email}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition"
+                    className="user-form-input has-icon"
                   />
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Phone Number (Optional)
-                </label>
-                <div className="relative">
-                  <Phone className="absolute left-3.5 top-3 text-slate-400" size={16} />
+              <div className="user-form-group">
+                <label className="user-form-label">Phone Number (Optional)</label>
+                <div className="user-input-wrapper">
+                  <span className="user-input-icon">
+                    <Phone size={16} />
+                  </span>
                   <input
-                    type="text"
+                    type="tel"
                     name="phone"
-                    placeholder="+1 (555) 000-0000"
+                    maxLength={10}
+                    inputMode="numeric"
+                    pattern="[0-9]{10}"
+                    placeholder="e.g. 9876543210"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition"
+                    className="user-form-input has-icon"
                   />
                 </div>
+                {formData.phone && formData.phone.length < 10 && (
+                  <p className="user-helper-text" style={{ color: "#d97706" }}>
+                    {10 - formData.phone.length} more digit{10 - formData.phone.length > 1 ? "s" : ""} required (10 digits total)
+                  </p>
+                )}
               </div>
             </div>
 
-            <div className="mt-4">
-              <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                Initial Password (Optional)
-              </label>
-              <div className="relative">
-                <Lock className="absolute left-3.5 top-3 text-slate-400" size={16} />
+            <div className="user-form-group" style={{ marginTop: "1.25rem" }}>
+              <label className="user-form-label">Initial Password (Optional)</label>
+              <div className="user-input-wrapper">
+                <span className="user-input-icon">
+                  <Lock size={16} />
+                </span>
                 <input
                   type="password"
                   name="password"
                   placeholder="Leave empty for default password (DIWSDefault123!)"
                   value={formData.password}
                   onChange={handleChange}
-                  className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition"
+                  className="user-form-input has-icon"
                 />
               </div>
-              <p className="text-[11px] text-slate-400 mt-1">
+              <p className="user-helper-text">
                 If omitted, the user can reset password using their email.
               </p>
             </div>
           </div>
 
           {/* Section 3: Role & Department Assignment */}
-          <div>
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-              <Shield size={14} className="text-amber-600" /> Role & Department Scope
-            </h3>
+          <div className="user-form-section">
+            <div className="user-section-header">
+              <Shield size={15} className="user-section-icon" />
+              <span>Role & Department Scope</span>
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Assigned Role
-                </label>
-                <div className="relative">
-                  <Shield className="absolute left-3.5 top-3 text-slate-400" size={16} />
+            <div className="user-form-grid">
+              <div className="user-form-group">
+                <label className="user-form-label required">Assigned Role</label>
+                <div className="user-input-wrapper">
+                  <span className="user-input-icon">
+                    <Shield size={16} />
+                  </span>
                   <select
                     name="role"
                     value={formData.role}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition cursor-pointer"
+                    className="user-form-select has-icon"
                   >
                     <option value="Admin">Admin (Full Access)</option>
                     <option value="Manager">Manager (Operational Control)</option>
@@ -230,19 +252,19 @@ export const CreateUser: React.FC = () => {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Department ID / Code (Optional)
-                </label>
-                <div className="relative">
-                  <Building className="absolute left-3.5 top-3 text-slate-400" size={16} />
+              <div className="user-form-group">
+                <label className="user-form-label">Department ID / Code (Optional)</label>
+                <div className="user-input-wrapper">
+                  <span className="user-input-icon">
+                    <Building size={16} />
+                  </span>
                   <input
                     type="text"
                     name="departmentId"
                     placeholder="e.g. DEPT-PLANT-01"
                     value={formData.departmentId}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition"
+                    className="user-form-input has-icon"
                   />
                 </div>
               </div>
@@ -250,7 +272,7 @@ export const CreateUser: React.FC = () => {
           </div>
 
           {/* Buttons */}
-          <div className="flex items-center justify-end gap-3 pt-6 border-t border-slate-200">
+          <div className="user-form-footer">
             <Button
               variant="outline"
               type="button"

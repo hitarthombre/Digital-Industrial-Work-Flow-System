@@ -1,0 +1,456 @@
+/* =========================================================
+   DIWS NOTIFICATION CENTER STYLES
+   Industrial Workflow Design System
+   ========================================================= */
+
+.diws-notif-dropdown {
+  position: absolute;
+  top: calc(100% + 0.65rem);
+  right: 0;
+  width: 430px;
+  max-width: calc(100vw - 20px);
+  background: #FFFFFF;
+  border: 1px solid #D8D3C8;
+  border-radius: 16px;
+  box-shadow: 0 16px 40px rgba(16, 39, 29, 0.18), 0 4px 12px rgba(0, 0, 0, 0.08);
+  z-index: 9999;
+  overflow: hidden;
+  display: flex;
+  flex-direction: column;
+  animation: notifDropIn 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+@keyframes notifDropIn {
+  from {
+    opacity: 0;
+    transform: translateY(-8px) scale(0.98);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0) scale(1);
+  }
+}
+
+/* Header */
+.diws-notif-header {
+  padding: 14px 18px;
+  background: linear-gradient(to right, #FAF7F2, #FFFFFF);
+  border-bottom: 1px solid #EAE5DC;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.diws-notif-header-left {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.diws-notif-header-icon {
+  width: 32px;
+  height: 32px;
+  border-radius: 9px;
+  background: #F3ECE0;
+  color: #B87333;
+  border: 1px solid #E5D9C7;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.diws-notif-title {
+  font-size: 14px;
+  font-weight: 700;
+  color: #17201B;
+  letter-spacing: -0.2px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.diws-notif-badge {
+  font-size: 11px;
+  font-weight: 700;
+  color: #FFFFFF;
+  background: #B87333;
+  padding: 2px 7px;
+  border-radius: 12px;
+  line-height: 1.2;
+}
+
+.diws-notif-markall-btn {
+  background: none;
+  border: none;
+  color: #173A2A;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  transition: all 0.2s ease;
+}
+
+.diws-notif-markall-btn:hover {
+  background: #EDE8DE;
+  color: #0F281D;
+}
+
+/* Tabs Bar */
+.diws-notif-tabs {
+  padding: 7px 14px;
+  background: #F7F4ED;
+  border-bottom: 1px solid #EAE5DC;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.diws-notif-tab {
+  background: transparent;
+  border: none;
+  font-size: 12px;
+  font-weight: 600;
+  color: #66736A;
+  padding: 4px 10px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.15s ease;
+}
+
+.diws-notif-tab:hover {
+  color: #17201B;
+  background: rgba(0, 0, 0, 0.04);
+}
+
+.diws-notif-tab.active {
+  background: #FFFFFF;
+  color: #173A2A;
+  font-weight: 700;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.08);
+}
+
+/* List Content */
+.diws-notif-list {
+  max-height: 380px;
+  overflow-y: auto;
+  overflow-x: hidden;
+  background: #FFFFFF;
+}
+
+.diws-notif-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.diws-notif-list::-webkit-scrollbar-thumb {
+  background: #D8D3C8;
+  border-radius: 4px;
+}
+
+/* Notification Item */
+.diws-notif-item {
+  padding: 13px 16px;
+  display: flex;
+  gap: 12px;
+  align-items: flex-start;
+  border-bottom: 1px solid #F0ECE4;
+  position: relative;
+  transition: background-color 0.15s ease;
+  cursor: pointer;
+}
+
+.diws-notif-item:hover {
+  background-color: #FAF8F3;
+}
+
+.diws-notif-item.unread {
+  background-color: #FDFCF9;
+  border-left: 3px solid #B87333;
+}
+
+.diws-notif-item.read {
+  border-left: 3px solid transparent;
+}
+
+/* Category Icons */
+.diws-notif-icon {
+  width: 36px;
+  height: 36px;
+  border-radius: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  margin-top: 1px;
+}
+
+.diws-notif-icon.security {
+  background: #FFF4E5;
+  color: #B87333;
+  border: 1px solid #F8DFBF;
+}
+
+.diws-notif-icon.email {
+  background: #E8F1FC;
+  color: #1E66D5;
+  border: 1px solid #C8DFF9;
+}
+
+.diws-notif-icon.stock {
+  background: #FEECEB;
+  color: #C5221F;
+  border: 1px solid #FAD1D0;
+}
+
+.diws-notif-icon.dispatch {
+  background: #E6F4EA;
+  color: #137333;
+  border: 1px solid #C2E7CA;
+}
+
+.diws-notif-icon.order {
+  background: #F3E8FD;
+  color: #7B1FA2;
+  border: 1px solid #E1BEE7;
+}
+
+.diws-notif-icon.production {
+  background: #FFF0E0;
+  color: #D97706;
+  border: 1px solid #FED7AA;
+}
+
+.diws-notif-icon.system {
+  background: #F1F3F4;
+  color: #5F6368;
+  border: 1px solid #DADCE0;
+}
+
+/* Item Details */
+.diws-notif-content {
+  flex: 1;
+  min-width: 0;
+}
+
+.diws-notif-meta-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  margin-bottom: 3px;
+}
+
+.diws-notif-item-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #17201B;
+  letter-spacing: -0.1px;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.diws-notif-unread-dot {
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: #B87333;
+  display: inline-block;
+}
+
+.diws-notif-time {
+  font-size: 11px;
+  color: #8C8275;
+  white-space: nowrap;
+  display: flex;
+  align-items: center;
+  gap: 3px;
+}
+
+.diws-notif-message {
+  font-size: 12px;
+  color: #555047;
+  line-height: 1.45;
+  margin: 0;
+  word-break: break-word;
+}
+
+/* Action Area */
+.diws-notif-actions {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 8px;
+  margin-top: 8px;
+}
+
+.diws-notif-primary-btn {
+  background: linear-gradient(135deg, #173A2A, #24543D);
+  color: #FFFFFF !important;
+  border: none;
+  font-size: 11.5px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 7px;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+  box-shadow: 0 2px 5px rgba(23, 58, 42, 0.2);
+  transition: all 0.15s ease;
+  text-decoration: none;
+}
+
+.diws-notif-primary-btn:hover {
+  background: linear-gradient(135deg, #24543D, #2E6B4E);
+  transform: translateY(-1px);
+  box-shadow: 0 4px 8px rgba(23, 58, 42, 0.25);
+}
+
+.diws-notif-primary-btn:active {
+  transform: translateY(0);
+}
+
+.diws-notif-token-chip {
+  background: #F3EFE7;
+  border: 1px solid #DFD8CB;
+  padding: 3px 8px;
+  border-radius: 6px;
+  font-size: 11px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
+  color: #554D40;
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  cursor: pointer;
+  transition: background-color 0.15s ease;
+}
+
+.diws-notif-token-chip:hover {
+  background: #EAE3D6;
+}
+
+.diws-notif-copy-btn {
+  background: none;
+  border: none;
+  color: #B87333;
+  font-size: 11px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-flex;
+  align-items: center;
+  gap: 3px;
+  padding: 0;
+}
+
+.diws-notif-copy-btn:hover {
+  color: #945722;
+}
+
+/* Quick Controls on Hover */
+.diws-notif-item-controls {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  opacity: 0;
+  transition: opacity 0.15s ease;
+}
+
+.diws-notif-item:hover .diws-notif-item-controls {
+  opacity: 1;
+}
+
+.diws-notif-icon-action {
+  width: 22px;
+  height: 22px;
+  border-radius: 5px;
+  background: rgba(255, 255, 255, 0.9);
+  border: 1px solid #DFD8CB;
+  color: #7A7264;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  padding: 0;
+  transition: all 0.15s ease;
+}
+
+.diws-notif-icon-action:hover {
+  background: #FFFFFF;
+  color: #17201B;
+  border-color: #B87333;
+}
+
+.diws-notif-icon-action.delete:hover {
+  background: #FEECEB;
+  color: #C5221F;
+  border-color: #FAD1D0;
+}
+
+/* Footer */
+.diws-notif-footer {
+  padding: 12px 18px;
+  background: #FAF7F2;
+  border-top: 1px solid #EAE5DC;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.diws-notif-footer-link {
+  font-size: 12px;
+  font-weight: 700;
+  color: #173A2A;
+  text-decoration: none;
+  display: inline-flex;
+  align-items: center;
+  gap: 4px;
+  transition: color 0.15s ease;
+}
+
+.diws-notif-footer-link:hover {
+  color: #B87333;
+}
+
+.diws-notif-footer-total {
+  font-size: 11px;
+  color: #8C8275;
+  font-weight: 500;
+}
+
+/* Empty State */
+.diws-notif-empty {
+  padding: 38px 20px;
+  text-align: center;
+}
+
+.diws-notif-empty-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 50%;
+  background: #F4EFE6;
+  color: #8C8275;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 10px;
+}
+
+.diws-notif-empty-title {
+  font-size: 13px;
+  font-weight: 700;
+  color: #17201B;
+  margin: 0 0 3px;
+}
+
+.diws-notif-empty-sub {
+  font-size: 12px;
+  color: #8C8275;
+  margin: 0;
+}

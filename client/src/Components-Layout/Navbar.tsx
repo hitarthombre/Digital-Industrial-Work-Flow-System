@@ -18,6 +18,11 @@ function Navbar() {
         {/* NAVIGATION LINKS */}
         <div className="nav-links">
           <Link to="/">Home</Link>
+          {isAuthenticated && (
+            <Link to="/app/dashboard" style={{ color: '#D39A62', fontWeight: 700 }}>
+              Dashboard
+            </Link>
+          )}
           <Link to="/about">About</Link>
           <Link to="/features">Features</Link>
           <Link to="/pricing">Pricing</Link>
@@ -28,7 +33,9 @@ function Navbar() {
         <div className="nav-actions" style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           {isAuthenticated ? (
             <div style={{ display: 'flex', alignItems: 'center', gap: '0.875rem' }}>
-              <div 
+              <Link 
+                to="/app/dashboard"
+                title="Go to Dashboard"
                 style={{ 
                   display: 'flex', 
                   alignItems: 'center', 
@@ -36,15 +43,30 @@ function Navbar() {
                   color: '#F7F4ED',
                   fontSize: '0.9rem',
                   fontWeight: 600,
-                  backgroundColor: 'rgba(255, 255, 255, 0.1)',
+                  backgroundColor: 'rgba(255, 255, 255, 0.12)',
                   padding: '0.4rem 0.85rem',
                   borderRadius: '20px',
-                  border: '1px solid rgba(255, 255, 255, 0.15)'
+                  border: '1px solid rgba(255, 255, 255, 0.2)',
+                  textDecoration: 'none',
+                  cursor: 'pointer',
+                  transition: 'all 0.2s ease',
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.2)';
+                  e.currentTarget.style.borderColor = '#D39A62';
+                  e.currentTarget.style.transform = 'translateY(-1px)';
+                  e.currentTarget.style.boxShadow = '0 4px 12px rgba(0,0,0,0.15)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.backgroundColor = 'rgba(255, 255, 255, 0.12)';
+                  e.currentTarget.style.borderColor = 'rgba(255, 255, 255, 0.2)';
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
                 }}
               >
                 <UserIcon size={16} style={{ color: '#D39A62' }} />
                 <span>{user?.firstName ? `${user.firstName} ${user.lastName || ''}`.trim() : user?.email}</span>
-              </div>
+              </Link>
 
               <Link 
                 to="/logout" 

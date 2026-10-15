@@ -163,11 +163,6 @@ export const FactoryList: React.FC = () => {
       {/* Page Header */}
       <div className="factory-page-header">
         <div>
-          <div className="flex items-center gap-2 text-slate-500 text-xs font-semibold uppercase tracking-wider mb-1">
-            <span>Module 8</span>
-            <span>•</span>
-            <span>Digital Industrial System</span>
-          </div>
           <h1 className="factory-page-title">
             <Factory className="text-amber-600 inline mr-2" size={28} />
             Factory Management

@@ -9,7 +9,12 @@ export const CreateUserSchema = z.object({
     lastName: z.string().min(1, "Last name is required"),
     email: z.string().email("Invalid email address"),
     password: z.string().min(6, "Password must be at least 6 characters").optional(),
-    phone: z.string().optional(),
+    phone: z
+      .string()
+      .optional()
+      .refine((val) => !val || /^\d{10}$/.test(val.replace(/\D/g, "")), {
+        message: "Phone number must be exactly 10 digits",
+      }),
     role: z.string().optional(),
     roleId: z.string().optional(),
     departmentId: z.string().optional(),
@@ -20,7 +25,12 @@ export const UpdateUserSchema = z.object({
   body: z.object({
     firstName: z.string().optional(),
     lastName: z.string().optional(),
-    phone: z.string().optional(),
+    phone: z
+      .string()
+      .optional()
+      .refine((val) => !val || /^\d{10}$/.test(val.replace(/\D/g, "")), {
+        message: "Phone number must be exactly 10 digits",
+      }),
     role: z.string().optional(),
     roleId: z.string().optional(),
     departmentId: z.string().optional(),

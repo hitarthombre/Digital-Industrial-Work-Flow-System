@@ -19,6 +19,63 @@ const countBy = (rows: Array<{ _id: string; count: number }>) => {
 
 export class DashboardService {
   async getSummary(companyId: string) {
+    if (!companyId || !Types.ObjectId.isValid(companyId)) {
+      return {
+        success: true,
+        data: {
+          kpis: {
+            inventoryValue: 0,
+            lowStockItems: 0,
+            activeWorkOrders: 0,
+            openPurchaseOrders: 0,
+            openSalesOrders: 0,
+            revenueThisMonth: 0,
+            outstandingReceivables: 0,
+            shipmentsInTransit: 0,
+          },
+          inventory: {
+            totalValue: 0,
+            stockLines: 0,
+            lowStock: 0,
+            outOfStock: 0,
+            byCategory: [],
+          },
+          production: {
+            byStatus: {},
+            active: 0,
+            completed: 0,
+            overdue: 0,
+            producedThisMonth: 0,
+          },
+          procurement: {
+            byStatus: {},
+            openOrders: 0,
+            pendingRequests: 0,
+            spendThisMonth: 0,
+            lateDeliveries: 0,
+          },
+          sales: {
+            byStatus: {},
+            pendingApproval: 0,
+            openOrders: 0,
+            revenueThisMonth: 0,
+            outstanding: 0,
+            overdue: 0,
+            revenueTrend: [],
+          },
+          dispatch: {
+            byStatus: {},
+            pending: 0,
+            inTransit: 0,
+            delivered: 0,
+            delayed: 0,
+          },
+          alerts: [],
+          recentActivity: [],
+        },
+      };
+    }
+
     await salesService.markOverdueInvoices(companyId);
 
     const cid = new Types.ObjectId(companyId);

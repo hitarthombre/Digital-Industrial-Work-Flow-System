@@ -45,6 +45,9 @@ export default function Login() {
         const user = response.data.user;
 
         if (token && user) {
+          if (response.data.refreshToken) {
+            localStorage.setItem('diws_refresh_token', response.data.refreshToken);
+          }
           login(token, user);
           
           if (rememberMe) {

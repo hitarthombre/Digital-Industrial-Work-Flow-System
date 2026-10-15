@@ -295,7 +295,8 @@ export class AuthService {
       "Password Reset Requested",
       `Use the following link to reset your password (valid for 1 hour): ${resetUrl}\n\nReset Token: ${rawResetToken}`,
       "system_alert",
-      user.email
+      user.email,
+      { link: `/reset-password?token=${rawResetToken}` }
     );
 
     return {
@@ -395,7 +396,8 @@ export class AuthService {
       "Verify Your Email Address",
       `Please verify your email address by clicking: ${verifyUrl}\n\nVerification Token: ${rawToken}`,
       "system_alert",
-      user.email
+      user.email,
+      { link: `/verify-email?token=${rawToken}` }
     );
 
     return {

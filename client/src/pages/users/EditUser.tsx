@@ -67,9 +67,19 @@ export const EditUser: React.FC = () => {
   };
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    if (name === "phone") {
+      // Allow only digits and limit to 10 numbers
+      const digitsOnly = value.replace(/\D/g, "").slice(0, 10);
+      setFormData((prev) => ({
+        ...prev,
+        phone: digitsOnly,
+      }));
+      return;
+    }
     setFormData((prev) => ({
       ...prev,
-      [e.target.name]: e.target.value,
+      [name]: value,
     }));
   };
 
@@ -77,6 +87,11 @@ export const EditUser: React.FC = () => {
     e.preventDefault();
     if (!formData.firstName.trim() || !formData.lastName.trim()) {
       setError("First name and last name are required.");
+      return;
+    }
+
+    if (formData.phone && formData.phone.length !== 10) {
+      setError("Phone number must be exactly 10 digits.");
       return;
     }
 
@@ -130,7 +145,7 @@ export const EditUser: React.FC = () => {
       </div>
 
       {/* Main Form Card */}
-      <div className="max-w-3xl bg-white border border-slate-200 rounded-2xl p-6 sm:p-8 shadow-sm">
+      <div className="user-form-card">
         {error && (
           <div className="p-4 bg-rose-50 border border-rose-200 rounded-xl text-rose-700 text-sm flex items-center gap-2 mb-6">
             <AlertCircle size={18} />
@@ -138,100 +153,105 @@ export const EditUser: React.FC = () => {
           </div>
         )}
 
-        <form onSubmit={handleSubmit} className="space-y-6">
+        <form onSubmit={handleSubmit}>
           {/* Identity */}
-          <div>
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-              <User size={14} className="text-amber-600" /> Identity Information
-            </h3>
+          <div className="user-form-section">
+            <div className="user-section-header">
+              <User size={15} className="user-section-icon" />
+              <span>Identity Information</span>
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  First Name <span className="text-rose-500">*</span>
-                </label>
+            <div className="user-form-grid">
+              <div className="user-form-group">
+                <label className="user-form-label required">First Name</label>
                 <input
                   type="text"
                   name="firstName"
                   required
                   value={formData.firstName}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition"
+                  className="user-form-input"
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Last Name <span className="text-rose-500">*</span>
-                </label>
+              <div className="user-form-group">
+                <label className="user-form-label required">Last Name</label>
                 <input
                   type="text"
                   name="lastName"
                   required
                   value={formData.lastName}
                   onChange={handleChange}
-                  className="w-full px-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition"
+                  className="user-form-input"
                 />
               </div>
             </div>
           </div>
 
           {/* Contact Details */}
-          <div>
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-              <Phone size={14} className="text-amber-600" /> Contact Details
-            </h3>
+          <div className="user-form-section">
+            <div className="user-section-header">
+              <Phone size={15} className="user-section-icon" />
+              <span>Contact Details</span>
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Email Address (Read Only)
-                </label>
+            <div className="user-form-grid">
+              <div className="user-form-group">
+                <label className="user-form-label">Email Address (Read Only)</label>
                 <input
                   type="email"
                   disabled
                   value={formData.email}
-                  className="w-full px-3.5 py-2.5 bg-slate-100 border border-slate-200 rounded-lg text-sm text-slate-500 font-mono cursor-not-allowed"
+                  className="user-form-input"
                 />
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Phone Number
-                </label>
-                <div className="relative">
-                  <Phone className="absolute left-3.5 top-3 text-slate-400" size={16} />
+              <div className="user-form-group">
+                <label className="user-form-label">Phone Number</label>
+                <div className="user-input-wrapper">
+                  <span className="user-input-icon">
+                    <Phone size={16} />
+                  </span>
                   <input
-                    type="text"
+                    type="tel"
                     name="phone"
-                    placeholder="+1 (555) 000-0000"
+                    maxLength={10}
+                    inputMode="numeric"
+                    pattern="[0-9]{10}"
+                    placeholder="e.g. 9876543210"
                     value={formData.phone}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition"
+                    className="user-form-input has-icon"
                   />
                 </div>
+                {formData.phone && formData.phone.length < 10 && (
+                  <p className="user-helper-text" style={{ color: "#d97706" }}>
+                    {10 - formData.phone.length} more digit{10 - formData.phone.length > 1 ? "s" : ""} required (10 digits total)
+                  </p>
+                )}
               </div>
             </div>
           </div>
 
           {/* Role & Department */}
-          <div>
-            <h3 className="text-xs font-bold text-slate-400 uppercase tracking-wider mb-4 pb-2 border-b border-slate-100 flex items-center gap-2">
-              <Shield size={14} className="text-amber-600" /> Role & Access Level
-            </h3>
+          <div className="user-form-section">
+            <div className="user-section-header">
+              <Shield size={15} className="user-section-icon" />
+              <span>Role & Access Level</span>
+            </div>
 
-            <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Assigned Role
-                </label>
-                <div className="relative">
-                  <Shield className="absolute left-3.5 top-3 text-slate-400" size={16} />
+            <div className="user-form-grid">
+              <div className="user-form-group">
+                <label className="user-form-label required">Assigned Role</label>
+                <div className="user-input-wrapper">
+                  <span className="user-input-icon">
+                    <Shield size={16} />
+                  </span>
                   <select
                     name="role"
                     value={formData.role}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition cursor-pointer"
+                    className="user-form-select has-icon"
                   >
                     <option value="Admin">Admin</option>
                     <option value="Manager">Manager</option>
@@ -242,19 +262,19 @@ export const EditUser: React.FC = () => {
                 </div>
               </div>
 
-              <div>
-                <label className="block text-xs font-bold text-slate-700 uppercase tracking-wider mb-1.5">
-                  Department ID / Code
-                </label>
-                <div className="relative">
-                  <Building className="absolute left-3.5 top-3 text-slate-400" size={16} />
+              <div className="user-form-group">
+                <label className="user-form-label">Department ID / Code</label>
+                <div className="user-input-wrapper">
+                  <span className="user-input-icon">
+                    <Building size={16} />
+                  </span>
                   <input
                     type="text"
                     name="departmentId"
                     placeholder="e.g. DEPT-PLANT-01"
                     value={formData.departmentId}
                     onChange={handleChange}
-                    className="w-full pl-10 pr-3.5 py-2.5 bg-slate-50 border border-slate-300 rounded-lg text-sm text-slate-800 focus:bg-white focus:border-amber-500 outline-none transition"
+                    className="user-form-input has-icon"
                   />
                 </div>
               </div>
@@ -262,7 +282,7 @@ export const EditUser: React.FC = () => {
           </div>
 
           {/* Form Actions */}
-          <div className="flex items-center justify-end gap-3 pt-6 border-t border-slate-200">
+          <div className="user-form-footer">
             <Button
               variant="outline"
               type="button"

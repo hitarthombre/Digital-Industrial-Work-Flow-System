@@ -11,7 +11,7 @@ export interface IUser extends Document {
   password?: string;
   role: string;
   roleId?: Schema.Types.ObjectId;
-  departmentId?: Schema.Types.ObjectId;
+  departmentId?: any;
   status: "active" | "inactive";
   isEmailVerified: boolean;
   lastLoginAt?: Date;
@@ -39,7 +39,7 @@ const UserSchema = new Schema<IUser>(
       default: "Employee",
     },
     roleId: { type: Schema.Types.ObjectId, ref: "Role", index: true },
-    departmentId: { type: Schema.Types.ObjectId, ref: "Department" },
+    departmentId: { type: Schema.Types.Mixed, default: null },
     status: {
       type: String,
       enum: ["active", "inactive"],
@@ -61,18 +61,17 @@ UserSchema.index({ companyId: 1, email: 1 });
 UserSchema.index({ companyId: 1, status: 1 });
 
 // Pre-validate hook to populate passwordHash if password is provided
-UserSchema.pre("validate", async function (next) {
+UserSchema.pre("validate", async function () {
   const user = this as any;
   if (user.password) {
     const salt = await bcrypt.genSalt(10);
     user.passwordHash = await bcrypt.hash(user.password, salt);
     user.password = undefined;
   }
-  next();
 });
 
 // Pre-save hook to hash password with bcrypt on save
-UserSchema.pre("save", async function (next) {
+UserSchema.pre("save", async function () {
   const user = this as any;
   if (user.password) {
     const salt = await bcrypt.genSalt(10);
@@ -84,7 +83,6 @@ UserSchema.pre("save", async function (next) {
       user.passwordHash = await bcrypt.hash(user.passwordHash, salt);
     }
   }
-  next();
 });
 
 // Method to verify passwords

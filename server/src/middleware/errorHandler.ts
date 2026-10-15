@@ -32,7 +32,8 @@ export const errorHandler = (
   // Mongoose ValidationError
   if (err.name === "ValidationError" && (err as any).errors) {
     statusCode = 422;
-    message = "Database Validation Failed";
+    const detailList = Object.values((err as any).errors).map((el: any) => el.message);
+    message = detailList.length > 0 ? detailList.join(". ") : "Database Validation Failed";
     errors = Object.values((err as any).errors).map((el: any) => ({
       field: el.path,
       message: el.message,
@@ -47,7 +48,7 @@ export const errorHandler = (
 
   // Console log in non-test environments
   if (process.env.NODE_ENV !== "test") {
-    console.error(`[Express Error] ${req.method} ${req.url} - ${statusCode} - ${message}`);
+    console.error(`[Express Error] ${req.method} ${req.url} - ${statusCode} - ${message}`, errors && errors.length > 0 ? JSON.stringify(errors) : "");
   }
 
   res.status(statusCode).json({

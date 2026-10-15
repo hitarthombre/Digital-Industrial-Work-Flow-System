@@ -42,9 +42,17 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
       }
     } else {
       localStorage.removeItem("diws_token");
+      localStorage.removeItem("diws_refresh_token");
       localStorage.removeItem("diws_user");
     }
     setLoading(false);
+
+    const onAuthLogout = () => {
+      setToken(null);
+      setUser(null);
+    };
+    window.addEventListener("diws_auth_logout", onAuthLogout);
+    return () => window.removeEventListener("diws_auth_logout", onAuthLogout);
   }, []);
 
   const login = (newToken: string, userData: User) => {
@@ -58,6 +66,7 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
     setToken(null);
     setUser(null);
     localStorage.removeItem("diws_token");
+    localStorage.removeItem("diws_refresh_token");
     localStorage.removeItem("diws_user");
   };
 

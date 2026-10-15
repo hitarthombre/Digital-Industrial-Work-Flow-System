@@ -4,10 +4,17 @@
    GLOBAL RESET
    ========================================================= */
 
-* {
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+
+body,
+h1, h2, h3, h4, h5, h6,
+p, ul, ol, figure, blockquote {
   margin: 0;
   padding: 0;
-  box-sizing: border-box;
 }
 
 html {
@@ -22,10 +29,10 @@ body,
   min-height: 100%;
   margin: 0;
   padding: 0;
-  overflow-x: hidden;
 }
 
 body {
+  overflow-x: clip;
   background: var(--ivory);
   color: var(--text-primary);
   font-family: Inter, sans-serif;
@@ -104,6 +111,10 @@ button {
   width: 100%;
   background: #06382b;
   border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+  backdrop-filter: blur(8px);
 }
 
 .navbar-container {
