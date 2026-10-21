@@ -223,6 +223,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
               {!collapsed && <span>User Management</span>}
             </NavLink>
 
+
             <NavLink
               to="/app/factories"
               className={({ isActive }) =>
