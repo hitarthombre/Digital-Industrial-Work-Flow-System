@@ -3,6 +3,9 @@ import { Schema, model, Document, Types } from "mongoose";
 export interface ICompanyBranding {
   displayName?: string;
   primaryColor?: string;
+  secondaryColor?: string;
+  accentColor?: string;
+  theme?: string;
   logo?: string;
 }
 
@@ -59,8 +62,8 @@ const CompanySchema = new Schema<ICompany>(
     postalCode: { type: String, trim: true },
     gstNumber: { type: String, trim: true },
     website: { type: String, trim: true },
-    currency: { type: String, default: "USD" },
-    timezone: { type: String, default: "UTC" },
+    currency: { type: String, default: "INR" },
+    timezone: { type: String, default: "Asia/Kolkata" },
     status: {
       type: String,
       enum: ["active", "inactive", "suspended", "pending"],
@@ -75,10 +78,13 @@ const CompanySchema = new Schema<ICompany>(
     branding: {
       displayName: { type: String, trim: true },
       primaryColor: { type: String, trim: true },
+      secondaryColor: { type: String, trim: true },
+      accentColor: { type: String, trim: true },
+      theme: { type: String, trim: true },
       logo: { type: String, trim: true },
     },
     settings: {
-      currency: { type: String, default: "USD" },
+      currency: { type: String, default: "INR" },
       timezone: { type: String, default: "UTC" },
       dateFormat: { type: String, default: "YYYY-MM-DD" },
       language: { type: String, default: "en" },

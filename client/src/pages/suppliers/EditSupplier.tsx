@@ -29,32 +29,7 @@ export const EditSupplier: React.FC = () => {
         setSupplier(response.data);
       }
     } catch (err: any) {
-      // Fallback sample data if direct backend fetch misses
-      setSupplier({
-        _id: id || "sup-1",
-        name: "Apex Steel & Metallurgy Corp",
-        code: "SUP-101",
-        category: "raw_material",
-        status: "active",
-        rating: 5,
-        complianceStatus: "compliant",
-        primaryContact: {
-          name: "Robert Vance",
-          email: "rvance@apexsteel.com",
-          phone: "+1 (555) 234-5678",
-          role: "Account Executive",
-        },
-        address: {
-          street: "140 Industrial Pkwy",
-          city: "Pittsburgh",
-          state: "PA",
-          country: "USA",
-          postalCode: "15201",
-        },
-        taxId: "US-984019283",
-        paymentTerms: "Net 30",
-        tags: ["Steel", "Cold-Rolled"],
-      });
+      setError(err.message || "Failed to load supplier details from server.");
     } finally {
       setLoading(false);
     }

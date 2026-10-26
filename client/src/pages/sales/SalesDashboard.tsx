@@ -1,6 +1,6 @@
 import React, { useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
-import { TrendingUp, Plus, RefreshCw, DollarSign, Clock, AlertTriangle, ShoppingBag, FileText, Receipt, Wallet } from "lucide-react";
+import { TrendingUp, Plus, RefreshCw, IndianRupee, Clock, AlertTriangle, ShoppingBag, FileText, Receipt, Wallet } from "lucide-react";
 import { Button } from "../../components/Button";
 import { Chart } from "../../components/Chart";
 import { PageHeader, KpiCard, LoadingBox, ErrorBanner, SectionCard, BarList, StatusBadge } from "../../components/ops/OpsUI";
@@ -76,7 +76,7 @@ export const SalesDashboard: React.FC = () => {
       <ErrorBanner message={reports.error} onRetry={reports.refetch} />
 
       <div className="proc-kpi-grid">
-        <KpiCard label="Order Value" value={r ? formatMoney(r.totalOrderValue) : "—"} sub={`${r?.totalOrders ?? 0} orders · avg ${formatMoney(r?.averageOrderValue)}`} icon={<DollarSign size={22} />} />
+        <KpiCard label="Order Value" value={r ? formatMoney(r.totalOrderValue) : "—"} sub={`${r?.totalOrders ?? 0} orders · avg ${formatMoney(r?.averageOrderValue)}`} icon={<IndianRupee size={22} />} />
         <KpiCard label="Collected" value={r ? formatMoney(r.totalCollected) : "—"} sub={`of ${formatMoney(r?.totalInvoiced)} invoiced`} icon={<Wallet size={22} />} tone="emerald" />
         <KpiCard label="Receivables" value={r ? formatMoney(r.outstandingReceivables) : "—"} sub={`${r?.overdueInvoices ?? 0} overdue (${formatMoney(r?.overdueAmount)})`} icon={<AlertTriangle size={22} />} tone="purple" />
         <KpiCard label="Awaiting Approval" value={r ? r.pendingApproval : "—"} sub={`Quote conversion ${r?.quotationConversionRate ?? 0}%`} icon={<Clock size={22} />} tone="blue" />

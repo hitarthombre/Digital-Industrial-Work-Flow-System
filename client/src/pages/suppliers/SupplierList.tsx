@@ -58,140 +58,6 @@ export const SupplierList: React.FC = () => {
     fetchSuppliers();
   }, [page, statusFilter, categoryFilter, ratingFilter]);
 
-  const getFallbackSuppliers = (): ISupplier[] => [
-    {
-      _id: "sup-1",
-      name: "Apex Steel & Metallurgy Corp",
-      code: "SUP-101",
-      category: "raw_material",
-      status: "active",
-      rating: 5,
-      complianceStatus: "compliant",
-      primaryContact: {
-        name: "Robert Vance",
-        email: "rvance@apexsteel.com",
-        phone: "+1 (555) 234-5678",
-        role: "Account Executive",
-        isPrimary: true,
-      },
-      address: {
-        street: "140 Industrial Pkwy",
-        city: "Pittsburgh",
-        state: "PA",
-        country: "USA",
-      },
-      taxId: "US-984019283",
-      paymentTerms: "Net 30",
-      tags: ["Steel", "Cold-Rolled", "ISO 9001"],
-      totalSpend: 154000,
-      totalOrders: 28,
-    },
-    {
-      _id: "sup-2",
-      name: "Precision Hydraulics & Valves Inc",
-      code: "SUP-102",
-      category: "components",
-      status: "active",
-      rating: 4,
-      complianceStatus: "compliant",
-      primaryContact: {
-        name: "Elena Rostova",
-        email: "elena@precisionhydraulics.io",
-        phone: "+1 (555) 876-5432",
-        role: "Technical Sales Director",
-        isPrimary: true,
-      },
-      address: {
-        street: "88 Valve Center Way",
-        city: "Detroit",
-        state: "MI",
-        country: "USA",
-      },
-      taxId: "US-443912099",
-      paymentTerms: "Net 45",
-      tags: ["Hydraulics", "Precision", "High Pressure"],
-      totalSpend: 98500,
-      totalOrders: 16,
-    },
-    {
-      _id: "sup-3",
-      name: "ElectroTech Drive Systems",
-      code: "SUP-103",
-      category: "machinery",
-      status: "under_review",
-      rating: 3,
-      complianceStatus: "pending_audit",
-      primaryContact: {
-        name: "Marcus Thorne",
-        email: "m.thorne@electrotech.de",
-        phone: "+49 30 123456",
-        role: "Regional Director",
-        isPrimary: true,
-      },
-      address: {
-        city: "Stuttgart",
-        country: "Germany",
-      },
-      taxId: "DE-81190234",
-      paymentTerms: "Net 60",
-      tags: ["Motors", "Automation", "Siemens Partner"],
-      totalSpend: 62000,
-      totalOrders: 8,
-    },
-    {
-      _id: "sup-4",
-      name: "Polymer Pack & Containers Ltd",
-      code: "SUP-104",
-      category: "packaging",
-      status: "active",
-      rating: 5,
-      complianceStatus: "compliant",
-      primaryContact: {
-        name: "Sarah Jenkins",
-        email: "sjenkins@polypack.com",
-        phone: "+1 (555) 991-4455",
-        role: "Procurement Lead",
-        isPrimary: true,
-      },
-      address: {
-        city: "Atlanta",
-        state: "GA",
-        country: "USA",
-      },
-      taxId: "US-551029481",
-      paymentTerms: "Net 15",
-      tags: ["Eco Packaging", "Drums", "Custom Boxes"],
-      totalSpend: 42100,
-      totalOrders: 22,
-    },
-    {
-      _id: "sup-5",
-      name: "Global Freight & Air Express",
-      code: "SUP-105",
-      category: "logistics",
-      status: "active",
-      rating: 4,
-      complianceStatus: "compliant",
-      primaryContact: {
-        name: "David Kim",
-        email: "dkim@freightglobal.com",
-        phone: "+1 (555) 332-9090",
-        role: "Logistics Coordinator",
-        isPrimary: true,
-      },
-      address: {
-        city: "Seattle",
-        state: "WA",
-        country: "USA",
-      },
-      taxId: "US-110293847",
-      paymentTerms: "Net 30",
-      tags: ["Freight", "Cold Chain", "Customs"],
-      totalSpend: 89000,
-      totalOrders: 45,
-    },
-  ];
-
   const fetchSuppliers = async (searchQuery = search) => {
     setLoading(true);
     setError(null);
@@ -204,43 +70,23 @@ export const SupplierList: React.FC = () => {
 
       const response = await api.get<GetSuppliersResponse>("/suppliers", { params });
 
-      if (response.data && Array.isArray(response.data) && response.data.length > 0) {
+      if (response && response.data && Array.isArray(response.data)) {
         setSuppliers(response.data);
         if (response.pagination) {
           setTotalPages(response.pagination.totalPages || 1);
-          setTotalCount(response.pagination.total || response.data.length);
+          setTotalCount(response.pagination.total ?? response.data.length);
+        } else {
+          setTotalPages(1);
+          setTotalCount(response.data.length);
         }
       } else {
-        // Filter sample list locally if server returns empty list initially
-        let dataset = getFallbackSuppliers();
-        if (searchQuery.trim()) {
-          const q = searchQuery.toLowerCase().trim();
-          dataset = dataset.filter(
-            (s) =>
-              s.name.toLowerCase().includes(q) ||
-              s.code.toLowerCase().includes(q) ||
-              s.primaryContact.name.toLowerCase().includes(q) ||
-              s.tags?.some((t) => t.toLowerCase().includes(q))
-          );
-        }
-        if (statusFilter !== "ALL") dataset = dataset.filter((s) => s.status === statusFilter);
-        if (categoryFilter !== "ALL") dataset = dataset.filter((s) => s.category === categoryFilter);
-        if (ratingFilter !== "ALL") dataset = dataset.filter((s) => s.rating >= Number(ratingFilter));
-
-        setSuppliers(dataset);
+        setSuppliers([]);
         setTotalPages(1);
-        setTotalCount(dataset.length);
+        setTotalCount(0);
       }
     } catch (err: any) {
-      // Graceful fallback to client dataset if backend endpoint isn't listening yet
-      let dataset = getFallbackSuppliers();
-      if (searchQuery.trim()) {
-        const q = searchQuery.toLowerCase().trim();
-        dataset = dataset.filter((s) => s.name.toLowerCase().includes(q) || s.code.toLowerCase().includes(q));
-      }
-      setSuppliers(dataset);
-      setTotalPages(1);
-      setTotalCount(dataset.length);
+      setSuppliers([]);
+      setError(err.message || "Failed to load suppliers from server.");
     } finally {
       setLoading(false);
     }
@@ -258,28 +104,21 @@ export const SupplierList: React.FC = () => {
     try {
       if (editingSupplier) {
         // Edit mode
-        try {
-          const res = await api.put<any>(`/suppliers/${editingSupplier._id}`, payload);
+        const res = await api.put<any>(`/suppliers/${editingSupplier._id}`, payload);
+        if (res && res.data) {
           setSuppliers((prev) => prev.map((s) => (s._id === editingSupplier._id ? res.data : s)));
-        } catch (_) {
-          setSuppliers((prev) =>
-            prev.map((s) => (s._id === editingSupplier._id ? { ...s, ...payload } : s))
-          );
+        } else {
+          await fetchSuppliers();
         }
         setEditingSupplier(null);
       } else {
         // Create mode
-        try {
-          const res = await api.post<any>("/suppliers", payload);
+        const res = await api.post<any>("/suppliers", payload);
+        if (res && res.data) {
           setSuppliers((prev) => [res.data, ...prev]);
-        } catch (_) {
-          const mockNew: ISupplier = {
-            _id: `sup-${Date.now()}`,
-            ...payload,
-            totalSpend: 0,
-            totalOrders: 0,
-          };
-          setSuppliers((prev) => [mockNew, ...prev]);
+          setTotalCount((c) => c + 1);
+        } else {
+          await fetchSuppliers();
         }
         setIsCreateModalOpen(false);
       }
@@ -392,7 +231,7 @@ export const SupplierList: React.FC = () => {
           </div>
           <div className="sup-stat-info">
             <span className="sup-stat-label">Total Purchase Spend</span>
-            <span className="sup-stat-value">${totalSpendSum.toLocaleString()}</span>
+            <span className="sup-stat-value">₹{totalSpendSum.toLocaleString("en-IN")}</span>
             <span className="sup-stat-desc">Cumulative Procurement</span>
           </div>
         </div>
@@ -615,7 +454,7 @@ export const SupplierList: React.FC = () => {
               {/* Card Footer */}
               <div className="sup-card-footer">
                 <div className="text-xs text-slate-500 font-medium">
-                  Total Spend: <span className="font-bold text-slate-900">${(sup.totalSpend || 0).toLocaleString()}</span>
+                  Total Spend: <span className="font-bold text-slate-900">₹{(sup.totalSpend || 0).toLocaleString("en-IN")}</span>
                 </div>
 
                 <div className="flex items-center gap-1">
@@ -710,7 +549,7 @@ export const SupplierList: React.FC = () => {
                       {sup.complianceStatus.replace("_", " ").toUpperCase()}
                     </span>
                   </td>
-                  <td className="font-bold text-slate-900">${(sup.totalSpend || 0).toLocaleString()}</td>
+                  <td className="font-bold text-slate-900">₹{(sup.totalSpend || 0).toLocaleString("en-IN")}</td>
                   <td className="text-right">
                     <div className="flex items-center justify-end gap-1">
                       <button

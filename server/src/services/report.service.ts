@@ -444,9 +444,9 @@ export class ReportService {
     if (value === null || value === undefined || value === "") return "-";
     switch (format) {
       case "currency":
-        return Number(value).toLocaleString("en-US", { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+        return `₹${Number(value).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
       case "number":
-        return Number(value).toLocaleString("en-US", { maximumFractionDigits: 2 });
+        return Number(value).toLocaleString("en-IN", { maximumFractionDigits: 2 });
       case "percent":
         return `${Number(value).toFixed(1)}%`;
       case "date":
@@ -486,7 +486,7 @@ export class ReportService {
       );
       report.columns.forEach((c, idx) => {
         const cell = excelRow.getCell(idx + 1);
-        if (c.format === "currency") cell.numFmt = "#,##0.00";
+        if (c.format === "currency") cell.numFmt = "[$₹-en-IN]#,##0.00";
         if (c.format === "percent") cell.numFmt = "0.0%";
         if (c.format === "date") cell.numFmt = "yyyy-mm-dd";
       });

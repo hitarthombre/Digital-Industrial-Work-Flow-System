@@ -25,6 +25,25 @@ export interface RegisterInput {
 }
 
 export class AuthService {
+  // Helper: Resolve User Permissions
+  async resolveUserPermissions(user: IUser): Promise<string[]> {
+    let permissions: string[] = [];
+    if (user.roleId) {
+      const roleId = (user.roleId as any)._id ? (user.roleId as any)._id : user.roleId;
+      const roleObj = await Role.findById(roleId);
+      if (roleObj && roleObj.permissions?.length) {
+        permissions = roleObj.permissions;
+      }
+    }
+    if (!permissions.length) {
+      const roleObj = await Role.findOne({ name: user.role });
+      if (roleObj && roleObj.permissions?.length) {
+        permissions = roleObj.permissions;
+      }
+    }
+    return permissions;
+  }
+
   // Generate Access Token (short lived)
   generateAccessToken(payload: { userId: string; companyId: string; roleId?: string; role: string }): string {
     return jwt.sign(payload, JWT_ACCESS_SECRET, {
@@ -195,6 +214,8 @@ export class AuthService {
       userAgent,
     });
 
+    const permissions = await this.resolveUserPermissions(user);
+
     return {
       user: {
         id: user._id,
@@ -204,10 +225,12 @@ export class AuthService {
         email: user.email,
         role: user.role,
         isEmailVerified: user.isEmailVerified,
+        permissions,
       },
       accessToken,
       refreshToken,
       sessionId,
+      permissions,
     };
   }
 
@@ -227,15 +250,20 @@ export class AuthService {
       role: user.role,
     });
 
+    const permissions = await this.resolveUserPermissions(user);
+
     return {
       accessToken,
       user: {
         id: user._id,
+        companyId: user.companyId,
         firstName: user.firstName,
         lastName: user.lastName,
         email: user.email,
         role: user.role,
+        permissions,
       },
+      permissions,
     };
   }
 
@@ -459,18 +487,12 @@ export class AuthService {
       throw new Error("User profile not found");
     }
 
-    let permissions: string[] = [];
-    if (user.roleId && (user.roleId as any).permissions) {
-      permissions = (user.roleId as any).permissions;
-    } else {
-      const roleObj = await Role.findOne({ name: user.role });
-      if (roleObj) {
-        permissions = roleObj.permissions;
-      }
-    }
+    const permissions = await this.resolveUserPermissions(user);
+    const userObj = user.toObject ? user.toObject() : user;
+    (userObj as any).permissions = permissions;
 
     return {
-      user,
+      user: userObj,
       permissions,
     };
   }

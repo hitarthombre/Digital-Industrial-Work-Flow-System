@@ -115,8 +115,8 @@ describe('Core Models Verification Suite (Target Models: User, Company, Role, Pe
       });
 
       expect(comp._id).toBeDefined();
-      expect(comp.currency).toBe('USD');
-      expect(comp.timezone).toBe('UTC');
+      expect(comp.currency).toBe('INR');
+      expect(comp.timezone).toBe('Asia/Kolkata');
       expect(comp.status).toBe('active');
       expect(comp.subscriptionPlan).toBe('free');
       expect(comp.isDeleted).toBe(false);

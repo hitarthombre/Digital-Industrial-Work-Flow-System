@@ -41,3 +41,8 @@ server/.env*
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Temporary scratch files and test uploads
+scratch/
+server/uploads/
+*.docx

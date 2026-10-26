@@ -55,7 +55,7 @@ const PLAN_TIERS: PlanTier[] = [
   {
     id: "free",
     name: "Free Tier",
-    price: "$0",
+    price: "₹0",
     billing: "Forever free for small setups",
     limits: { users: 5, factories: 1, warehouses: 2, storageGB: 2 },
     features: [
@@ -70,7 +70,7 @@ const PLAN_TIERS: PlanTier[] = [
   {
     id: "starter",
     name: "Starter Industrial",
-    price: "$99",
+    price: "₹7,999",
     billing: "per month / billed annually",
     limits: { users: 15, factories: 3, warehouses: 5, storageGB: 10 },
     features: [
@@ -86,7 +86,7 @@ const PLAN_TIERS: PlanTier[] = [
   {
     id: "growth",
     name: "Growth Enterprise",
-    price: "$299",
+    price: "₹24,999",
     billing: "per month / billed annually",
     badge: "MOST POPULAR",
     limits: { users: 50, factories: 10, warehouses: 25, storageGB: 50 },

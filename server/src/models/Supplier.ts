@@ -110,7 +110,7 @@ const PurchaseHistorySchema = new Schema<IPurchaseHistorySub>(
     itemSummary: { type: String, required: true },
     itemsCount: { type: Number, default: 1 },
     totalAmount: { type: Number, required: true, min: 0 },
-    currency: { type: String, default: "USD" },
+    currency: { type: String, default: "INR" },
     status: {
       type: String,
       enum: ["delivered", "shipped", "processing", "cancelled"],

@@ -33,7 +33,7 @@ function Pricing() {
 
           <Pricingcard
             name="Starter"
-            price="$29"
+            price="₹2,499"
             description="For small teams getting started with digital workflow management."
             features={[
               "Up to 5 team members",
@@ -46,7 +46,7 @@ function Pricing() {
 
           <Pricingcard
             name="Professional"
-            price="$79"
+            price="₹6,499"
             description="For growing industrial teams that need advanced workflow control."
             features={[
               "Up to 25 team members",
@@ -60,7 +60,7 @@ function Pricing() {
 
           <Pricingcard
             name="Enterprise"
-            price="$149"
+            price="₹12,499"
             description="For large industrial organizations managing complex operations."
             features={[
               "Unlimited team members",

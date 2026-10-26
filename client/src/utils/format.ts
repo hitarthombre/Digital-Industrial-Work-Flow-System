@@ -1,7 +1,7 @@
 // Shared display formatters for the operations modules
 
 export const formatMoney = (value?: number | null) =>
-  (Number(value) || 0).toLocaleString(undefined, { minimumFractionDigits: 2, maximumFractionDigits: 2 });
+  `₹${(Number(value) || 0).toLocaleString("en-IN", { minimumFractionDigits: 2, maximumFractionDigits: 2 })}`;
 
 export const formatNumber = (value?: number | null, digits = 2) =>
   (Number(value) || 0).toLocaleString(undefined, { maximumFractionDigits: digits });

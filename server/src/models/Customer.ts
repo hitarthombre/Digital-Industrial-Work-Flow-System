@@ -129,7 +129,7 @@ const CustomerOrderSchema = new Schema<ICustomerOrderSub>(
     orderNumber: { type: String, required: true, trim: true },
     date: { type: Date, default: Date.now },
     totalAmount: { type: Number, required: true, min: 0 },
-    currency: { type: String, default: "USD" },
+    currency: { type: String, default: "INR" },
     status: {
       type: String,
       enum: ["draft", "confirmed", "processing", "shipped", "delivered", "cancelled"],

@@ -1,4 +1,6 @@
 import { Router } from "express";
+import path from "path";
+import multer from "multer";
 import {
   supplierController,
   CreateSupplierSchema,
@@ -8,6 +10,17 @@ import { authenticate } from "../middleware/auth";
 import { requirePermission } from "../middleware/rbac";
 import { enforceTenantIsolation } from "../middleware/tenant";
 import { validateRequest } from "../middleware/validation";
+
+const storage = multer.diskStorage({
+  destination: (_req, _file, cb) => {
+    cb(null, path.join(__dirname, "../../uploads"));
+  },
+  filename: (_req, file, cb) => {
+    const ext = path.extname(file.originalname);
+    cb(null, `doc-${Date.now()}-${Math.round(Math.random() * 1e9)}${ext}`);
+  },
+});
+const upload = multer({ storage, limits: { fileSize: 15 * 1024 * 1024 } });
 
 const router = Router();
 
@@ -42,6 +55,7 @@ router.get(
 router.post(
   "/:id/documents",
   requirePermission("documents:create") as any,
+  upload.single("document"),
   (req: any, res: any, next: any) => supplierController.uploadDocument(req, res, next)
 );
 

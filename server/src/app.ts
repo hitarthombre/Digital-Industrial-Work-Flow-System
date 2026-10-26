@@ -1,4 +1,5 @@
 import express, { Request, Response } from 'express';
+import path from 'path';
 import cors from 'cors';
 import helmet from 'helmet';
 import morgan from 'morgan';
@@ -71,10 +72,37 @@ if (!isTestEnv) {
 }
 
 // Middleware
-app.use(helmet());
+app.use(
+  helmet({
+    crossOriginResourcePolicy: { policy: "cross-origin" },
+    crossOriginEmbedderPolicy: false,
+    frameguard: false,
+    contentSecurityPolicy: false,
+  })
+);
 app.use(cors());
-app.use(express.json());
-if (!isTestEnv) app.use(morgan('dev'));
+app.use(express.json({ limit: "50mb" }));
+app.use(express.urlencoded({ limit: "50mb", extended: true }));
+const uploadsStatic = [
+  (req: Request, res: Response, next: any) => {
+    res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+    res.setHeader("Access-Control-Allow-Origin", "*");
+    res.setHeader("Content-Disposition", "inline");
+    res.removeHeader("X-Frame-Options");
+    next();
+  },
+  express.static(path.join(__dirname, "../uploads"), {
+    setHeaders: (res) => {
+      res.setHeader("Content-Disposition", "inline");
+      res.setHeader("Cross-Origin-Resource-Policy", "cross-origin");
+      res.removeHeader("X-Frame-Options");
+    },
+  }),
+];
+
+app.use("/uploads", ...uploadsStatic);
+app.use("/api/uploads", ...uploadsStatic);
+if (!isTestEnv) app.use(morgan("dev"));
 
 // Routes
 app.use("/api/auth", authRouter);

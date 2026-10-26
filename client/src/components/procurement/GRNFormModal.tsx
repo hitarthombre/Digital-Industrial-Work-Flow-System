@@ -156,8 +156,8 @@ export const GRNFormModal: React.FC<GRNFormModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
-      <div className="bg-white rounded-xl max-w-4xl w-full p-6 shadow-2xl border border-slate-200 my-8 max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-hidden">
+      <div className="bg-white rounded-xl max-w-4xl w-full p-6 shadow-2xl border border-slate-200 my-auto max-h-[calc(100vh-2rem)] flex flex-col">
         {/* Header */}
         <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-4">
           <div>

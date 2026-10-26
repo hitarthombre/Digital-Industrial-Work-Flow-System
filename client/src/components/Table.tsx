@@ -65,6 +65,7 @@ export function Table<T>({
         style={{
           width: "100%",
           overflowX: "auto",
+          overflowY: "hidden",
           backgroundColor: "var(--card-bg)",
           borderRadius: "var(--radius-lg)",
           border: "1px solid var(--border-color)",

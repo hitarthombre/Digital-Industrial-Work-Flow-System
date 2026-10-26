@@ -8,7 +8,7 @@ import {
   Cpu,
   ShoppingCart,
   TrendingUp,
-  DollarSign,
+  IndianRupee,
   Wallet,
   Truck,
   Plus,
@@ -89,7 +89,7 @@ export const MainDashboard: React.FC = () => {
           {/* KPI cards */}
           <div className="proc-kpi-grid">
             <KpiCard label="Inventory Value" value={formatMoney(d.kpis.inventoryValue)} sub={`${d.kpis.lowStockItems} low / out of stock`} icon={<Boxes size={22} />} />
-            <KpiCard label="Revenue This Month" value={formatMoney(d.kpis.revenueThisMonth)} sub={`${d.kpis.openSalesOrders} open sales orders`} icon={<DollarSign size={22} />} tone="emerald" />
+            <KpiCard label="Revenue This Month" value={formatMoney(d.kpis.revenueThisMonth)} sub={`${d.kpis.openSalesOrders} open sales orders`} icon={<IndianRupee size={22} />} tone="emerald" />
             <KpiCard label="Active Work Orders" value={d.kpis.activeWorkOrders} sub={`${formatNumber(d.production.producedThisMonth, 0)} units made this month`} icon={<Cpu size={22} />} tone="blue" />
             <KpiCard label="Receivables" value={formatMoney(d.kpis.outstandingReceivables)} sub={`${d.kpis.shipmentsInTransit} shipments in transit`} icon={<Wallet size={22} />} tone="purple" />
           </div>

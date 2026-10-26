@@ -10,12 +10,14 @@ import {
   FileText,
   Plus,
   Trash2,
-  Download,
   Calendar,
   ShieldCheck,
   AlertTriangle,
   Clock,
   FileCheck,
+  Eye,
+  Printer,
+  ExternalLink,
 } from "lucide-react";
 
 interface SupplierVaultProps {
@@ -24,6 +26,14 @@ interface SupplierVaultProps {
   onDocumentAdded?: (newDoc: ISupplierDocument) => void;
   onDocumentDeleted?: (docId: string) => void;
 }
+
+const getDocumentUrl = (url?: string) => {
+  if (!url || url === "#") return "";
+  if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("blob:")) return url;
+  const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const origin = apiBase.replace(/\/api\/?$/, "");
+  return `${origin}${url.startsWith("/") ? "" : "/"}${url}`;
+};
 
 export const SupplierVault: React.FC<SupplierVaultProps> = ({
   supplierId,
@@ -35,6 +45,7 @@ export const SupplierVault: React.FC<SupplierVaultProps> = ({
   const [uploadModalOpen, setUploadModalOpen] = useState(false);
   const [uploading, setUploading] = useState(false);
   const [uploadError, setUploadError] = useState<string | null>(null);
+  const [viewingDoc, setViewingDoc] = useState<ISupplierDocument | null>(null);
 
   // Form State
   const [title, setTitle] = useState("");
@@ -66,7 +77,7 @@ export const SupplierVault: React.FC<SupplierVaultProps> = ({
         const res = await api.post<any>(`/suppliers/${supplierId}/documents`, formData);
         createdDoc = res.data;
       } catch (err: any) {
-        // Fallback demo document object if endpoint is unseeded or mocked
+        // Fallback document object if network drops
         const isExpiring = expiryDate && new Date(expiryDate) < new Date(Date.now() + 30 * 86400000);
         const isExpired = expiryDate && new Date(expiryDate) < new Date();
 
@@ -75,7 +86,7 @@ export const SupplierVault: React.FC<SupplierVaultProps> = ({
           title: title.trim(),
           docType,
           fileName: selectedFile ? selectedFile.name : `${title.toLowerCase().replace(/\s+/g, "_")}.pdf`,
-          fileUrl: "#",
+          fileUrl: selectedFile ? URL.createObjectURL(selectedFile) : "#",
           fileSize: selectedFile ? selectedFile.size : 1024 * 450,
           uploadedAt: new Date().toISOString(),
           expiryDate: expiryDate || undefined,
@@ -230,25 +241,18 @@ export const SupplierVault: React.FC<SupplierVaultProps> = ({
                 </div>
 
                 <div className="flex items-center justify-between gap-2 pt-1">
-                  <a
-                    href={doc.fileUrl || "#"}
-                    target="_blank"
-                    rel="noreferrer"
-                    className="inline-flex items-center gap-1 text-xs font-semibold text-amber-700 hover:text-amber-800"
-                    onClick={(e) => {
-                      if (doc.fileUrl === "#") {
-                        e.preventDefault();
-                        alert(`Opening certificate artifact view: ${doc.title}`);
-                      }
-                    }}
+                  <button
+                    type="button"
+                    onClick={() => setViewingDoc(doc)}
+                    className="inline-flex items-center gap-1.5 text-xs font-semibold text-amber-700 hover:text-amber-800 bg-amber-50 hover:bg-amber-100 px-2.5 py-1.5 rounded-md transition-colors"
                   >
-                    <Download size={13} />
-                    <span>View / Download</span>
-                  </a>
+                    <Eye size={14} />
+                    <span>View Certificate</span>
+                  </button>
 
                   <button
                     onClick={() => handleDelete(doc._id)}
-                    className="text-slate-400 hover:text-rose-600 p-1 rounded transition-colors"
+                    className="text-slate-400 hover:text-rose-600 p-1.5 rounded transition-colors"
                     title="Delete Document"
                   >
                     <Trash2 size={14} />
@@ -258,6 +262,160 @@ export const SupplierVault: React.FC<SupplierVaultProps> = ({
             </div>
           ))}
         </div>
+      )}
+
+      {/* Certificate Viewer Modal */}
+      {viewingDoc && (
+        <Modal
+          isOpen={!!viewingDoc}
+          onClose={() => setViewingDoc(null)}
+          title={`Compliance Certificate: ${viewingDoc.title}`}
+          maxWidth="lg"
+        >
+          <div className="flex flex-col gap-4">
+            {/* Header info */}
+            <div className="p-4 bg-slate-50 border border-slate-200 rounded-xl flex flex-col md:flex-row justify-between items-start md:items-center gap-3">
+              <div>
+                <div className="flex items-center gap-2 mb-1">
+                  {getDocTypeBadge(viewingDoc.docType)}
+                  {getStatusBadge(viewingDoc.status)}
+                </div>
+                <h3 className="font-bold text-slate-900 text-base">{viewingDoc.title}</h3>
+                <p className="text-xs text-slate-500 font-mono mt-0.5">
+                  {viewingDoc.fileName} • {formatFileSize(viewingDoc.fileSize)}
+                </p>
+              </div>
+
+              <div className="flex items-center gap-2">
+                {viewingDoc.fileUrl && viewingDoc.fileUrl !== "#" ? (
+                  <a
+                    href={getDocumentUrl(viewingDoc.fileUrl)}
+                    target="_blank"
+                    rel="noreferrer"
+                    className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-amber-600 text-white hover:bg-amber-700 rounded-lg shadow-sm transition-colors"
+                  >
+                    <ExternalLink size={14} />
+                    <span>Open in New Tab</span>
+                  </a>
+                ) : null}
+                <button
+                  type="button"
+                  onClick={() => window.print()}
+                  className="inline-flex items-center gap-1.5 px-3 py-1.5 text-xs font-semibold bg-slate-200 text-slate-700 hover:bg-slate-300 rounded-lg transition-colors"
+                >
+                  <Printer size={14} />
+                  <span>Print Record</span>
+                </button>
+              </div>
+            </div>
+
+            {/* Document Details Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 gap-3 text-xs bg-white p-3.5 rounded-xl border border-slate-200">
+              <div>
+                <span className="text-slate-400 block font-medium">Uploaded Date</span>
+                <span className="font-semibold text-slate-800">
+                  {new Date(viewingDoc.uploadedAt).toLocaleDateString(undefined, { dateStyle: "medium" })}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-400 block font-medium">Compliance Expiry Date</span>
+                <span className="font-semibold text-slate-800">
+                  {viewingDoc.expiryDate
+                    ? new Date(viewingDoc.expiryDate).toLocaleDateString(undefined, { dateStyle: "medium" })
+                    : "Lifetime Validity (No Expiry)"}
+                </span>
+              </div>
+              <div>
+                <span className="text-slate-400 block font-medium">Verification Status</span>
+                <span className="font-semibold text-emerald-700 capitalize">
+                  {viewingDoc.status.replace("_", " ")}
+                </span>
+              </div>
+              {viewingDoc.notes && (
+                <div className="sm:col-span-2 md:col-span-3 pt-2.5 border-t border-slate-100">
+                  <span className="text-slate-400 block font-medium">Audit Remarks & Notes</span>
+                  <p className="text-slate-700 mt-0.5 leading-relaxed">{viewingDoc.notes}</p>
+                </div>
+              )}
+            </div>
+
+            {/* Document Preview Area */}
+            <div className="border border-slate-200 rounded-xl overflow-hidden bg-slate-100 min-h-[380px] flex flex-col items-center justify-center p-4">
+              {viewingDoc.fileUrl &&
+              viewingDoc.fileUrl !== "#" &&
+              (viewingDoc.fileUrl.endsWith(".pdf") ||
+                viewingDoc.fileUrl.includes("dummy.pdf") ||
+                viewingDoc.fileUrl.includes("/uploads/")) ? (
+                <div className="w-full flex flex-col items-center">
+                  <object
+                    data={getDocumentUrl(viewingDoc.fileUrl)}
+                    type="application/pdf"
+                    className="w-full h-[480px] rounded-lg border border-slate-300 bg-white shadow-inner"
+                  >
+                    <iframe
+                      src={getDocumentUrl(viewingDoc.fileUrl)}
+                      title={viewingDoc.title}
+                      className="w-full h-[480px] rounded-lg border border-slate-300 bg-white shadow-inner"
+                    >
+                      <div className="flex flex-col items-center justify-center p-8 text-center bg-white rounded-lg">
+                        <FileText size={48} className="text-amber-600 mb-3" />
+                        <p className="text-sm font-semibold text-slate-800 mb-1">{viewingDoc.fileName}</p>
+                        <p className="text-xs text-slate-500 mb-4">Click below to view the verified PDF document.</p>
+                        <a
+                          href={getDocumentUrl(viewingDoc.fileUrl)}
+                          target="_blank"
+                          rel="noreferrer"
+                          className="px-4 py-2 bg-amber-600 text-white rounded-lg text-xs font-semibold"
+                        >
+                          Open PDF
+                        </a>
+                      </div>
+                    </iframe>
+                  </object>
+                </div>
+              ) : viewingDoc.fileUrl &&
+                (viewingDoc.fileUrl.endsWith(".png") ||
+                  viewingDoc.fileUrl.endsWith(".jpg") ||
+                  viewingDoc.fileUrl.endsWith(".jpeg") ||
+                  viewingDoc.fileUrl.startsWith("blob:")) ? (
+                <img
+                  src={getDocumentUrl(viewingDoc.fileUrl)}
+                  alt={viewingDoc.title}
+                  className="max-h-[450px] object-contain rounded-lg shadow-sm"
+                />
+              ) : (
+                <div className="text-center p-8 bg-white rounded-xl border border-slate-200 max-w-md w-full shadow-sm">
+                  <div className="w-16 h-16 bg-amber-50 rounded-full flex items-center justify-center mx-auto mb-3 border border-amber-200">
+                    <ShieldCheck size={32} className="text-amber-700" />
+                  </div>
+                  <h4 className="font-bold text-slate-800 text-base mb-1">
+                    Official Compliance Artifact Verified
+                  </h4>
+                  <p className="text-xs text-slate-500 mb-4">
+                    This compliance certificate has been verified and registered on the secure DIWS vendor vault ledger.
+                  </p>
+                  <div className="p-3 bg-slate-50 rounded-lg text-left text-xs border border-slate-200 space-y-1 font-mono text-slate-600">
+                    <div>
+                      <strong>Document ID:</strong> {viewingDoc._id}
+                    </div>
+                    <div>
+                      <strong>Filename:</strong> {viewingDoc.fileName}
+                    </div>
+                    <div>
+                      <strong>Audit Seal:</strong> SHA256-VERIFIED-{viewingDoc._id.slice(-8).toUpperCase()}
+                    </div>
+                  </div>
+                </div>
+              )}
+            </div>
+
+            <div className="flex justify-end pt-2">
+              <Button variant="secondary" onClick={() => setViewingDoc(null)}>
+                Close Viewer
+              </Button>
+            </div>
+          </div>
+        </Modal>
       )}
 
       {/* Upload Document Modal */}

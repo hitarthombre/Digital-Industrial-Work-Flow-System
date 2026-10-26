@@ -6,7 +6,7 @@ import {
   ShoppingCart,
   Search,
   Filter,
-  DollarSign,
+  IndianRupee,
   Clock,
   CheckCircle2,
   AlertCircle,
@@ -109,11 +109,11 @@ export const CustomerOrderHistory: React.FC<CustomerOrderHistoryProps> = ({ cust
 
         <div className="stat-card">
           <div className="stat-icon-wrapper bg-emerald-100 text-emerald-600">
-            <DollarSign size={20} />
+            <IndianRupee size={20} />
           </div>
           <div className="stat-content">
             <span className="stat-label">Lifetime Order Revenue</span>
-            <span className="stat-value">${totalValue.toLocaleString()}</span>
+            <span className="stat-value">₹{totalValue.toLocaleString("en-IN")}</span>
           </div>
         </div>
 
@@ -217,7 +217,7 @@ export const CustomerOrderHistory: React.FC<CustomerOrderHistoryProps> = ({ cust
                   </td>
                   <td>{ord.itemsCount}</td>
                   <td className="font-bold">
-                    ${ord.totalAmount.toLocaleString()}
+                    ₹{ord.totalAmount.toLocaleString("en-IN")}
                   </td>
                   <td>{getOrderStatusBadge(ord.status)}</td>
                   <td>{getPaymentBadge(ord.paymentStatus)}</td>

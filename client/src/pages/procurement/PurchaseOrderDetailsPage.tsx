@@ -205,19 +205,19 @@ export const PurchaseOrderDetailsPage: React.FC = () => {
             </div>
             <div className="flex justify-between">
               <span>Subtotal:</span>
-              <span className="font-mono">${(po.subtotal || 0).toLocaleString()}</span>
+              <span className="font-mono">₹{(po.subtotal || 0).toLocaleString("en-IN")}</span>
             </div>
             <div className="flex justify-between">
               <span>Tax Amount:</span>
-              <span className="font-mono">${(po.taxAmount || 0).toLocaleString()}</span>
+              <span className="font-mono">₹{(po.taxAmount || 0).toLocaleString("en-IN")}</span>
             </div>
             <div className="flex justify-between">
               <span>Shipping Freight:</span>
-              <span className="font-mono">${(po.shippingCost || 0).toLocaleString()}</span>
+              <span className="font-mono">₹{(po.shippingCost || 0).toLocaleString("en-IN")}</span>
             </div>
             <div className="flex justify-between pt-1 border-t border-slate-200 text-sm font-black text-slate-900">
               <span>Grand Total:</span>
-              <span className="font-mono text-amber-800">${(po.grandTotal || 0).toLocaleString()}</span>
+              <span className="font-mono text-amber-800">₹{(po.grandTotal || 0).toLocaleString("en-IN")}</span>
             </div>
           </div>
         </div>
@@ -257,10 +257,10 @@ export const PurchaseOrderDetailsPage: React.FC = () => {
                 <td className="text-center font-bold text-slate-800">
                   {item.quantityOrdered} {item.unit}
                 </td>
-                <td className="text-right font-mono">${(item.unitPrice || 0).toLocaleString()}</td>
+                <td className="text-right font-mono">₹{(item.unitPrice || 0).toLocaleString("en-IN")}</td>
                 <td className="text-right font-mono">{item.taxRate || 0}%</td>
                 <td className="text-right font-mono font-extrabold text-slate-900">
-                  ${((item.totalPrice || (item.quantityOrdered * item.unitPrice)) || 0).toLocaleString()}
+                  ₹{((item.totalPrice || (item.quantityOrdered * item.unitPrice)) || 0).toLocaleString("en-IN")}
                 </td>
               </tr>
             ))}

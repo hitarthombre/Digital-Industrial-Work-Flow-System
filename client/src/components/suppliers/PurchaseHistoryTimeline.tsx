@@ -9,7 +9,7 @@ import {
   Clock,
   XCircle,
   TrendingUp,
-  DollarSign,
+  IndianRupee,
   Package,
   Star,
   RefreshCw,
@@ -60,7 +60,7 @@ export const PurchaseHistoryTimeline: React.FC<PurchaseHistoryTimelineProps> = (
           itemSummary: "5,000 Units Cold-Rolled Carbon Steel Sheets (Grade 304)",
           itemsCount: 5000,
           totalAmount: 48500,
-          currency: "USD",
+          currency: "INR",
           status: "delivered",
           deliveryRating: 5,
           notes: "Delivered 2 days ahead of schedule. Passed incoming QA inspection.",
@@ -72,7 +72,7 @@ export const PurchaseHistoryTimeline: React.FC<PurchaseHistoryTimelineProps> = (
           itemSummary: "1,200 Sets Precision Hydraulic Valves & Connectors",
           itemsCount: 1200,
           totalAmount: 26400,
-          currency: "USD",
+          currency: "INR",
           status: "delivered",
           deliveryRating: 4,
           notes: "Full batch delivered on target date.",
@@ -84,7 +84,7 @@ export const PurchaseHistoryTimeline: React.FC<PurchaseHistoryTimelineProps> = (
           itemSummary: "350 Industrial Electric Motor Assemblies 15kW",
           itemsCount: 350,
           totalAmount: 61200,
-          currency: "USD",
+          currency: "INR",
           status: "shipped",
           deliveryRating: 5,
           notes: "In transit via Freight Express. Estimated arrival in 3 days.",
@@ -96,7 +96,7 @@ export const PurchaseHistoryTimeline: React.FC<PurchaseHistoryTimelineProps> = (
           itemSummary: "2,500 Packaging Drums & Thermal Insulated Wrap",
           itemsCount: 2500,
           totalAmount: 18900,
-          currency: "USD",
+          currency: "INR",
           status: "delivered",
           deliveryRating: 5,
         },
@@ -152,11 +152,11 @@ export const PurchaseHistoryTimeline: React.FC<PurchaseHistoryTimelineProps> = (
       <div className="grid grid-cols-1 sm:grid-cols-3 gap-3">
         <div className="p-3 bg-slate-50 border border-slate-200 rounded-lg flex items-center gap-3">
           <div className="w-10 h-10 rounded-lg bg-emerald-100 text-emerald-700 flex items-center justify-center flex-shrink-0">
-            <DollarSign size={20} />
+            <IndianRupee size={20} />
           </div>
           <div>
             <span className="text-xs text-slate-500 font-semibold uppercase">Total Historical Spend</span>
-            <div className="text-lg font-bold text-slate-900">${totalSpend.toLocaleString()}</div>
+            <div className="text-lg font-bold text-slate-900">₹{totalSpend.toLocaleString("en-IN")}</div>
           </div>
         </div>
 
@@ -228,7 +228,7 @@ export const PurchaseHistoryTimeline: React.FC<PurchaseHistoryTimelineProps> = (
 
                   <div className="flex items-center gap-3">
                     <span className="text-base font-extrabold text-slate-900">
-                      ${item.totalAmount.toLocaleString()}
+                      ₹{item.totalAmount.toLocaleString("en-IN")}
                     </span>
                     {getStatusBadge(item.status)}
                   </div>

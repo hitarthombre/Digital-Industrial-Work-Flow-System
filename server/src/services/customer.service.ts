@@ -464,7 +464,7 @@ export class CustomerService {
       orderNumber,
       date: orderData.date ? new Date(orderData.date) : new Date(),
       totalAmount,
-      currency: orderData.currency || "USD",
+      currency: orderData.currency || "INR",
       status: orderData.status || "confirmed",
       paymentStatus: orderData.paymentStatus || "pending",
       itemsCount: orderData.itemsCount || 1,

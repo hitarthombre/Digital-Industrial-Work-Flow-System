@@ -63,7 +63,7 @@ export const ProductBuilder: React.FC<ProductBuilderProps> = ({ mode, initialPro
   const [basePrice, setBasePrice] = useState<number>(100);
   const [costPrice, setCostPrice] = useState<number>(60);
   const [msrp, setMsrp] = useState<number>(140);
-  const [currency, setCurrency] = useState('USD');
+  const [currency, setCurrency] = useState('INR');
   const [taxRate, setTaxRate] = useState<number>(18);
   const [status, setStatus] = useState<ProductStatus>('active');
   const [leadTimeDays, setLeadTimeDays] = useState<number>(7);
@@ -105,7 +105,7 @@ export const ProductBuilder: React.FC<ProductBuilderProps> = ({ mode, initialPro
       setBasePrice(prod.basePrice);
       setCostPrice(prod.costPrice);
       setMsrp(prod.msrp || prod.basePrice * 1.2);
-      setCurrency(prod.currency || 'USD');
+      setCurrency(prod.currency || 'INR');
       setTaxRate(prod.taxRate || 18);
       setStatus(prod.status);
       setLeadTimeDays(prod.leadTimeDays || 7);
@@ -414,7 +414,7 @@ export const ProductBuilder: React.FC<ProductBuilderProps> = ({ mode, initialPro
             {/* Pricing Details */}
             <div className="wizard-form-grid three-col" style={{ marginTop: '1rem' }}>
               <div className="diws-form-group">
-                <label className="diws-label">Base Price ($) *</label>
+                <label className="diws-label">Base Price (₹) *</label>
                 <input
                   type="number"
                   step="0.01"
@@ -425,7 +425,7 @@ export const ProductBuilder: React.FC<ProductBuilderProps> = ({ mode, initialPro
               </div>
 
               <div className="diws-form-group">
-                <label className="diws-label">Cost Price ($)</label>
+                <label className="diws-label">Cost Price (₹)</label>
                 <input
                   type="number"
                   step="0.01"
@@ -436,7 +436,7 @@ export const ProductBuilder: React.FC<ProductBuilderProps> = ({ mode, initialPro
               </div>
 
               <div className="diws-form-group">
-                <label className="diws-label">MSRP ($)</label>
+                <label className="diws-label">MSRP (₹)</label>
                 <input
                   type="number"
                   step="0.01"
@@ -614,15 +614,15 @@ export const ProductBuilder: React.FC<ProductBuilderProps> = ({ mode, initialPro
                 </div>
                 <div className="review-row">
                   <span className="review-label">Base Price:</span>
-                  <span className="review-value">${basePrice.toFixed(2)}</span>
+                  <span className="review-value">₹{basePrice.toFixed(2)}</span>
                 </div>
                 <div className="review-row">
                   <span className="review-label">Cost Price:</span>
-                  <span className="review-value">${costPrice.toFixed(2)}</span>
+                  <span className="review-value">₹{costPrice.toFixed(2)}</span>
                 </div>
                 <div className="review-row">
                   <span className="review-label">MSRP:</span>
-                  <span className="review-value">${msrp.toFixed(2)}</span>
+                  <span className="review-value">₹{msrp.toFixed(2)}</span>
                 </div>
                 <div className="review-row">
                   <span className="review-label">Configured Variants:</span>

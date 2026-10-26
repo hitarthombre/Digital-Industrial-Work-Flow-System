@@ -21,6 +21,14 @@ interface LibraryFilters {
   sortOrder?: "asc" | "desc";
 }
 
+const getDocumentUrl = (url?: string) => {
+  if (!url || url === "#") return "";
+  if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("blob:")) return url;
+  const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const origin = apiBase.replace(/\/api\/?$/, "");
+  return `${origin}${url.startsWith("/") ? "" : "/"}${url}`;
+};
+
 export const DocumentLibrary: React.FC = () => {
   const [searchParams, setSearchParams] = useSearchParams();
   const [filters, setFilters] = useState<LibraryFilters>({});
@@ -240,7 +248,7 @@ export const DocumentLibrary: React.FC = () => {
                           <button type="button" className="p-1.5 text-slate-500 hover:text-amber-700" title="Preview" onClick={() => setPreviewing(doc)}>
                             <Eye size={15} />
                           </button>
-                          <a href={doc.fileUrl} target="_blank" rel="noopener noreferrer" download={doc.fileName} className="p-1.5 text-slate-500 hover:text-amber-700" title="Download">
+                          <a href={getDocumentUrl(doc.fileUrl)} target="_blank" rel="noopener noreferrer" download={doc.fileName} className="p-1.5 text-slate-500 hover:text-amber-700" title="Download">
                             <Download size={15} />
                           </a>
                           <button type="button" className="p-1.5 text-slate-500 hover:text-amber-700" title="Edit" onClick={() => setEditing(doc)}>

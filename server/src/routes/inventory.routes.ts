@@ -18,6 +18,13 @@ const router = Router();
 router.use(authenticate as any);
 router.use(enforceTenantIsolation as any);
 
+// GET /api/inventory - Retrieve all inventory items
+router.get(
+  "/",
+  requirePermission("inventory:read") as any,
+  (req: any, res: any, next: any) => inventoryController.getStockLevels(req, res, next)
+);
+
 // POST /api/inventory/stock-in - Record stock receiving / stock in
 router.post(
   "/stock-in",

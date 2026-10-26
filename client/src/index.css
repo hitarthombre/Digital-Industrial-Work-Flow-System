@@ -1,1 +1,119 @@
 @import "tailwindcss";
+
+/* -------------------------------------------------------------
+   GLOBAL DIWS FIXES: Form inputs with icons & Button alignments
+-------------------------------------------------------------- */
+
+/* Fix input icon text overlap across all pages and modules */
+.relative > input.form-input,
+.relative > input.pl-9,
+.relative > input.pl-10,
+input.form-input.pl-9,
+input.form-input.pl-10,
+.form-input-with-icon {
+  padding-left: 2.75rem !important;
+}
+
+/* Ensure SVG icons inside input wrappers are vertically centered */
+.relative > svg.absolute.left-3 {
+  left: 0.85rem !important;
+  top: 50% !important;
+  transform: translateY(-50%) !important;
+  pointer-events: none;
+}
+
+/* Form Action Buttons alignment: Ensure action buttons are cleanly right-aligned */
+.diws-form-actions,
+.form-actions-right,
+.form-actions,
+.factory-form-actions,
+.wh-form-actions,
+.details-actions {
+  display: flex !important;
+  align-items: center !important;
+  justify-content: flex-end !important;
+  gap: 0.75rem !important;
+  width: 100% !important;
+}
+
+.diws-logo-actions {
+  display: flex !important;
+  align-items: center !important;
+  gap: 0.75rem !important;
+}
+
+/* -------------------------------------------------------------
+   GLOBAL DIWS SCROLLBAR POLISH: Modern, sleek, subtle scrollbars
+   Eliminate ugly Windows 17px default scrollbars & redundant bars
+-------------------------------------------------------------- */
+
+/* Modern slim scrollbars across all modern browsers */
+* {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(148, 163, 184, 0.4) transparent;
+}
+
+/* Chrome, Edge, Safari */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+
+::-webkit-scrollbar-thumb {
+  background: rgba(148, 163, 184, 0.35);
+  border-radius: 9999px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(148, 163, 184, 0.6);
+}
+
+::-webkit-scrollbar-corner {
+  background: transparent;
+}
+
+/* Dark themed scrollbars inside dark sidebar */
+.diws-app-sidebar *,
+.diws-sidebar-nav {
+  scrollbar-width: thin;
+  scrollbar-color: rgba(255, 255, 255, 0.2) transparent;
+}
+
+.diws-app-sidebar ::-webkit-scrollbar-thumb,
+.diws-sidebar-nav::-webkit-scrollbar-thumb {
+  background: rgba(255, 255, 255, 0.2);
+}
+
+.diws-app-sidebar ::-webkit-scrollbar-thumb:hover,
+.diws-sidebar-nav::-webkit-scrollbar-thumb:hover {
+  background: rgba(255, 255, 255, 0.35);
+}
+
+/* Hide scrollbars where completely unnecessary (tabs, sub-nav bars, pill strips) */
+.no-scrollbar,
+.diws-no-scrollbar,
+.diws-company-nav-tabs,
+.proc-tabs-bar {
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+  overflow-y: hidden !important;
+}
+
+.no-scrollbar::-webkit-scrollbar,
+.diws-no-scrollbar::-webkit-scrollbar,
+.diws-company-nav-tabs::-webkit-scrollbar,
+.proc-tabs-bar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
+}
+
+/* Ensure horizontal scroll containers (tables) never trigger an unwanted vertical scrollbar */
+.overflow-x-auto {
+  overflow-y: hidden !important;
+}
+

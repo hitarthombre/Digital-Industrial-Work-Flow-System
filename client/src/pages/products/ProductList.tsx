@@ -334,7 +334,7 @@ export const ProductList: React.FC = () => {
                   <div className="prod-card-meta-row">
                     <div className="prod-price-box">
                       <span className="prod-price-val">
-                        ${prod.basePrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        ₹{prod.basePrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                       </span>
                       <span className="prod-price-label">Base Price</span>
                     </div>
@@ -430,7 +430,7 @@ export const ProductList: React.FC = () => {
                     <td>{prod.brand}</td>
                     <td>
                       <strong>
-                        ${prod.basePrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                        ₹{prod.basePrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                       </strong>
                     </td>
                     <td>

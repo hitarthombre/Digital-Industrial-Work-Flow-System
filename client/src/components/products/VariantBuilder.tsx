@@ -390,7 +390,7 @@ export const VariantBuilder: React.FC<VariantBuilderProps> = ({
           {/* Bulk Operations Bar */}
           <div className="matrix-bulk-toolbar">
             <div className="bulk-group">
-              <span className="bulk-label">Bulk Price Adjust (+/- $):</span>
+              <span className="bulk-label">Bulk Price Adjust (+/- ₹):</span>
               <input
                 type="number"
                 step="0.1"
@@ -437,9 +437,9 @@ export const VariantBuilder: React.FC<VariantBuilderProps> = ({
                   <th>Variant Attributes</th>
                   <th>Generated SKU</th>
                   <th>Barcode</th>
-                  <th>Price Adj. ($)</th>
-                  <th>Final Price ($)</th>
-                  <th>Cost ($)</th>
+                  <th>Price Adj. (₹)</th>
+                  <th>Final Price (₹)</th>
+                  <th>Cost (₹)</th>
                   <th>Stock Qty</th>
                   <th>Low Alert</th>
                 </tr>
@@ -517,7 +517,7 @@ export const VariantBuilder: React.FC<VariantBuilderProps> = ({
                       {/* Final Price */}
                       <td>
                         <div className="final-price-badge">
-                          ${variant.price.toFixed(2)}
+                          ₹{variant.price.toFixed(2)}
                         </div>
                       </td>
 

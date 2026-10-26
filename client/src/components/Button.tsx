@@ -28,13 +28,19 @@ export function Button({
     outline: 'diws-btn-outline',
     danger: 'diws-btn-danger',
   };
+  const sizeClasses = {
+    sm: 'diws-btn-sm',
+    md: 'diws-btn-md',
+    lg: 'diws-btn-lg',
+  };
   
   const variantClass = variantClasses[variant] || 'diws-btn-primary';
+  const sizeClass = sizeClasses[size] || 'diws-btn-md';
   const widthClass = fullWidth ? 'diws-btn-full' : '';
   
   return (
     <button 
-      className={`${baseClass} ${variantClass} ${widthClass} ${className}`.trim()} 
+      className={`${baseClass} ${variantClass} ${sizeClass} ${widthClass} ${className}`.trim()} 
       disabled={disabled || loading}
       {...props}
     >

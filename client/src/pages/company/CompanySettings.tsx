@@ -6,7 +6,7 @@ import { Card } from "../../components/Card";
 import CompanyNavTabs from "./CompanyNavTabs";
 import {
   Globe,
-  DollarSign,
+  IndianRupee,
   Clock,
   Calendar,
   CheckCircle2,
@@ -24,9 +24,9 @@ interface SettingsState {
 }
 
 const CURRENCIES = [
+  { code: "INR", symbol: "₹", label: "INR - Indian Rupee (₹) [Default]" },
   { code: "USD", symbol: "$", label: "USD - US Dollar ($)" },
   { code: "EUR", symbol: "€", label: "EUR - Euro (€)" },
-  { code: "INR", symbol: "₹", label: "INR - Indian Rupee (₹)" },
   { code: "GBP", symbol: "£", label: "GBP - British Pound (£)" },
   { code: "AUD", symbol: "A$", label: "AUD - Australian Dollar (A$)" },
   { code: "CAD", symbol: "C$", label: "CAD - Canadian Dollar (C$)" },
@@ -61,8 +61,8 @@ export const CompanySettings: React.FC = () => {
   const [companyId, setCompanyId] = useState<string>("");
 
   const [settings, setSettings] = useState<SettingsState>({
-    currency: "USD",
-    timezone: "UTC",
+    currency: "INR",
+    timezone: "Asia/Kolkata",
     dateFormat: "YYYY-MM-DD",
     fiscalYearStart: "April",
   });
@@ -87,8 +87,8 @@ export const CompanySettings: React.FC = () => {
         setCompanyId(compId);
 
         const loaded: SettingsState = {
-          currency: response.data.currency || "USD",
-          timezone: response.data.timezone || "UTC",
+          currency: response.data.currency || "INR",
+          timezone: response.data.timezone || "Asia/Kolkata",
           dateFormat: response.data.dateFormat || "YYYY-MM-DD",
           fiscalYearStart: response.data.fiscalYearStart || "April",
         };
@@ -97,8 +97,8 @@ export const CompanySettings: React.FC = () => {
       }
     } catch (_) {
       const fallback: SettingsState = {
-        currency: "USD",
-        timezone: "UTC",
+        currency: "INR",
+        timezone: "Asia/Kolkata",
         dateFormat: "YYYY-MM-DD",
         fiscalYearStart: "April",
       };
@@ -204,7 +204,7 @@ export const CompanySettings: React.FC = () => {
             <div className="diws-form-group">
               <label className="diws-label" htmlFor="currency">
                 <span style={{ display: "flex", alignItems: "center", gap: "0.4rem" }}>
-                  <DollarSign size={16} /> Operating Base Currency *
+                  <IndianRupee size={16} /> Operating Base Currency *
                 </span>
               </label>
               <select

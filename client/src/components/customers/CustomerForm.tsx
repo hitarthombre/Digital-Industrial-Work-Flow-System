@@ -304,7 +304,7 @@ export const CustomerForm: React.FC<CustomerFormProps> = ({
 
         <div className="form-grid-3">
           <Input
-            label="Credit Limit ($)"
+            label="Credit Limit (₹)"
             type="number"
             min="0"
             step="1000"
@@ -313,7 +313,7 @@ export const CustomerForm: React.FC<CustomerFormProps> = ({
           />
 
           <Input
-            label="Current Used Credit ($)"
+            label="Current Used Credit (₹)"
             type="number"
             min="0"
             value={usedCredit}

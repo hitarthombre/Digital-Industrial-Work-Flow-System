@@ -36,16 +36,24 @@ router.post(
         process.env.CLOUDINARY_API_SECRET;
 
       if (!isCloudinaryConfigured) {
-        console.warn("[File Upload] Cloudinary credentials are missing. Simulating mock upload.");
-        
-        // Mock successful upload response
-        const mockUrl = `https://res.cloudinary.com/demo/image/upload/sample.jpg`;
+        const fs = await import("fs");
+        const path = await import("path");
+        const uploadsDir = path.join(__dirname, "../../uploads");
+        if (!fs.existsSync(uploadsDir)) {
+          fs.mkdirSync(uploadsDir, { recursive: true });
+        }
+
+        const safeName = `${Date.now()}-${req.file.originalname.replace(/[^a-zA-Z0-9.-]/g, "_")}`;
+        const filePath = path.join(uploadsDir, safeName);
+        fs.writeFileSync(filePath, req.file.buffer);
+
+        const localUrl = `/uploads/${safeName}`;
         res.status(200).json({
           success: true,
-          message: "File uploaded successfully (Mock Mode)",
+          message: "File uploaded successfully to local storage",
           data: {
             fileName: req.file.originalname,
-            fileUrl: mockUrl,
+            fileUrl: localUrl,
             fileType: req.file.mimetype,
             fileSize: req.file.size,
           },

@@ -99,6 +99,9 @@ export const CompanyBrandingSchema = z.object({
   body: z.object({
     displayName: z.string().optional(),
     primaryColor: z.string().optional(),
+    secondaryColor: z.string().optional(),
+    accentColor: z.string().optional(),
+    theme: z.string().optional(),
     logo: z.string().optional(),
   }),
 });

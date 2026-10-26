@@ -270,7 +270,7 @@ export const ProductionDashboard: React.FC = () => {
                       <th>Products</th>
                       <th>Factory</th>
                       <th>Status</th>
-                      <th className="text-right">Actions</th>
+                      <th className="text-right whitespace-nowrap">Actions</th>
                     </tr>
                   </thead>
                   <tbody>
@@ -300,8 +300,8 @@ export const ProductionDashboard: React.FC = () => {
                           <td>
                             <StatusBadge status={plan.status} />
                           </td>
-                          <td className="text-right">
-                            <div className="flex justify-end gap-1.5 flex-wrap">
+                          <td className="text-right whitespace-nowrap">
+                            <div className="flex items-center justify-end gap-1.5 flex-nowrap whitespace-nowrap">
                               {plan.status === "Draft" && (
                                 <Button
                                   variant="outline"

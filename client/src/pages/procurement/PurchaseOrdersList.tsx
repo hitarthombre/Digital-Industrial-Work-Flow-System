@@ -186,7 +186,7 @@ export const PurchaseOrdersList: React.FC = () => {
                   <th>Expected Delivery</th>
                   <th>Grand Total</th>
                   <th>Status</th>
-                  <th className="text-right">Operations & Tracking Actions</th>
+                  <th className="text-right whitespace-nowrap min-w-[360px]">Operations & Tracking Actions</th>
                 </tr>
               </thead>
               <tbody>
@@ -237,7 +237,7 @@ export const PurchaseOrdersList: React.FC = () => {
 
                       <td>
                         <span className="font-mono font-extrabold text-slate-900 text-sm">
-                          ${(po.grandTotal || 0).toLocaleString()}
+                          ₹{(po.grandTotal || 0).toLocaleString("en-IN")}
                         </span>
                       </td>
 
@@ -247,8 +247,8 @@ export const PurchaseOrdersList: React.FC = () => {
                         </Badge>
                       </td>
 
-                      <td className="text-right">
-                        <div className="flex items-center justify-end gap-1.5 flex-wrap">
+                      <td className="text-right whitespace-nowrap">
+                        <div className="flex items-center justify-end gap-1.5 flex-nowrap whitespace-nowrap">
                           <Button
                             variant="outline"
                             size="sm"

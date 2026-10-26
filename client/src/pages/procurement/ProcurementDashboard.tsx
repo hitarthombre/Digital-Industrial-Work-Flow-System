@@ -3,7 +3,7 @@ import { useNavigate } from "react-router-dom";
 import { useProcurementReports } from "../../hooks/useProcurement";
 import { Button } from "../../components/Button";
 import {
-  DollarSign,
+  IndianRupee,
   ShoppingCart,
   FileCheck,
   Building2,
@@ -83,12 +83,12 @@ export const ProcurementDashboard: React.FC = () => {
       <div className="proc-kpi-grid">
         <div className="proc-kpi-card">
           <div className="proc-kpi-icon emerald">
-            <DollarSign size={24} />
+            <IndianRupee size={24} />
           </div>
           <div>
             <div className="proc-kpi-label">Total Cumulative Spend</div>
             <div className="proc-kpi-value font-mono">
-              ${(kpis?.totalSpend || 342500).toLocaleString()}
+              ₹{(kpis?.totalSpend || 342500).toLocaleString("en-IN")}
             </div>
             <div className="proc-kpi-subtext">Across all active vendor accounts</div>
           </div>
@@ -212,7 +212,7 @@ export const ProcurementDashboard: React.FC = () => {
                   <div className="flex justify-between items-center text-xs">
                     <span className="font-bold text-slate-800">{catName}</span>
                     <div className="font-mono text-slate-900 font-extrabold">
-                      ${cat.totalSpend.toLocaleString()} ({cat.percentage}%)
+                      ₹{cat.totalSpend.toLocaleString("en-IN")} ({cat.percentage}%)
                     </div>
                   </div>
 
@@ -243,7 +243,7 @@ export const ProcurementDashboard: React.FC = () => {
               return (
                 <div key={item.month} className="flex flex-col items-center gap-2 flex-1">
                   <span className="text-[10px] font-mono font-bold text-slate-600">
-                    ${Math.round(item.spend / 1000)}k
+                    ₹{Math.round(item.spend / 1000)}k
                   </span>
                   <div className="w-8 bg-slate-100 rounded-t-lg flex items-end overflow-hidden h-36">
                     <div
@@ -294,7 +294,7 @@ export const ProcurementDashboard: React.FC = () => {
                 </td>
                 <td className="font-semibold text-slate-700">{sup.totalOrders} Purchase Orders</td>
                 <td className="font-mono font-extrabold text-slate-900">
-                  ${sup.totalSpend.toLocaleString()}
+                  ₹{sup.totalSpend.toLocaleString("en-IN")}
                 </td>
                 <td className="text-right">
                   <Button

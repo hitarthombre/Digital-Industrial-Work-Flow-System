@@ -22,6 +22,14 @@ interface CustomerDocumentVaultProps {
   onDocumentChange?: () => void;
 }
 
+const getDocumentUrl = (url?: string) => {
+  if (!url || url === "#") return "";
+  if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("blob:")) return url;
+  const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const origin = apiBase.replace(/\/api\/?$/, "");
+  return `${origin}${url.startsWith("/") ? "" : "/"}${url}`;
+};
+
 export const CustomerDocumentVault: React.FC<CustomerDocumentVaultProps> = ({
   customerId,
   documents = [],
@@ -251,7 +259,9 @@ export const CustomerDocumentVault: React.FC<CustomerDocumentVaultProps> = ({
 
               <div className="doc-card-footer">
                 <a
-                  href={doc.fileUrl || "#"}
+                  href={getDocumentUrl(doc.fileUrl) || "#"}
+                  target="_blank"
+                  rel="noreferrer"
                   download={doc.fileName}
                   onClick={(e) => {
                     if (!doc.fileUrl || doc.fileUrl === "#") {

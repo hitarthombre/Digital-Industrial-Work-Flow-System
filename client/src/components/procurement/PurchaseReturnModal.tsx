@@ -134,8 +134,8 @@ export const PurchaseReturnModal: React.FC<PurchaseReturnModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
-      <div className="bg-white rounded-xl max-w-3xl w-full p-6 shadow-2xl border border-slate-200 my-8 max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-hidden">
+      <div className="bg-white rounded-xl max-w-3xl w-full p-6 shadow-2xl border border-slate-200 my-auto max-h-[calc(100vh-2rem)] flex flex-col">
         <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-4">
           <div>
             <h2 className="text-xl font-bold text-slate-900 flex items-center gap-2">

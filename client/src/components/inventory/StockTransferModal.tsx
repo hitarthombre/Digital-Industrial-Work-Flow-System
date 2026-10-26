@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { ArrowLeftRight, Plus, Trash2, AlertCircle, CheckCircle2 } from "lucide-react";
+import { ArrowLeftRight, Plus, Trash2, AlertCircle, CheckCircle2, X } from "lucide-react";
 import type { StockTransferInput, TransferItemInput, StockLevelItem } from "../../services/inventoryService";
 
 interface StockTransferModalProps {
@@ -108,7 +108,7 @@ export const StockTransferModal: React.FC<StockTransferModalProps> = ({
 
   return (
     <div className="diws-modal-backdrop" onClick={onClose}>
-      <div className="diws-modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "680px" }}>
+      <div className="diws-modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "680px" }}>
         <div className="diws-modal-header bg-blue-50">
           <div className="flex items-center gap-2">
             <div className="p-2 bg-blue-100 text-blue-700 rounded-lg">
@@ -120,7 +120,7 @@ export const StockTransferModal: React.FC<StockTransferModalProps> = ({
             </div>
           </div>
           <button type="button" className="diws-modal-close" onClick={onClose}>
-            &times;
+            <X size={18} />
           </button>
         </div>
 

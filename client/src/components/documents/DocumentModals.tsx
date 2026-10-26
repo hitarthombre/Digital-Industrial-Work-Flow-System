@@ -208,6 +208,14 @@ export const DocumentFormModal: React.FC<DocumentFormModalProps> = ({ document, 
   );
 };
 
+const getDocumentUrl = (url?: string) => {
+  if (!url || url === "#") return "";
+  if (url.startsWith("http://") || url.startsWith("https://") || url.startsWith("blob:")) return url;
+  const apiBase = import.meta.env.VITE_API_URL || "http://localhost:5000/api";
+  const origin = apiBase.replace(/\/api\/?$/, "");
+  return `${origin}${url.startsWith("/") ? "" : "/"}${url}`;
+};
+
 const isImage = (doc: ILibraryDocument) =>
   (doc.fileType || "").startsWith("image/") || /\.(png|jpe?g|gif|webp|svg)$/i.test(doc.fileName);
 const isPdf = (doc: ILibraryDocument) => doc.fileType === "application/pdf" || /\.pdf$/i.test(doc.fileName);
@@ -230,7 +238,7 @@ export const DocumentPreviewModal: React.FC<{ document: ILibraryDocument; onClos
               <Pencil size={16} />
             </button>
           )}
-          <a href={document.fileUrl} target="_blank" rel="noopener noreferrer" download={document.fileName} className="p-2 text-slate-500 hover:text-amber-700" title="Download">
+          <a href={getDocumentUrl(document.fileUrl)} target="_blank" rel="noopener noreferrer" download={document.fileName} className="p-2 text-slate-500 hover:text-amber-700" title="Download">
             <Download size={16} />
           </a>
           <button type="button" onClick={onClose} className="p-2 text-slate-400 hover:text-slate-700" aria-label="Close preview">
@@ -240,14 +248,16 @@ export const DocumentPreviewModal: React.FC<{ document: ILibraryDocument; onClos
       </div>
       <div className="flex-1 overflow-auto bg-slate-50 min-h-[300px] flex items-center justify-center">
         {isImage(document) ? (
-          <img src={document.fileUrl} alt={document.title} className="max-w-full max-h-[75vh] object-contain" />
+          <img src={getDocumentUrl(document.fileUrl)} alt={document.title} className="max-w-full max-h-[75vh] object-contain" />
         ) : isPdf(document) ? (
-          <iframe src={document.fileUrl} title={document.title} className="w-full h-[75vh] border-0" />
+          <object data={getDocumentUrl(document.fileUrl)} type="application/pdf" className="w-full h-[75vh] border-0">
+            <iframe src={getDocumentUrl(document.fileUrl)} title={document.title} className="w-full h-[75vh] border-0" />
+          </object>
         ) : (
           <div className="text-center p-10">
             <FileText size={48} className="mx-auto text-slate-300 mb-3" />
             <p className="text-sm text-slate-600 mb-3">This file type can't be previewed in the browser.</p>
-            <a href={document.fileUrl} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-amber-700 inline-flex items-center gap-1">
+            <a href={getDocumentUrl(document.fileUrl)} target="_blank" rel="noopener noreferrer" className="text-xs font-bold text-amber-700 inline-flex items-center gap-1">
               <ExternalLink size={13} /> Open {document.fileName}
             </a>
           </div>

@@ -232,15 +232,15 @@ export const ProductDetails: React.FC = () => {
             <div className="prod-pricing-hero">
               <div>
                 <div className="hero-base-price">
-                  ${product.basePrice.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                  ₹{product.basePrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                 </div>
-                <div className="prod-price-label">Standard Base Price ({product.currency})</div>
+                <div className="prod-price-label">Standard Base Price ({product.currency || 'INR'})</div>
               </div>
 
               <div className="hero-cost-info">
-                <div>Cost: <strong>${product.costPrice.toFixed(2)}</strong></div>
+                <div>Cost: <strong>₹{product.costPrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong></div>
                 {product.msrp && (
-                  <div>MSRP: <strong>${product.msrp.toFixed(2)}</strong></div>
+                  <div>MSRP: <strong>₹{product.msrp.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong></div>
                 )}
                 <div>
                   Margin:{' '}
@@ -505,7 +505,7 @@ export const ProductDetails: React.FC = () => {
                         <td>
                           {v.priceAdjustment && v.priceAdjustment !== 0 ? (
                             <span style={{ color: v.priceAdjustment > 0 ? '#047857' : '#DC2626', fontWeight: 600 }}>
-                              {v.priceAdjustment > 0 ? `+$${v.priceAdjustment.toFixed(2)}` : `-$${Math.abs(v.priceAdjustment).toFixed(2)}`}
+                              {v.priceAdjustment > 0 ? `+₹${v.priceAdjustment.toFixed(2)}` : `-₹${Math.abs(v.priceAdjustment).toFixed(2)}`}
                             </span>
                           ) : (
                             'Base'
@@ -513,10 +513,10 @@ export const ProductDetails: React.FC = () => {
                         </td>
                         <td>
                           <strong style={{ color: 'var(--forest)' }}>
-                            ${v.price.toFixed(2)}
+                            ₹{v.price.toFixed(2)}
                           </strong>
                         </td>
-                        <td>${(v.costPrice || product.costPrice).toFixed(2)}</td>
+                        <td>₹{(v.costPrice || product.costPrice).toFixed(2)}</td>
                         <td>
                           <span
                             style={{

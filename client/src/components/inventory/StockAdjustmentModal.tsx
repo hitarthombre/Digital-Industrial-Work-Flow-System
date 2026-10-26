@@ -1,5 +1,5 @@
 import React, { useState, useEffect } from "react";
-import { SlidersHorizontal, AlertCircle, CheckCircle2 } from "lucide-react";
+import { SlidersHorizontal, AlertCircle, CheckCircle2, X } from "lucide-react";
 import type { StockAdjustmentInput, StockLevelItem } from "../../services/inventoryService";
 
 interface StockAdjustmentModalProps {
@@ -134,7 +134,7 @@ export const StockAdjustmentModal: React.FC<StockAdjustmentModalProps> = ({
 
   return (
     <div className="diws-modal-backdrop" onClick={onClose}>
-      <div className="diws-modal" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "600px" }}>
+      <div className="diws-modal-card" onClick={(e) => e.stopPropagation()} style={{ maxWidth: "600px" }}>
         <div className="diws-modal-header bg-purple-50">
           <div className="flex items-center gap-2">
             <div className="p-2 bg-purple-100 text-purple-700 rounded-lg">
@@ -146,7 +146,7 @@ export const StockAdjustmentModal: React.FC<StockAdjustmentModalProps> = ({
             </div>
           </div>
           <button type="button" className="diws-modal-close" onClick={onClose}>
-            &times;
+            <X size={18} />
           </button>
         </div>
 

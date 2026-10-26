@@ -747,7 +747,7 @@ export class ProcurementService {
         itemSummary: grnItems.map((i) => `${i.itemName} (x${i.quantityAccepted})`).join(", ").slice(0, 200),
         itemsCount: grnItems.length,
         totalAmount: totalAcceptedCost,
-        currency: "USD",
+        currency: "INR",
         status: newPOStatus === "Goods Received" ? "delivered" : "processing",
         deliveryRating: 5,
         notes: `GRN ${grnNumber} processed`,
@@ -847,7 +847,7 @@ export class ProcurementService {
       itemSummary: `[RETURN - ${input.reason}] ${processedItems.map((i) => `${i.itemName} (x${i.quantityReturned})`).join(", ")}`.slice(0, 200),
       itemsCount: processedItems.length,
       totalAmount: totalReturnAmount,
-      currency: "USD",
+      currency: "INR",
       status: "processing",
       notes: `Purchase Return ${returnNumber} processed (${input.reason})`,
     } as any);

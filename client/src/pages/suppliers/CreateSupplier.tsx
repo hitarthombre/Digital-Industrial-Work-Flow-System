@@ -23,11 +23,7 @@ export const CreateSupplier: React.FC = () => {
         navigate("/app/suppliers");
       }, 1200);
     } catch (err: any) {
-      // Fallback redirect if backend is in dev mode
-      setSuccessMsg("Supplier created successfully! Redirecting...");
-      setTimeout(() => {
-        navigate("/app/suppliers");
-      }, 1200);
+      setError(err.message || "Failed to create supplier profile.");
     } finally {
       setSubmitting(false);
     }

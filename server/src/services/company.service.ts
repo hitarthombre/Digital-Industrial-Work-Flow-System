@@ -136,8 +136,8 @@ export class CompanyService {
     }
 
     const defaultSettings: ICompanySettings = {
-      currency: data.currency || "USD",
-      timezone: data.timezone || "UTC",
+      currency: data.currency || "INR",
+      timezone: data.timezone || "Asia/Kolkata",
       dateFormat: "YYYY-MM-DD",
       language: "en",
       fiscalYear: "April-March",
@@ -169,8 +169,8 @@ export class CompanyService {
       postalCode: data.postalCode,
       gstNumber: data.gstNumber,
       website: data.website,
-      currency: data.currency || "USD",
-      timezone: data.timezone || "UTC",
+      currency: data.currency || "INR",
+      timezone: data.timezone || "Asia/Kolkata",
       status: data.status || "active",
       subscriptionPlan: data.subscriptionPlan || "free",
       branding: defaultBranding,
@@ -380,7 +380,7 @@ export class CompanyService {
       ...brandingData,
     };
 
-    if (brandingData.logo) {
+    if (brandingData.logo !== undefined) {
       company.logo = brandingData.logo;
     }
 

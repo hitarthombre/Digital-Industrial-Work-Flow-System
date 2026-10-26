@@ -937,6 +937,7 @@ export class InventoryService {
 
     return {
       success: true,
+      data: allInventories,
       stockItems: allInventories,
       rawMaterials: rawResult.data,
       finishedGoods: fgResult.data,

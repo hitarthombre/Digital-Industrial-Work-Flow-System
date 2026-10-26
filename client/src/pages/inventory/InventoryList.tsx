@@ -32,7 +32,7 @@ import {
   Search,
   FileText,
   Layers,
-  DollarSign,
+  IndianRupee,
   PackageCheck,
   Bell,
   Plus,
@@ -261,11 +261,11 @@ export const InventoryList: React.FC = () => {
 
         <div className="inv-stat-card">
           <div className="inv-stat-icon-wrap copper">
-            <DollarSign size={24} />
+            <IndianRupee size={24} />
           </div>
           <div className="inv-stat-info">
             <span className="inv-stat-value">
-              ${totalValuation.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              ₹{totalValuation.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
             </span>
             <span className="inv-stat-label">Gross Stock Valuation</span>
           </div>
@@ -313,7 +313,7 @@ export const InventoryList: React.FC = () => {
           className={`inv-tab-btn ${activeTab === "reports" ? "active" : ""}`}
           onClick={() => setActiveTab("reports")}
         >
-          <DollarSign size={18} /> Reports & Valuation Charts
+          <IndianRupee size={18} /> Reports & Valuation Charts
         </button>
       </div>
 
@@ -403,10 +403,10 @@ export const InventoryList: React.FC = () => {
                               Min: {item.minThreshold || 10} / Max: {item.maxThreshold || 500}
                             </span>
                           </td>
-                          <td>${(item.unitCost || 0).toFixed(2)}</td>
+                          <td>₹{(item.unitCost || 0).toFixed(2)}</td>
                           <td>
                             <strong>
-                              ${(item.totalValue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                              ₹{(item.totalValue || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                             </strong>
                           </td>
                           <td>
@@ -528,10 +528,10 @@ export const InventoryList: React.FC = () => {
                               Min: {item.minThreshold || 10} / Max: {item.maxThreshold || 500}
                             </span>
                           </td>
-                          <td>${(item.unitCost || 0).toFixed(2)}</td>
+                          <td>₹{(item.unitCost || 0).toFixed(2)}</td>
                           <td>
                             <strong>
-                              ${(item.totalValue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                              ₹{(item.totalValue || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                             </strong>
                           </td>
                           <td>
@@ -632,10 +632,10 @@ export const InventoryList: React.FC = () => {
                               {item.currentStock} {item.unit}
                             </strong>
                           </td>
-                          <td>${(item.unitCost || 0).toFixed(2)}</td>
+                          <td>₹{(item.unitCost || 0).toFixed(2)}</td>
                           <td>
                             <strong>
-                              ${(item.totalValue || 0).toLocaleString(undefined, { minimumFractionDigits: 2 })}
+                              ₹{(item.totalValue || 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                             </strong>
                           </td>
                           <td>

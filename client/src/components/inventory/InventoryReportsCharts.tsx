@@ -1,5 +1,5 @@
 import React from "react";
-import { DollarSign, PieChart, Layers, BarChart3, TrendingUp, ShieldCheck } from "lucide-react";
+import { IndianRupee, PieChart, Layers, BarChart3, TrendingUp, ShieldCheck } from "lucide-react";
 import type { InventoryReportData } from "../../services/inventoryService";
 
 interface InventoryReportsChartsProps {
@@ -41,11 +41,11 @@ export const InventoryReportsCharts: React.FC<InventoryReportsChartsProps> = ({ 
       <div className="inv-stats-grid">
         <div className="inv-stat-card">
           <div className="inv-stat-icon-wrap copper">
-            <DollarSign size={24} />
+            <IndianRupee size={24} />
           </div>
           <div className="inv-stat-info">
             <span className="inv-stat-value">
-              ${summary.totalInventoryValue.toLocaleString(undefined, { minimumFractionDigits: 2 })}
+              ₹{summary.totalInventoryValue.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
             </span>
             <span className="inv-stat-label">Total Inventory Asset Valuation</span>
           </div>
@@ -56,7 +56,7 @@ export const InventoryReportsCharts: React.FC<InventoryReportsChartsProps> = ({ 
             <Layers size={24} />
           </div>
           <div className="inv-stat-info">
-            <span className="inv-stat-value">${rawVal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+            <span className="inv-stat-value">₹{rawVal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
             <span className="inv-stat-label">Raw Materials Stock Value</span>
           </div>
         </div>
@@ -66,7 +66,7 @@ export const InventoryReportsCharts: React.FC<InventoryReportsChartsProps> = ({ 
             <TrendingUp size={24} />
           </div>
           <div className="inv-stat-info">
-            <span className="inv-stat-value">${fgVal.toLocaleString(undefined, { minimumFractionDigits: 2 })}</span>
+            <span className="inv-stat-value">₹{fgVal.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</span>
             <span className="inv-stat-label">Finished Goods Stock Value</span>
           </div>
         </div>
@@ -97,7 +97,7 @@ export const InventoryReportsCharts: React.FC<InventoryReportsChartsProps> = ({ 
             <div className="inv-chart-bar-item">
               <div className="flex justify-between text-xs font-semibold mb-1">
                 <span className="text-amber-800">Raw Materials</span>
-                <span>${rawVal.toLocaleString()} ({rawPct}%)</span>
+                <span>₹{rawVal.toLocaleString("en-IN")} ({rawPct}%)</span>
               </div>
               <div className="inv-bar-bg">
                 <div className="inv-bar-fill bg-amber-500" style={{ width: `${Math.max(5, rawPct)}%` }} />
@@ -107,7 +107,7 @@ export const InventoryReportsCharts: React.FC<InventoryReportsChartsProps> = ({ 
             <div className="inv-chart-bar-item">
               <div className="flex justify-between text-xs font-semibold mb-1">
                 <span className="text-emerald-800">Finished Goods</span>
-                <span>${fgVal.toLocaleString()} ({fgPct}%)</span>
+                <span>₹{fgVal.toLocaleString("en-IN")} ({fgPct}%)</span>
               </div>
               <div className="inv-bar-bg">
                 <div className="inv-bar-fill bg-emerald-500" style={{ width: `${Math.max(5, fgPct)}%` }} />
@@ -117,7 +117,7 @@ export const InventoryReportsCharts: React.FC<InventoryReportsChartsProps> = ({ 
             <div className="inv-chart-bar-item">
               <div className="flex justify-between text-xs font-semibold mb-1">
                 <span className="text-purple-800">Packaging</span>
-                <span>${pkgVal.toLocaleString()} ({pkgPct}%)</span>
+                <span>₹{pkgVal.toLocaleString("en-IN")} ({pkgPct}%)</span>
               </div>
               <div className="inv-bar-bg">
                 <div className="inv-bar-fill bg-purple-500" style={{ width: `${Math.max(5, pkgPct)}%` }} />
@@ -127,7 +127,7 @@ export const InventoryReportsCharts: React.FC<InventoryReportsChartsProps> = ({ 
             <div className="inv-chart-bar-item">
               <div className="flex justify-between text-xs font-semibold mb-1">
                 <span className="text-blue-800">Components & Hardware</span>
-                <span>${cmpVal.toLocaleString()} ({cmpPct}%)</span>
+                <span>₹{cmpVal.toLocaleString("en-IN")} ({cmpPct}%)</span>
               </div>
               <div className="inv-bar-bg">
                 <div className="inv-bar-fill bg-blue-500" style={{ width: `${Math.max(5, cmpPct)}%` }} />

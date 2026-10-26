@@ -45,70 +45,7 @@ export const SupplierDetails: React.FC = () => {
         setSupplier(response.data);
       }
     } catch (err: any) {
-      // Fallback sample supplier record for client demo view
-      setSupplier({
-        _id: id || "sup-1",
-        name: "Apex Steel & Metallurgy Corp",
-        code: "SUP-101",
-        category: "raw_material",
-        status: "active",
-        rating: 5,
-        complianceStatus: "compliant",
-        primaryContact: {
-          name: "Robert Vance",
-          email: "rvance@apexsteel.com",
-          phone: "+1 (555) 234-5678",
-          role: "Key Account Manager",
-        },
-        address: {
-          street: "140 Industrial Parkway",
-          city: "Pittsburgh",
-          state: "PA",
-          country: "USA",
-          postalCode: "15201",
-        },
-        taxId: "US-984019283",
-        paymentTerms: "Net 30",
-        tags: ["Steel", "Cold-Rolled", "ISO 9001"],
-        totalSpend: 154000,
-        totalOrders: 28,
-        documents: [
-          {
-            _id: "doc-1",
-            title: "ISO 9001:2015 Quality Certification",
-            docType: "iso_certificate",
-            fileName: "ISO_9001_ApexSteel_2025.pdf",
-            fileUrl: "#",
-            fileSize: 1024 * 720,
-            uploadedAt: "2025-01-10",
-            expiryDate: "2027-01-10",
-            status: "valid",
-            notes: "Certified for cold-rolled steel manufacturing standards.",
-          },
-          {
-            _id: "doc-2",
-            title: "Master Services & Supply Contract 2026",
-            docType: "contract",
-            fileName: "MSA_ApexSteel_Signed.pdf",
-            fileUrl: "#",
-            fileSize: 1024 * 1200,
-            uploadedAt: "2026-01-05",
-            expiryDate: "2028-01-05",
-            status: "valid",
-          },
-          {
-            _id: "doc-3",
-            title: "W-9 Tax Certificate",
-            docType: "tax_document",
-            fileName: "W9_TaxExemption_Apex.pdf",
-            fileUrl: "#",
-            fileSize: 1024 * 340,
-            uploadedAt: "2025-06-15",
-            expiryDate: "2026-10-15",
-            status: "expiring_soon",
-          },
-        ],
-      });
+      setError(err.message || "Failed to load supplier details from server.");
     } finally {
       setLoading(false);
     }

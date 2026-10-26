@@ -29,7 +29,7 @@ export const SupplierFormModal: React.FC<SupplierFormModalProps> = ({
       title={mode === "create" ? "Register New Vendor / Supplier" : `Edit Supplier: ${initialValues?.name || ""}`}
       maxWidth="lg"
     >
-      <div className="max-h-[75vh] overflow-y-auto pr-1">
+      <div className="pr-1">
         <SupplierForm
           mode={mode}
           initialValues={initialValues}

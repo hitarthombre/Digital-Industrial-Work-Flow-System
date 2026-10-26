@@ -229,8 +229,8 @@ export const PurchaseOrderModal: React.FC<PurchaseOrderModalProps> = ({
   };
 
   return (
-    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-y-auto">
-      <div className="bg-white rounded-xl max-w-5xl w-full p-6 shadow-2xl border border-slate-200 my-8 max-h-[90vh] flex flex-col">
+    <div className="fixed inset-0 bg-slate-900/60 backdrop-blur-sm flex items-center justify-center p-4 z-50 overflow-hidden">
+      <div className="bg-white rounded-xl max-w-5xl w-full p-6 shadow-2xl border border-slate-200 my-auto max-h-[calc(100vh-2rem)] flex flex-col">
         {/* Header */}
         <div className="flex justify-between items-center border-b border-slate-100 pb-4 mb-4">
           <div>
@@ -376,7 +376,7 @@ export const PurchaseOrderModal: React.FC<PurchaseOrderModalProps> = ({
                       <input
                         type="number"
                         min="0"
-                        placeholder="Unit Price $"
+                        placeholder="Unit Price ₹"
                         value={item.unitPrice}
                         onChange={(e) => handleItemChange(idx, "unitPrice", parseFloat(e.target.value) || 0)}
                         className="w-full bg-white border border-slate-300 rounded p-1.5 text-xs font-mono text-right"
@@ -420,7 +420,7 @@ export const PurchaseOrderModal: React.FC<PurchaseOrderModalProps> = ({
                 <div>
                   <span className="text-slate-400 uppercase font-bold block text-[10px]">Freight / Shipping Cost</span>
                   <div className="flex items-center gap-1 mt-0.5">
-                    <span className="text-slate-400">$</span>
+                    <span className="text-slate-400">₹</span>
                     <input
                       type="number"
                       min="0"
@@ -433,18 +433,18 @@ export const PurchaseOrderModal: React.FC<PurchaseOrderModalProps> = ({
 
                 <div className="border-l border-slate-800 pl-4">
                   <span className="text-slate-400 uppercase font-bold block text-[10px]">Subtotal</span>
-                  <span className="font-mono font-bold text-slate-200">${subtotal.toLocaleString()}</span>
+                  <span className="font-mono font-bold text-slate-200">₹{subtotal.toLocaleString("en-IN")}</span>
                 </div>
 
                 <div className="border-l border-slate-800 pl-4">
                   <span className="text-slate-400 uppercase font-bold block text-[10px]">Est Tax</span>
-                  <span className="font-mono font-bold text-slate-200">${taxTotal.toLocaleString()}</span>
+                  <span className="font-mono font-bold text-slate-200">₹{taxTotal.toLocaleString("en-IN")}</span>
                 </div>
               </div>
 
               <div className="text-right">
                 <span className="text-amber-400 uppercase font-extrabold text-[10px] block">Grand Order Total</span>
-                <div className="text-2xl font-black font-mono text-white">${grandTotal.toLocaleString()}</div>
+                <div className="text-2xl font-black font-mono text-white">₹{grandTotal.toLocaleString("en-IN")}</div>
               </div>
             </div>
 

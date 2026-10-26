@@ -42,6 +42,15 @@
   padding: 0.25rem;
   margin-bottom: 1.5rem;
   overflow-x: auto;
+  overflow-y: hidden !important;
+  scrollbar-width: none !important;
+  -ms-overflow-style: none !important;
+}
+
+.proc-tabs-bar::-webkit-scrollbar {
+  display: none !important;
+  width: 0 !important;
+  height: 0 !important;
 }
 
 .proc-tab-btn {
@@ -246,6 +255,7 @@
   text-transform: uppercase;
   color: #475569;
   border-bottom: 1px solid #e2e8f0;
+  white-space: nowrap;
 }
 
 .proc-table td {
@@ -253,6 +263,7 @@
   font-size: 0.8125rem;
   color: #1e293b;
   border-bottom: 1px solid #f1f5f9;
+  vertical-align: middle;
 }
 
 .proc-table tr:hover td {
