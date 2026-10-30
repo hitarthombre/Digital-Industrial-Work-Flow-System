@@ -104,7 +104,7 @@ export const ProductList: React.FC = () => {
   };
 
   const getTotalStock = (product: IProduct) => {
-    return product.variants.reduce((acc, v) => acc + v.stockQuantity, 0);
+    return (product.variants || []).reduce((acc, v) => acc + (v.stockQuantity || 0), 0);
   };
 
   return (
@@ -297,7 +297,9 @@ export const ProductList: React.FC = () => {
         /* GRID VIEW */
         <div className="prod-grid">
           {products.map((prod) => {
-            const primaryMedia = prod.media.find((m) => m.isPrimary) || prod.media[0];
+            const primaryMedia = (prod.media && prod.media.length > 0)
+              ? (prod.media.find((m) => m.isPrimary) || prod.media[0])
+              : null;
             const stockTotal = getTotalStock(prod);
 
             return (
@@ -325,23 +327,23 @@ export const ProductList: React.FC = () => {
                 </div>
 
                 <div className="prod-card-content">
-                  <span className="prod-category-tag">{prod.category}</span>
+                  <span className="prod-category-tag">{prod.category || (prod as any).categoryName || 'General'}</span>
                   <h3 className="prod-card-title" title={prod.name}>
                     {prod.name}
                   </h3>
-                  <div className="prod-card-sku">SKU: {prod.skuPrefix}</div>
+                  <div className="prod-card-sku">SKU: {prod.skuPrefix || (prod as any).sku || '—'}</div>
 
                   <div className="prod-card-meta-row">
                     <div className="prod-price-box">
                       <span className="prod-price-val">
-                        ₹{prod.basePrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                        ₹{(prod.basePrice ?? (prod as any).price ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                       </span>
                       <span className="prod-price-label">Base Price</span>
                     </div>
 
                     <div className="prod-variants-indicator" title="Configured SKU variants & stock">
                       <Layers size={13} />
-                      <span>{prod.variants.length} SKUs &bull; {stockTotal} stock</span>
+                      <span>{(prod.variants || []).length} SKUs &bull; {stockTotal} stock</span>
                     </div>
                   </div>
 
@@ -396,7 +398,9 @@ export const ProductList: React.FC = () => {
             </thead>
             <tbody>
               {products.map((prod) => {
-                const primaryMedia = prod.media.find((m) => m.isPrimary) || prod.media[0];
+                const primaryMedia = (prod.media && prod.media.length > 0)
+                  ? (prod.media.find((m) => m.isPrimary) || prod.media[0])
+                  : null;
                 const stockTotal = getTotalStock(prod);
 
                 return (
@@ -418,24 +422,24 @@ export const ProductList: React.FC = () => {
                           <Link to={`/app/products/${prod._id}`} className="table-product-name">
                             {prod.name}
                           </Link>
-                          <span className="table-product-sku">{prod.skuPrefix}</span>
+                          <span className="table-product-sku">{prod.skuPrefix || (prod as any).sku || '—'}</span>
                         </div>
                       </div>
                     </td>
                     <td>
                       <span className="prod-category-tag" style={{ margin: 0 }}>
-                        {prod.category}
+                        {prod.category || (prod as any).categoryName || 'General'}
                       </span>
                     </td>
-                    <td>{prod.brand}</td>
+                    <td>{prod.brand || 'Generic'}</td>
                     <td>
                       <strong>
-                        ₹{prod.basePrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                        ₹{(prod.basePrice ?? (prod as any).price ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                       </strong>
                     </td>
                     <td>
                       <span className="prod-variants-indicator">
-                        <Layers size={12} /> {prod.variants.length}
+                        <Layers size={12} /> {(prod.variants || []).length}
                       </span>
                     </td>
                     <td>
@@ -512,7 +516,7 @@ export const ProductList: React.FC = () => {
                 Are you sure you want to delete <strong>{deleteProductTarget.name}</strong>?
               </p>
               <p style={{ fontSize: '0.85rem', color: '#64748b', marginTop: '0.5rem' }}>
-                This will also remove all associated {deleteProductTarget.variants.length} variant SKUs,
+                This will also remove all associated {(deleteProductTarget.variants || []).length} variant SKUs,
                 attached CAD documents, and spec sheets. This action cannot be undone.
               </p>
             </div>

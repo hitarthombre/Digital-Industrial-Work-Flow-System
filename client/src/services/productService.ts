@@ -594,18 +594,194 @@ const INITIAL_PRODUCTS: IProduct[] = [
   },
 ];
 
+export function normalizeProduct(raw: any): IProduct {
+  if (!raw) return {} as IProduct;
+
+  const rawImages = Array.isArray(raw.images) ? raw.images : [];
+  let media: IProductMedia[] = [];
+
+  if (Array.isArray(raw.media) && raw.media.length > 0) {
+    media = raw.media.map((m: any, idx: number) => ({
+      id: m.id || m._id || `med-${idx}`,
+      name: m.name || `image-${idx + 1}`,
+      url: m.url || '',
+      sizeBytes: m.sizeBytes || 0,
+      isPrimary: Boolean(m.isPrimary),
+      type: m.type || 'image/jpeg',
+      caption: m.caption || '',
+    }));
+  } else if (rawImages.length > 0) {
+    media = rawImages.map((img: any, idx: number) => ({
+      id: img.publicId || img._id || `img-${idx}`,
+      name: raw.name ? `${raw.name} - ${idx + 1}` : `image-${idx + 1}`,
+      url: typeof img === 'string' ? img : img.url || '',
+      sizeBytes: 0,
+      isPrimary: typeof img === 'object' ? Boolean(img.isPrimary) : idx === 0,
+      type: 'image/jpeg',
+      caption: raw.name || '',
+    }));
+  } else if (raw.imageUrl) {
+    media = [
+      {
+        id: 'img-main',
+        name: raw.name || 'Product Image',
+        url: raw.imageUrl,
+        sizeBytes: 0,
+        isPrimary: true,
+        type: 'image/jpeg',
+        caption: raw.name || '',
+      },
+    ];
+  }
+
+  // Ensure at least one primary media if media exists
+  if (media.length > 0 && !media.some((m) => m.isPrimary)) {
+    media[0].isPrimary = true;
+  }
+
+  const rawVariants = Array.isArray(raw.variants) ? raw.variants : [];
+  const variants: IProductVariant[] = rawVariants.map((v: any, idx: number) => {
+    let attributes: Record<string, string> = {};
+    if (v.attributes) {
+      if (Array.isArray(v.attributes)) {
+        v.attributes.forEach((attr: any) => {
+          if (attr && attr.key) {
+            attributes[attr.key] = String(attr.value ?? '');
+          }
+        });
+      } else if (typeof v.attributes === 'object') {
+        attributes = { ...v.attributes };
+      }
+    }
+
+    return {
+      id: v.id || v._id?.toString() || `var-${idx}`,
+      sku: v.sku || raw.sku || `SKU-${idx + 1}`,
+      barcode: v.barcode || '',
+      attributes,
+      price: typeof v.price === 'number' ? v.price : (typeof raw.price === 'number' ? raw.price : (typeof raw.basePrice === 'number' ? raw.basePrice : 0)),
+      priceAdjustment: v.priceAdjustment || 0,
+      costPrice: typeof v.costPrice === 'number' ? v.costPrice : (typeof raw.costPrice === 'number' ? raw.costPrice : 0),
+      stockQuantity: typeof v.stockQuantity === 'number' ? v.stockQuantity : (typeof raw.stockQuantity === 'number' ? raw.stockQuantity : 0),
+      minStockAlert: v.minStockAlert || v.minStockLevel || 5,
+      weightKg: v.weightKg,
+      isActive: v.isActive !== undefined ? Boolean(v.isActive) : (v.status ? v.status === 'active' : true),
+    };
+  });
+
+  // If no variants exist, synthesize a default variant from the product base info
+  if (variants.length === 0) {
+    variants.push({
+      id: `var-default-${raw._id || Date.now()}`,
+      sku: raw.skuPrefix || raw.sku || 'SKU-DEFAULT',
+      barcode: raw.barcode || '',
+      attributes: { 'Standard': 'Default Specification' },
+      price: typeof raw.basePrice === 'number' ? raw.basePrice : (typeof raw.price === 'number' ? raw.price : 0),
+      priceAdjustment: 0,
+      costPrice: typeof raw.costPrice === 'number' ? raw.costPrice : 0,
+      stockQuantity: typeof raw.stockQuantity === 'number' ? raw.stockQuantity : 0,
+      minStockAlert: raw.minStockLevel || 5,
+      isActive: true,
+    });
+  }
+
+  // Documents normalization
+  const rawDocs = Array.isArray(raw.documents) ? raw.documents : [];
+  const documents: IProductDocument[] = rawDocs.map((doc: any, idx: number) => ({
+    id: doc.id || doc._id?.toString() || `doc-${idx}`,
+    name: doc.name || doc.title || doc.fileName || `Document ${idx + 1}`,
+    category: doc.category || doc.docType || 'spec_sheet',
+    fileSize: doc.fileSize || 0,
+    fileType: doc.fileType || 'application/pdf',
+    url: doc.url || doc.fileUrl || '#',
+    uploadedAt: doc.uploadedAt || new Date().toISOString(),
+    version: doc.version || '1.0',
+  }));
+
+  // Custom attributes normalization
+  let customAttributes: ICustomAttribute[] = [];
+  if (Array.isArray(raw.customAttributes)) {
+    customAttributes = raw.customAttributes.map((a: any, idx: number) => ({
+      id: a.id || a._id?.toString() || `attr-${idx}`,
+      category: a.category || 'General',
+      name: a.name || a.key || '',
+      value: String(a.value ?? ''),
+      unit: a.unit || '',
+    }));
+  } else if (Array.isArray(raw.attributes)) {
+    customAttributes = raw.attributes.map((a: any, idx: number) => ({
+      id: `attr-${idx}`,
+      category: 'General',
+      name: a.key || a.name || '',
+      value: String(a.value ?? ''),
+      unit: a.unit || '',
+    }));
+  }
+
+  // Category normalization
+  let category = raw.category;
+  if (!category) {
+    if (raw.categoryName) {
+      category = raw.categoryName;
+    } else if (raw.categoryId && typeof raw.categoryId === 'object' && raw.categoryId.name) {
+      category = raw.categoryId.name;
+    } else {
+      category = 'Industrial Automation';
+    }
+  }
+
+  const basePrice = typeof raw.basePrice === 'number' ? raw.basePrice : (typeof raw.price === 'number' ? raw.price : 0);
+  const costPrice = typeof raw.costPrice === 'number' ? raw.costPrice : 0;
+
+  return {
+    _id: String(raw._id || raw.id || `prod-${Date.now()}`),
+    skuPrefix: raw.skuPrefix || raw.sku || 'SKU-000',
+    name: raw.name || 'Unnamed Product',
+    brand: raw.brand || 'Generic Industrial',
+    category,
+    subCategory: raw.subCategory || '',
+    description: raw.description || '',
+    shortDescription: raw.shortDescription || '',
+    tags: Array.isArray(raw.tags) ? raw.tags : [],
+    basePrice,
+    costPrice,
+    msrp: typeof raw.msrp === 'number' ? raw.msrp : (basePrice > 0 ? Number((basePrice * 1.2).toFixed(2)) : undefined),
+    currency: raw.currency || 'INR',
+    taxRate: typeof raw.taxRate === 'number' ? raw.taxRate : 18,
+    status: raw.status || 'active',
+    isFeatured: Boolean(raw.isFeatured),
+    leadTimeDays: raw.leadTimeDays || 7,
+    minOrderQuantity: raw.minOrderQuantity || 1,
+    dimensions: raw.dimensions,
+    variantOptions: Array.isArray(raw.variantOptions) ? raw.variantOptions : [],
+    variants,
+    customAttributes,
+    media,
+    documents,
+    createdAt: raw.createdAt || new Date().toISOString(),
+    updatedAt: raw.updatedAt || new Date().toISOString(),
+    createdBy: raw.createdBy,
+  };
+}
+
 class ProductService {
   private getLocalCatalog(): IProduct[] {
     const raw = localStorage.getItem(STORAGE_KEY);
     if (!raw) {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_PRODUCTS));
-      return INITIAL_PRODUCTS;
+      const initial = INITIAL_PRODUCTS.map(normalizeProduct);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+      return initial;
     }
     try {
-      return JSON.parse(raw);
+      const parsed = JSON.parse(raw);
+      if (Array.isArray(parsed)) {
+        return parsed.map(normalizeProduct);
+      }
+      return INITIAL_PRODUCTS.map(normalizeProduct);
     } catch {
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(INITIAL_PRODUCTS));
-      return INITIAL_PRODUCTS;
+      const initial = INITIAL_PRODUCTS.map(normalizeProduct);
+      localStorage.setItem(STORAGE_KEY, JSON.stringify(initial));
+      return initial;
     }
   }
 
@@ -623,12 +799,42 @@ class ProductService {
       if (params.category && params.category !== 'ALL') queryParams.category = params.category;
       if (params.status && params.status !== 'ALL') queryParams.status = params.status;
 
-      const response = await api.get<GetProductsResponse>('/products', { params: queryParams });
+      const response = await api.get<any>('/products', { params: queryParams });
       if (response && response.data) {
-        return response;
+        const rawList = Array.isArray(response.data)
+          ? response.data
+          : Array.isArray(response.data.products)
+          ? response.data.products
+          : [];
+        const normalized = rawList.map(normalizeProduct);
+
+        const activeCount = normalized.filter((p) => p.status === 'active').length;
+        const lowStockCount = normalized.filter((p) =>
+          (p.variants || []).some((v) => v.stockQuantity <= (v.minStockAlert || 10))
+        ).length;
+        const categoriesSet = new Set(normalized.map((p) => p.category));
+        const totalVariants = normalized.reduce((acc, p) => acc + (p.variants || []).length, 0);
+
+        return {
+          success: true,
+          data: normalized,
+          pagination: response.pagination || {
+            total: normalized.length,
+            page: Number(params.page) || 1,
+            limit: Number(params.limit) || 12,
+            totalPages: 1,
+          },
+          metrics: response.metrics || {
+            totalProducts: response.pagination?.total || normalized.length,
+            activeCount,
+            lowStockCount,
+            totalCategories: categoriesSet.size,
+            totalVariants,
+          },
+        };
       }
     } catch (_) {
-      // Backend not running or endpoint not yet registered, fall through to local persistence
+      // Backend not running or endpoint returned error, fall through to local persistence
     }
 
     // Local in-memory filtering & pagination
@@ -638,11 +844,11 @@ class ProductService {
       const q = params.search.trim().toLowerCase();
       items = items.filter(
         (p) =>
-          p.name.toLowerCase().includes(q) ||
-          p.skuPrefix.toLowerCase().includes(q) ||
-          p.brand.toLowerCase().includes(q) ||
-          p.tags.some((t) => t.toLowerCase().includes(q)) ||
-          p.variants.some((v) => v.sku.toLowerCase().includes(q))
+          (p.name || '').toLowerCase().includes(q) ||
+          (p.skuPrefix || '').toLowerCase().includes(q) ||
+          (p.brand || '').toLowerCase().includes(q) ||
+          (p.tags || []).some((t) => t.toLowerCase().includes(q)) ||
+          (p.variants || []).some((v) => (v.sku || '').toLowerCase().includes(q))
       );
     }
 
@@ -661,8 +867,8 @@ class ProductService {
       let valA: any = a[sortBy as keyof IProduct] || '';
       let valB: any = b[sortBy as keyof IProduct] || '';
       if (sortBy === 'stock') {
-        valA = a.variants.reduce((acc, v) => acc + v.stockQuantity, 0);
-        valB = b.variants.reduce((acc, v) => acc + v.stockQuantity, 0);
+        valA = (a.variants || []).reduce((acc, v) => acc + (v.stockQuantity || 0), 0);
+        valB = (b.variants || []).reduce((acc, v) => acc + (v.stockQuantity || 0), 0);
       }
       if (typeof valA === 'string') {
         return sortOrder === 'asc' ? valA.localeCompare(valB) : valB.localeCompare(valA);
@@ -680,10 +886,10 @@ class ProductService {
     const allItems = this.getLocalCatalog();
     const activeCount = allItems.filter((p) => p.status === 'active').length;
     const lowStockCount = allItems.filter((p) =>
-      p.variants.some((v) => v.stockQuantity <= (v.minStockAlert || 10))
+      (p.variants || []).some((v) => v.stockQuantity <= (v.minStockAlert || 10))
     ).length;
     const categoriesSet = new Set(allItems.map((p) => p.category));
-    const totalVariants = allItems.reduce((acc, p) => acc + p.variants.length, 0);
+    const totalVariants = allItems.reduce((acc, p) => acc + (p.variants || []).length, 0);
 
     return {
       success: true,
@@ -706,9 +912,9 @@ class ProductService {
 
   async getProductById(id: string): Promise<IProduct> {
     try {
-      const response = await api.get<{ success: boolean; data: IProduct }>(`/products/${id}`);
+      const response = await api.get<{ success: boolean; data: any }>(`/products/${id}`);
       if (response && response.data) {
-        return response.data;
+        return normalizeProduct(response.data);
       }
     } catch (_) {
       // fallback
@@ -719,14 +925,40 @@ class ProductService {
     if (!found) {
       throw new Error(`Product with ID "${id}" was not found.`);
     }
-    return found;
+    return normalizeProduct(found);
   }
 
   async createProduct(input: CreateProductInput): Promise<IProduct> {
     try {
-      const response = await api.post<{ success: boolean; data: IProduct }>('/products', input);
+      const primaryMedia = input.media?.find((m) => m.isPrimary) || input.media?.[0];
+      const payload: any = {
+        name: input.name,
+        sku: input.skuPrefix || (input as any).sku,
+        price: input.basePrice ?? (input as any).price ?? 0,
+        costPrice: input.costPrice || 0,
+        taxRate: input.taxRate || 0,
+        status: input.status || 'draft',
+        categoryName: input.category || (input as any).categoryName,
+        description: input.description,
+        tags: input.tags || [],
+        imageUrl: primaryMedia?.url,
+        images: input.media?.map((m) => ({ url: m.url, isPrimary: m.isPrimary })) || [],
+        attributes: input.customAttributes?.map((a) => ({ key: a.name, value: a.value, unit: a.unit })) || [],
+        variants: input.variants?.map((v) => ({
+          name: v.sku,
+          sku: v.sku,
+          barcode: v.barcode,
+          price: v.price,
+          costPrice: v.costPrice,
+          stockQuantity: v.stockQuantity,
+          minStockLevel: v.minStockAlert,
+          attributes: Object.entries(v.attributes || {}).map(([key, value]) => ({ key, value })),
+        })) || [],
+      };
+
+      const response = await api.post<{ success: boolean; data: any }>('/products', payload);
       if (response && response.data) {
-        return response.data;
+        return normalizeProduct(response.data);
       }
     } catch (_) {
       // fallback
@@ -734,7 +966,7 @@ class ProductService {
 
     const items = this.getLocalCatalog();
     const now = new Date().toISOString();
-    const newProduct: IProduct = {
+    const newProduct: IProduct = normalizeProduct({
       ...input,
       _id: `prod-${Date.now()}`,
       tags: input.tags || [],
@@ -747,7 +979,7 @@ class ProductService {
       documents: input.documents || [],
       createdAt: now,
       updatedAt: now,
-    };
+    });
 
     items.unshift(newProduct);
     this.saveLocalCatalog(items);
@@ -756,9 +988,37 @@ class ProductService {
 
   async updateProduct(id: string, input: UpdateProductInput): Promise<IProduct> {
     try {
-      const response = await api.put<{ success: boolean; data: IProduct }>(`/products/${id}`, input);
+      const primaryMedia = input.media?.find((m) => m.isPrimary) || input.media?.[0];
+      const payload: any = {
+        ...(input.name ? { name: input.name } : {}),
+        ...(input.skuPrefix ? { sku: input.skuPrefix } : {}),
+        ...(input.basePrice !== undefined ? { price: input.basePrice } : {}),
+        ...(input.costPrice !== undefined ? { costPrice: input.costPrice } : {}),
+        ...(input.taxRate !== undefined ? { taxRate: input.taxRate } : {}),
+        ...(input.status ? { status: input.status } : {}),
+        ...(input.category ? { categoryName: input.category } : {}),
+        ...(input.description !== undefined ? { description: input.description } : {}),
+        ...(input.tags ? { tags: input.tags } : {}),
+        ...(primaryMedia?.url ? { imageUrl: primaryMedia.url } : {}),
+        ...(input.media ? { images: input.media.map((m) => ({ url: m.url, isPrimary: m.isPrimary })) } : {}),
+        ...(input.customAttributes ? { attributes: input.customAttributes.map((a) => ({ key: a.name, value: a.value, unit: a.unit })) } : {}),
+        ...(input.variants ? {
+          variants: input.variants.map((v) => ({
+            name: v.sku,
+            sku: v.sku,
+            barcode: v.barcode,
+            price: v.price,
+            costPrice: v.costPrice,
+            stockQuantity: v.stockQuantity,
+            minStockLevel: v.minStockAlert,
+            attributes: Object.entries(v.attributes || {}).map(([key, value]) => ({ key, value })),
+          }))
+        } : {}),
+      };
+
+      const response = await api.put<{ success: boolean; data: any }>(`/products/${id}`, payload);
       if (response && response.data) {
-        return response.data;
+        return normalizeProduct(response.data);
       }
     } catch (_) {
       // fallback
@@ -770,11 +1030,11 @@ class ProductService {
       throw new Error(`Product with ID "${id}" was not found.`);
     }
 
-    const updatedProduct: IProduct = {
+    const updatedProduct: IProduct = normalizeProduct({
       ...items[index],
       ...input,
       updatedAt: new Date().toISOString(),
-    };
+    });
 
     items[index] = updatedProduct;
     this.saveLocalCatalog(items);
@@ -801,7 +1061,7 @@ class ProductService {
       name: `${original.name} (Copy)`,
       skuPrefix: `${original.skuPrefix}-COPY`,
       status: 'draft',
-      variants: original.variants.map((v, i) => ({
+      variants: (original.variants || []).map((v, i) => ({
         ...v,
         id: `var-copy-${Date.now()}-${i}`,
         sku: `${v.sku}-COPY`,

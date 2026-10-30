@@ -94,20 +94,21 @@ export const ProductBuilder: React.FC<ProductBuilderProps> = ({ mode, initialPro
     setErrorMsg(null);
     try {
       const prod = await productService.getProductById(id);
-      setName(prod.name);
-      setSkuPrefix(prod.skuPrefix);
-      setBrand(prod.brand);
-      setCategory(prod.category);
+      setName(prod.name || '');
+      setSkuPrefix(prod.skuPrefix || (prod as any).sku || '');
+      setBrand(prod.brand || 'Generic Industrial');
+      setCategory(prod.category || (prod as any).categoryName || 'Industrial Automation');
       setSubCategory(prod.subCategory || '');
-      setDescription(prod.description);
+      setDescription(prod.description || '');
       setShortDescription(prod.shortDescription || '');
-      setTagsInput(prod.tags.join(', '));
-      setBasePrice(prod.basePrice);
-      setCostPrice(prod.costPrice);
-      setMsrp(prod.msrp || prod.basePrice * 1.2);
+      setTagsInput((prod.tags || []).join(', '));
+      const bPrice = prod.basePrice ?? (prod as any).price ?? 0;
+      setBasePrice(bPrice);
+      setCostPrice(prod.costPrice ?? 0);
+      setMsrp(prod.msrp || (bPrice * 1.2));
       setCurrency(prod.currency || 'INR');
       setTaxRate(prod.taxRate || 18);
-      setStatus(prod.status);
+      setStatus(prod.status || 'draft');
       setLeadTimeDays(prod.leadTimeDays || 7);
       setMinOrderQuantity(prod.minOrderQuantity || 1);
 

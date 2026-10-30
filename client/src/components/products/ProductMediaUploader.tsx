@@ -29,8 +29,8 @@ const DOCUMENT_CATEGORIES: { id: DocumentCategory; label: string; badgeColor: st
 ];
 
 export const ProductMediaUploader: React.FC<ProductMediaUploaderProps> = ({
-  media,
-  documents,
+  media = [],
+  documents = [],
   onChangeMedia,
   onChangeDocuments,
 }) => {

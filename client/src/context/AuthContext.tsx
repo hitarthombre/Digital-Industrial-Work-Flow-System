@@ -42,12 +42,20 @@ export const AuthProvider: React.FC<{ children: React.ReactNode }> = ({ children
         setUser(parsedUser);
 
         // Fetch fresh profile & permissions
-        fetch(`${import.meta.env.VITE_API_URL || 'http://localhost:5000'}/api/auth/me`, {
+        const rawApiUrl = (import.meta.env.VITE_API_URL || 'http://localhost:5000').replace(/\/+$/, '');
+        const meUrl = rawApiUrl.endsWith('/api') ? `${rawApiUrl}/auth/me` : `${rawApiUrl}/api/auth/me`;
+
+        fetch(meUrl, {
           headers: {
             Authorization: `Bearer ${storedToken}`,
           },
         })
-          .then((res) => res.json())
+          .then((res) => {
+            if (!res.ok) {
+              throw new Error(`Profile request returned status ${res.status}`);
+            }
+            return res.json();
+          })
           .then((resData) => {
             if (resData.success && resData.data?.user) {
               const freshUser: User = {

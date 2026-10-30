@@ -113,14 +113,16 @@ export const ProductDetails: React.FC = () => {
     );
   }
 
-  const activeMedia = product.media[activeImageIndex] || product.media[0];
-  const totalStock = product.variants.reduce((acc, v) => acc + v.stockQuantity, 0);
+  const mediaList = product.media || [];
+  const activeMedia = mediaList[activeImageIndex] || mediaList[0];
+  const totalStock = (product.variants || []).reduce((acc, v) => acc + (v.stockQuantity || 0), 0);
 
   // Group attributes by category
-  const groupedAttributes = product.customAttributes.reduce<Record<string, typeof product.customAttributes>>(
+  const groupedAttributes = (product.customAttributes || []).reduce<Record<string, typeof product.customAttributes>>(
     (acc, attr) => {
-      if (!acc[attr.category]) acc[attr.category] = [];
-      acc[attr.category].push(attr);
+      const cat = attr.category || 'General';
+      if (!acc[cat]) acc[cat] = [];
+      acc[cat].push(attr);
       return acc;
     },
     {}
@@ -197,9 +199,9 @@ export const ProductDetails: React.FC = () => {
               )}
             </div>
 
-            {product.media.length > 1 && (
+            {mediaList.length > 1 && (
               <div className="prod-gallery-thumbs">
-                {product.media.map((img, idx) => (
+                {mediaList.map((img, idx) => (
                   <button
                     key={img.id}
                     type="button"
@@ -215,16 +217,16 @@ export const ProductDetails: React.FC = () => {
 
           {/* Core Summary Pane */}
           <div className="prod-summary-pane">
-            <div className="prod-brand-tag">{product.brand}</div>
+            <div className="prod-brand-tag">{product.brand || 'Generic Industrial'}</div>
             <h2 className="prod-details-title">{product.name}</h2>
 
             <div className="prod-sku-bar">
-              <span>SKU: <strong>{product.skuPrefix}</strong></span>
+              <span>SKU: <strong>{product.skuPrefix || (product as any).sku || '—'}</strong></span>
               <span>&bull;</span>
               <span className={`prod-status-tag ${product.status}`}>{product.status}</span>
               <span>&bull;</span>
               <span className="prod-category-tag" style={{ margin: 0 }}>
-                {product.category}
+                {product.category || (product as any).categoryName || 'General'}
               </span>
             </div>
 
@@ -232,21 +234,21 @@ export const ProductDetails: React.FC = () => {
             <div className="prod-pricing-hero">
               <div>
                 <div className="hero-base-price">
-                  ₹{product.basePrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}
+                  ₹{(product.basePrice ?? (product as any).price ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}
                 </div>
                 <div className="prod-price-label">Standard Base Price ({product.currency || 'INR'})</div>
               </div>
 
               <div className="hero-cost-info">
-                <div>Cost: <strong>₹{product.costPrice.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong></div>
+                <div>Cost: <strong>₹{(product.costPrice ?? 0).toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong></div>
                 {product.msrp && (
                   <div>MSRP: <strong>₹{product.msrp.toLocaleString("en-IN", { minimumFractionDigits: 2 })}</strong></div>
                 )}
                 <div>
                   Margin:{' '}
                   <strong style={{ color: '#047857' }}>
-                    {product.basePrice > 0
-                      ? Math.round(((product.basePrice - product.costPrice) / product.basePrice) * 100)
+                    {(product.basePrice ?? (product as any).price ?? 0) > 0
+                      ? Math.round((((product.basePrice ?? (product as any).price ?? 0) - (product.costPrice || 0)) / (product.basePrice ?? (product as any).price ?? 1)) * 100)
                       : 0}
                     %
                   </strong>
@@ -473,7 +475,7 @@ export const ProductDetails: React.FC = () => {
                     </tr>
                   </thead>
                   <tbody>
-                    {product.variants.map((v) => (
+                    {(product.variants || []).map((v) => (
                       <tr key={v.id} className={!v.isActive ? 'row-inactive' : ''}>
                         <td>
                           <span
@@ -486,7 +488,7 @@ export const ProductDetails: React.FC = () => {
                         </td>
                         <td>
                           <div className="matrix-attribute-badges">
-                            {Object.entries(v.attributes).map(([attrK, attrV]) => (
+                            {Object.entries(v.attributes || {}).map(([attrK, attrV]) => (
                               <span key={attrK} className="matrix-attr-pill">
                                 <span className="pill-key">{attrK}:</span>
                                 <span className="pill-val">{attrV}</span>
@@ -513,10 +515,10 @@ export const ProductDetails: React.FC = () => {
                         </td>
                         <td>
                           <strong style={{ color: 'var(--forest)' }}>
-                            ₹{v.price.toFixed(2)}
+                            ₹{(v.price ?? (product.basePrice ?? (product as any).price ?? 0)).toFixed(2)}
                           </strong>
                         </td>
-                        <td>₹{(v.costPrice || product.costPrice).toFixed(2)}</td>
+                        <td>₹{(v.costPrice || product.costPrice || 0).toFixed(2)}</td>
                         <td>
                           <span
                             style={{
@@ -539,9 +541,9 @@ export const ProductDetails: React.FC = () => {
           {/* TAB 3: DOCUMENTS & SPEC SHEETS */}
           {activeTab === 'docs' && (
             <div className="prod-tab-pane">
-              {product.documents.length > 0 ? (
+              {(product.documents || []).length > 0 ? (
                 <div className="documents-list-container">
-                  {product.documents.map((doc) => (
+                  {(product.documents || []).map((doc) => (
                     <div key={doc.id} className="doc-attachment-card">
                       <div className="doc-icon-wrap">
                         {doc.category === 'cad_drawing' ? (
